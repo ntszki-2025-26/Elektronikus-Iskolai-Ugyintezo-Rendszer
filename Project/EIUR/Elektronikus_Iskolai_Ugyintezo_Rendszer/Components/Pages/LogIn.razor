@@ -1,0 +1,32 @@
+﻿@page "/LogIn"
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-sm" style="width: 100%; max-width: 400px; border-radius: 15px;">
+        <div class="card-body p-5">
+            <h2 class="text-center mb-4">Bejelentkezés</h2>
+
+            <form>
+                <div class="username">
+                    <label class="form-label">Felhasználónév</label>
+                    <input type="text" class="form-control" placeholder="pelda@email.com">
+                </div>
+
+                <div class="password">
+                    <label class="form-label">Jelszó</label>
+                    <input type="password" class="form-control" placeholder="********">
+                </div>
+
+                <div class="rm-check-input">
+                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Emlékezz rám</label>
+                </div>
+
+                <br />
+
+                <div class="button">
+                    <button type="submit" class="btn btn-primary btn-lg">Belépés</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

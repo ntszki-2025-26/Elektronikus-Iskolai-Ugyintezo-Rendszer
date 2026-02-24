@@ -1,0 +1,81 @@
+﻿@page "/mm"
+
+<style>
+    .page-container {
+        min-height: 100vh;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .top-bar {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .top-button {
+        border: 1px solid #999;
+        border-radius: 6px;
+        padding: 6px 12px;
+        cursor: pointer;
+        background: none;
+    }
+
+    .menu-container {
+        display: flex;
+        gap: 40px;
+        margin-bottom: 40px;
+    }
+
+    .menu-card {
+        width: 180px;
+        height: 100px;
+        border-radius: 10px;
+        border: 1px solid #999;
+        background: none;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .menu-card.small {
+        width: 200px;
+        height: 50px;
+    }
+
+    .bottom-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .menu-card:hover,
+    .top-button:hover {
+        border-color: #333;
+    }
+</style>
+
+<div class="page-container">
+    <div class="top-bar">
+        <button class="top-button">Értesítések</button>
+        <button class="top-button">Profil</button>
+    </div>
+
+    <div class="menu-container">
+        <a href="/tanaradd" class="menu-card">Tanulók</a>
+        <a href="/tasks" class="menu-card">Kérvények</a>
+        <button class="menu-card">Kilépés</button>
+    </div>
+
+    <div class="bottom-container">
+        <a href="/reports" class="menu-card small">Reportok</a>
+    </div>
+</div>

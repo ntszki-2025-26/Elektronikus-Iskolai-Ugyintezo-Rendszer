@@ -1,0 +1,91 @@
+﻿@page "/student"
+
+<style>
+
+    .page-container {
+        min-height: 100vh;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .top-bar {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .top-button {
+        border: 1px solid #999;
+        border-radius: 6px;
+        padding: 6px 12px;
+        background: none;
+        cursor: pointer;
+    }
+
+    .info-box {
+        position: absolute;
+        right: 20px;
+        top: 60px;
+        border: 1px solid #999;
+        border-radius: 8px;
+        padding: 15px;
+        width: 180px;
+        font-size: 14px;
+    }
+
+    .menu-container {
+        display: grid;
+        grid-template-columns: repeat(2, 220px);
+        gap: 30px;
+    }
+
+    .menu-card {
+        height: 70px;
+        border: 1px solid #999;
+        border-radius: 8px;
+        background: none;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .menu-card:hover,
+    .top-button:hover {
+        border-color: #333;
+    }
+
+</style>
+
+
+<div class="page-container">
+
+    <div class="top-bar">
+        <button class="top-button">Értesítések</button>
+        <button class="top-button">Profil</button>
+    </div>
+
+    <div class="info-box">
+        <div>Tanuló adatai pl:</div>
+        <div>- név</div>
+        <div>- évfolyam</div>
+        <div>- OM azonosító</div>
+        <div>- Lakhely</div>
+    </div>
+
+    <div class="menu-container">
+
+        <button class="menu-card">Iskolalátogatási papír</button>
+
+        <button class="menu-card">Probléma jelentés</button>
+
+        <button class="menu-card">Ideiglenes igazolvány</button>
+
+        <button class="menu-card">Hiányzás előrejelzés</button>
+
+    </div>
+
+</div>

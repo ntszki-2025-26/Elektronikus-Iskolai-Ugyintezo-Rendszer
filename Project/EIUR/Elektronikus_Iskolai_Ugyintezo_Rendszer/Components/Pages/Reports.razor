@@ -1,0 +1,79 @@
+﻿@page "/reports"
+
+<style>
+
+.page-container {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.top-bar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.top-button {
+    border: 1px solid #999;
+    border-radius: 6px;
+    padding: 6px 12px;
+    background: none;
+}
+
+.report-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.report-card {
+    width: 320px;
+    min-height: 90px;
+    border: 1px solid #999;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.report-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.report-description {
+    font-size: 14px;
+}
+
+</style>
+
+<div class="page-container">
+
+    <div class="top-bar">
+        <button class="top-button">Értesítések</button>
+        <button class="top-button">Profil</button>
+    </div>
+
+    <div class="report-container">
+
+        <div class="report-card">
+            <div class="report-title">Report címe</div>
+            <div class="report-description">Ez a report leírása helye. Itt jelenik meg a részletes információ.</div>
+        </div>
+
+        <div class="report-card">
+            <div class="report-title">Report címe</div>
+            <div class="report-description">Ez a report leírása helye. Itt jelenik meg a részletes információ.</div>
+        </div>
+
+        <div class="report-card">
+            <div class="report-title">Report címe</div>
+            <div class="report-description">Ez a report leírása helye. Itt jelenik meg a részletes információ.</div>
+        </div>
+
+    </div>
+
+</div>

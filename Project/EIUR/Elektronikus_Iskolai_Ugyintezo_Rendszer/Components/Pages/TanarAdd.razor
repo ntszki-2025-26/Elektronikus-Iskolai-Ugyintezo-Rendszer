@@ -1,0 +1,108 @@
+﻿@page "/tanaradd"
+@rendermode InteractiveServer
+<style>
+
+    .page {
+        
+        height: 100vh;
+        position: relative;
+    }
+
+    .top-bar {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .icon {
+        font-size: 20px;
+        margin-left: 15px;
+        cursor: pointer;
+    }
+
+    .content {
+        display: flex;
+        margin-top: 100px;
+        margin-left: 80px;
+    }
+
+    .students-table {
+        border-collapse: collapse;
+    }
+
+        .students-table th,
+        .students-table td {
+            width: 150px;
+            height: 35px;
+        }
+
+        .students-table th {
+        }
+
+    .delete {
+        width: 40px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .buttons {
+        margin-left: 80px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .btn {
+        border: none;
+        padding: 15px 30px;
+        margin-bottom: 20px;
+        cursor: pointer;
+    }
+</style>
+
+<div class="page">
+
+    <div class="top-bar">
+        <button class="top-button">Értesítések</button>
+        <button class="top-button">Profil</button>
+    </div>
+
+    <div class="content">
+
+        <table class="students-table">
+            <thead>
+                <tr>
+                    <th>Név</th>
+                    <th>Email</th>
+                    <th>Lakhely</th>
+                    <th>OM azonosító</th>
+                    <th>Évfolyam</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @for (int i = 0; i < 10; i++)
+                {
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="delete">×</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+        <div class="buttons">
+            <button class="btn">Import</button>
+            <button class="btn">Tanuló felvétele</button>
+        </div>
+
+    </div>
+
+</div>

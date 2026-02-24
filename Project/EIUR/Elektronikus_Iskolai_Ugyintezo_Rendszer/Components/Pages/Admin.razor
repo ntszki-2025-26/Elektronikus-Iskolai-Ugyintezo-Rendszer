@@ -1,0 +1,95 @@
+﻿@page "/admin"
+@rendermode InteractiveServer
+<style> 
+
+    .title {
+        color: white;
+        margin-left: 40px;
+        margin-top: 20px;
+    }
+
+    .form-container {
+        margin-left: 300px;
+        margin-top: 50px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .input {
+        width: 200px;
+        padding: 10px;
+        border: none;
+        color: white;
+    }
+
+    .add-button {
+        margin-left: 250px;
+        margin-top: -200px;
+        padding: 15px 30px;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+</style>
+<h1 class="title">Admin page</h1>
+
+<div class="form-container">
+    <EditForm Model="@userModel" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <InputText @bind-Value="userModel.Nev" placeholder="Név*" class="input" />
+        </div>
+
+        <div class="form-group">
+            <InputText @bind-Value="userModel.Email" placeholder="Email*" class="input" />
+        </div>
+
+        <div class="form-group">
+            <InputText @bind-Value="userModel.Lakhely" placeholder="Lakhely*" class="input" />
+        </div>
+
+        <div class="form-group">
+            <InputText @bind-Value="userModel.OMAzonosito" placeholder="OM azonosító" class="input" />
+        </div>
+
+        <div class="form-group">
+            <InputNumber @bind-Value="userModel.Evfolyam" placeholder="Évfolyam" class="input" />
+        </div>
+
+        <div class="form-group">
+            <InputText @bind-Value="userModel.Jogosultsag" placeholder="Jogosultság*" class="input" />
+        </div>
+
+        <div class="form-group">
+            <InputText @bind-Value="userModel.Telefonszam" placeholder="Telefonszám*" class="input" />
+        </div>
+
+        <button type="submit" class="add-button">Hozzáadás</button>
+    </EditForm>
+</div>
+
+@code {
+    private UserModel userModel = new();
+
+    private void HandleValidSubmit()
+    {
+        Console.WriteLine("Felhasználó hozzáadva:");
+        Console.WriteLine(userModel.Nev);
+        Console.WriteLine(userModel.Email);
+    }
+
+    public class UserModel
+    {
+        public string Nev { get; set; }
+        public string Email { get; set; }
+        public string Lakhely { get; set; }
+        public string OMAzonosito { get; set; }
+        public int? Evfolyam { get; set; }
+        public string Jogosultsag { get; set; }
+        public string Telefonszam { get; set; }
+    }
+}

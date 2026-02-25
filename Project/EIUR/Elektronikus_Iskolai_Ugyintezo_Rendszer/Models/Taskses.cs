@@ -1,7 +1,7 @@
 ﻿namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
 {
     [Table("Tasks")]
-    public class Task
+    public class Taskses
     {
         [Key]
         public required int Id { get; set; }

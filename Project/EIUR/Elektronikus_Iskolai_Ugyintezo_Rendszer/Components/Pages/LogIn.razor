@@ -1,66 +1,66 @@
-﻿@page "/LogIn"
+﻿@page "/Login"
+@using Microsoft.EntityFrameworkCore
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
+@inject AppDbContext Db
+@inject NavigationManager Nav
 
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="card shadow-sm" style="width: 100%; max-width: 400px; border-radius: 15px;">
-        <div class="card-body p-5">
-            <h2 class="text-center mb-4">Bejelentkezés</h2>
+<h3>Bejelentkezés</h3>
 
-            <form>
-                <div class="username">
-                    <label class="form-label">Email</label>
-                    <input type="text" class="form-control" placeholder="pelda@email.com">
-                </div>
+<EditForm Model=@loginModel OnValidSubmit="LoginUser">
 
-                <div class="password">
-                    <label class="form-label">Jelszó</label>
-                    <input type="password" class="form-control" placeholder="********">
-                </div>
+    <InputText class="form-control"
+               @bind-Value="loginModel.Email"
+               placeholder="Email" />
 
-                <div class="rm-check-input">
-                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                    <label class="form-check-label" for="rememberMe">Emlékezz rám</label>
-                </div>
+    <br />
 
-                <br />
+    <InputText type="password"
+               class="form-control"
+               @bind-Value="loginModel.Password"
+               placeholder="Jelszó" />
 
-                <div class="button">
-                    <button type="submit" class="btn btn-primary btn-lg">Belépés</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+    <br />
+
+    <button type="submit"  class="btn btn-primary">
+        Belépés
+    </button>
+
+</EditForm>
+
+@if (errorMessage != null)
+{
+    <p style="color:red">@errorMessage</p>
+}
 
 @code {
 
-    private LoginRequest loginModel = new();
-    private string? errorMessage;
+    LoginModel loginModel = new LoginModel();
 
-    private async Task HandleLogin()
+    string errorMessage;
+
+    async Task LoginUser()
     {
-        errorMessage = null;
+        var user = Db.Users
+            .FirstOrDefault(u =>
+                u.Email == loginModel.Email &&
+                u.Password == loginModel.Password);
 
-
-        if (loginModel.Username == "admin" && loginModel.Password == "password123")
+        if (user != null)
         {
-
-            Console.WriteLine("Sikeres belépés!");
+            Nav.NavigateTo("/Home");
         }
         else
         {
-            errorMessage = "Hibás felhasználónév vagy jelszó!";
+            errorMessage = "Hibás email vagy jelszó";
         }
     }
 
-
-    public class LoginRequest
+    public class LoginModel
     {
-        [Required(ErrorMessage = "A felhasználónév megadása kötelező.")]
-        public string Username { get; set; } = "";
+        public string Email { get; set; }
 
-        [Required(ErrorMessage = "A jelszó megadása kötelező.")]
-        public string Password { get; set; } = "";
-
-        public bool RememberMe { get; set; }
+        public string Password { get; set; }
     }
+
 }

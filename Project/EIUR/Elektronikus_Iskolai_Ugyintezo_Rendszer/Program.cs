@@ -1,4 +1,5 @@
 using Elektronikus_Iskolai_Ugyintezo_Rendszer.Components;
+using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
@@ -16,7 +17,9 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            options.UseSqlServer(
+            builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
             var app = builder.Build();
 

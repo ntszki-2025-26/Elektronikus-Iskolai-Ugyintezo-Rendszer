@@ -1,91 +1,53 @@
 ﻿@page "/student"
+@rendermode InteractiveServer
 
-<style>
-
-    .page-container {
-        min-height: 100vh;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .top-bar {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        display: flex;
-        gap: 10px;
-    }
-
-    .top-button {
-        border: 1px solid #999;
-        border-radius: 6px;
-        padding: 6px 12px;
-        background: none;
-        cursor: pointer;
-    }
-
-    .info-box {
-        position: absolute;
-        right: 20px;
-        top: 60px;
-        border: 1px solid #999;
-        border-radius: 8px;
-        padding: 15px;
-        width: 180px;
-        font-size: 14px;
-    }
-
-    .menu-container {
-        display: grid;
-        grid-template-columns: repeat(2, 220px);
-        gap: 30px;
-    }
-
-    .menu-card {
-        height: 70px;
-        border: 1px solid #999;
-        border-radius: 8px;
-        background: none;
-        cursor: pointer;
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    .menu-card:hover,
-    .top-button:hover {
-        border-color: #333;
-    }
-
-</style>
-
-
-<div class="page-container">
-
-    <div class="top-bar">
-        <button class="top-button">Értesítések</button>
-        <button class="top-button">Profil</button>
-    </div>
-
-    <div class="info-box">
-        <div>Tanuló adatai pl:</div>
-        <div>- név</div>
-        <div>- évfolyam</div>
-        <div>- OM azonosító</div>
-        <div>- Lakhely</div>
-    </div>
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+    <MudLayout>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+                <MudSpacer />
+            <MudDrawer @bind-Open="@_open" Elevation="1" Variant="DrawerVariant.Temporary">
+                <MudDrawerHeader>
+                    <MudText Typo="Typo.h6">Elektronikus Iskolai Ügyintéző Rendszer</MudText>
+                </MudDrawerHeader>
+                <MudNavMenu>
+                    <MudNavLink Match="NavLinkMatch.All">Profil</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All">Értesítések</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All">Kilépés</MudNavLink>
+                </MudNavMenu>
+            </MudDrawer>
+    </MudLayout>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="page-container">
 
     <div class="menu-container">
 
-        <button class="menu-card">Iskolalátogatási papír</button>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="menu-button" Href="#">
+            Iskolalátogatási papír
+        </MudButton>
 
-        <button class="menu-card">Probléma jelentés</button>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="menu-button" Href="#">
+            Probléma jelentés
+        </MudButton>
 
-        <button class="menu-card">Ideiglenes igazolvány</button>
+        <MudButton Variant="Variant.Filled" Color="Color.Info" Class="menu-button" Href="#">
+            Ideiglenes igazolvány
+        </MudButton>
 
-        <button class="menu-card">Hiányzás előrejelzés</button>
+        <MudButton Variant="Variant.Filled" Color="Color.Warning" Class="menu-button" Href="#">
+            Hiányzás előrejelzés
+        </MudButton>
 
     </div>
 
-</div>
+</MudContainer>
+
+@code{
+    private bool _open = false;
+
+    private void ToggleDrawer()
+    {
+        _open = !_open;
+    }
+}

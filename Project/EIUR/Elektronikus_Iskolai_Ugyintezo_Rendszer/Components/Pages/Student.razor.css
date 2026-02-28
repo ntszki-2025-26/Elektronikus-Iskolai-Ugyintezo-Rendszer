@@ -1,0 +1,30 @@
+﻿.page-container {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    width: 100%;
+    max-width: 400px;
+    align-items: center; 
+}
+
+.menu-button {
+    width: 100%;
+    min-height: 80px;
+    font-size: 22px;
+    font-weight: 700;
+    border-radius: 16px;
+    transition: 0.3s ease;
+    text-align: center;
+}
+
+.menu-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}

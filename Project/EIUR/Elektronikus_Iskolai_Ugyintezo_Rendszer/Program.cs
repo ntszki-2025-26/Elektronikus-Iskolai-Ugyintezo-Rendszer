@@ -1,4 +1,8 @@
 using Elektronikus_Iskolai_Ugyintezo_Rendszer.Components;
+using MudBlazor.Services;
+
+
+
 
 namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
 {
@@ -7,6 +11,9 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddMudServices();
+
 
             // Add services to the container.
             builder.Services.AddRazorComponents()

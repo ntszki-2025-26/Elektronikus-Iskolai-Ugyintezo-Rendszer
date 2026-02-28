@@ -1,108 +1,79 @@
 ﻿@page "/tanaradd"
 @rendermode InteractiveServer
-<style>
 
-    .page {
-        
-        height: 100vh;
-        position: relative;
-    }
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-    .top-bar {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        display: flex;
-        gap: 10px;
-    }
+    <MudLayout>
+    <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+            <MudSpacer />
+        <MudDrawer @bind-Open="@_open" Elevation="1" Variant="DrawerVariant.Temporary">
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h6">Elektronikus Iskolai Ügyintéző Rendszer</MudText>
+            </MudDrawerHeader>
+            <MudNavMenu>
+                <MudNavLink Match="NavLinkMatch.All">Profil</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All">Értesítések</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All">Kilépés</MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
+    </MudLayout>
 
-    .icon {
-        font-size: 20px;
-        margin-left: 15px;
-        cursor: pointer;
-    }
+<MudContainer MaxWidth="MaxWidth.False" Class="page-container">
 
-    .content {
-        display: flex;
-        margin-top: 100px;
-        margin-left: 80px;
-    }
+  
+    <MudPaper Elevation="3" Class="content-card">
 
-    .students-table {
-        border-collapse: collapse;
-    }
+        <MudTable T="object" Items="@rows" Dense="true" Hover="true" Class="students-table">
 
-        .students-table th,
-        .students-table td {
-            width: 150px;
-            height: 35px;
-        }
+            <HeaderContent>
+                <MudTh>Név</MudTh>
+                <MudTh>Email</MudTh>
+                <MudTh>Lakhely</MudTh>
+                <MudTh>OM azonosító</MudTh>
+                <MudTh>Évfolyam</MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
 
-        .students-table th {
-        }
+            <RowTemplate>
+                <MudTd></MudTd>
+                <MudTd></MudTd>
+                <MudTd></MudTd>
+                <MudTd></MudTd>
+                <MudTd></MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error" />
+                </MudTd>
+            </RowTemplate>
 
-    .delete {
-        width: 40px;
-        text-align: center;
-        cursor: pointer;
-    }
+        </MudTable>
 
-    .buttons {
-        margin-left: 80px;
-        display: flex;
-        flex-direction: column;
-    }
+     
+        <div class="action-buttons">
+            <MudButton Variant="Variant.Outlined" Color="Color.Primary">
+                Import
+            </MudButton>
 
-    .btn {
-        border: none;
-        padding: 15px 30px;
-        margin-bottom: 20px;
-        cursor: pointer;
-    }
-</style>
-
-<div class="page">
-
-    <div class="top-bar">
-        <button class="top-button">Értesítések</button>
-        <button class="top-button">Profil</button>
-    </div>
-
-    <div class="content">
-
-        <table class="students-table">
-            <thead>
-                <tr>
-                    <th>Név</th>
-                    <th>Email</th>
-                    <th>Lakhely</th>
-                    <th>OM azonosító</th>
-                    <th>Évfolyam</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-
-                @for (int i = 0; i < 10; i++)
-                {
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td class="delete">×</td>
-                    </tr>
-                }
-
-            </tbody>
-        </table>
-
-        <div class="buttons">
-            <button class="btn">Import</button>
-            <button class="btn">Tanuló felvétele</button>
+            <MudButton Variant="Variant.Filled" Color="Color.Success">
+                Tanuló felvétele
+            </MudButton>
         </div>
 
-    </div>
+    </MudPaper>
 
-</div>
+</MudContainer>
+
+
+@code {
+    private List<object> rows = Enumerable.Range(0, 10).Select(x => new object()).ToList();
+
+    private bool _open = false;
+
+    private void ToggleDrawer()
+    {
+        _open = !_open;
+    }
+}

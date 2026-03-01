@@ -16,6 +16,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
 
 
             // Add services to the container.
+            builder.Services.AddMudServices();
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 

@@ -20,36 +20,45 @@
         </MudNavMenu>
     </MudDrawer>
 </MudLayout>
-<MudContainer MaxWidth="MaxWidth.Medium" Class="page-container">
+<MudContainer MaxWidth="MaxWidth.Medium" Class="faq-container">
 
-    <div class="task-list">
+    <MudExpansionPanels Elevation="2">
 
         @foreach (var task in tasks)
         {
-            <MudPaper Elevation="4" Class="task-card">
-
-                <MudText Typo="Typo.h6" Class="task-text">
+            <MudExpansionPanel Text="Feladat">
+                <MudText>
                     @task
                 </MudText>
 
-                <MudIcon Icon="@Icons.Material.Filled.CheckCircle"
-                         Color="Color.Success"
-                         Size="Size.Large" />
 
-            </MudPaper>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Class="accept-button">
+                    Elfogadom
+                </MudButton>
+
+            </MudExpansionPanel>
         }
 
-    </div>
+    </MudExpansionPanels>
 
 </MudContainer>
 
 @code {
     private List<string> tasks = new()
     {
-        "Feladat",
-        "Feladat",
-        "Feladat"
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore."
     };
+
+    private string GetPanelClass(int index)
+    {
+        return index % 2 == 0 ? "panel-large" : "panel-small";
+    }
 
     private bool _open = false;
 

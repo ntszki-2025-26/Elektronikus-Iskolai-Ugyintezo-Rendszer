@@ -2,6 +2,28 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+body {
+    background-color: #f3e7e4 !important;
+}
+.mud-expansion-panel:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+}
+.mud-expansion-panel {
+    border-radius: 18px;
+    margin-bottom: 25px;
+    transition: 0.3s ease;
+}
+.faq-container {
+    background: white;
+    padding: 50px;
+    border-radius: 24px;
+    margin-top: 70px;
+    margin-bottom: 70px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+}
+
+
 a, .btn-link {
     color: #006bb7;
 }

@@ -44,22 +44,22 @@
     {
         errorMessage = null;
 
-        // 1. Kontextus létrehozása (mivel IDbContextFactory-t használunk)
+
         using var db = await DbFactory.CreateDbContextAsync();
 
-        // 2. Felhasználó keresése Email alapján
+
         var user = await db.Users
             .FirstOrDefaultAsync(u => u.Email == loginModel.Email);
 
-        // 3. Jelszó ellenőrzése és átirányítás
+
         if (user != null && BCrypt.Net.BCrypt.Verify(loginModel.Password, user.Password))
         {
-            // HA JÓ A JELSZÓ: Átirányítás például az Admin vagy Home oldalra
+
             Nav.NavigateTo("/admin");
         }
         else
         {
-            // HA ROSSZ: Hibaüzenet megjelenítése
+
             errorMessage = "Hibás email cím vagy jelszó!";
         }
     }

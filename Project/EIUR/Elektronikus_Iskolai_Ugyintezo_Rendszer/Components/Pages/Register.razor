@@ -85,22 +85,22 @@
     {
         try
         {
-            errorMessage = null; // Korábbi hibák törlése
+            errorMessage = null; 
 
-            // Adatbázis kontextus létrehozása
+ 
             using var context = await DbFactory.CreateDbContextAsync();
 
-            // 1. Jelszó hash-elése BCrypt-tel
+
             registrationUser.Password = BCrypt.Net.BCrypt.HashPassword(registrationUser.Password);
 
-            // 2. Egyedi azonosító és kötelező adatok ellenőrzése
+
             if (registrationUser.Id == Guid.Empty)
                 registrationUser.Id = Guid.NewGuid();
 
-            // 3. Hozzáadás és mentés
+
             context.Users.Add(registrationUser);
 
-            // A .NET 10-nél javasolt a visszatérési érték ellenőrzése
+
             int rowsAffected = await context.SaveChangesAsync();
 
             if (rowsAffected > 0)
@@ -114,7 +114,7 @@
         }
         catch (Exception ex)
         {
-            // Részletes hiba kiírása (pl. ha a Connection String hibás)
+
             errorMessage = $"Hiba: {ex.GetBaseException().Message}";
             Console.WriteLine(ex.ToString());
         }

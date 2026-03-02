@@ -2,7 +2,8 @@
 @using Microsoft.EntityFrameworkCore
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
-@inject AppDbContext Db
+@rendermode InteractiveServer
+@inject IDbContextFactory<AppDbContext> DbFactory
 @inject NavigationManager Nav
 
 <h3>Bejelentkezés</h3>
@@ -34,33 +35,38 @@
 }
 
 @code {
+    [SupplyParameterFromForm]
+    public LoginModel loginModel { get; set; } = new LoginModel();
 
-    LoginModel loginModel = new LoginModel();
-
-    string errorMessage;
+    string? errorMessage;
 
     async Task LoginUser()
     {
-        var user = Db.Users
-            .FirstOrDefault(u =>
-                u.Email == loginModel.Email &&
-                u.Password == loginModel.Password);
+        errorMessage = null;
 
-        if (user != null)
+        // 1. Kontextus létrehozása (mivel IDbContextFactory-t használunk)
+        using var db = await DbFactory.CreateDbContextAsync();
+
+        // 2. Felhasználó keresése Email alapján
+        var user = await db.Users
+            .FirstOrDefaultAsync(u => u.Email == loginModel.Email);
+
+        // 3. Jelszó ellenőrzése és átirányítás
+        if (user != null && BCrypt.Net.BCrypt.Verify(loginModel.Password, user.Password))
         {
-            Nav.NavigateTo("/Home");
+            // HA JÓ A JELSZÓ: Átirányítás például az Admin vagy Home oldalra
+            Nav.NavigateTo("/admin");
         }
         else
         {
-            errorMessage = "Hibás email vagy jelszó";
+            // HA ROSSZ: Hibaüzenet megjelenítése
+            errorMessage = "Hibás email cím vagy jelszó!";
         }
     }
 
     public class LoginModel
     {
-        public string Email { get; set; }
-
-        public string Password { get; set; }
+        public string Email { get; set; } = "";
+        public string Password { get; set; } = "";
     }
-
 }

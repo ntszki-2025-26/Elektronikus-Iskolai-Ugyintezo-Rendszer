@@ -1,4 +1,5 @@
-﻿@page "/Login"
+﻿@page "/"
+@page "/Login"
 @using Microsoft.EntityFrameworkCore
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
@@ -44,22 +45,51 @@
     {
         errorMessage = null;
 
-
         using var db = await DbFactory.CreateDbContextAsync();
-
 
         var user = await db.Users
             .FirstOrDefaultAsync(u => u.Email == loginModel.Email);
 
-
+        // Csak egyszer vizsgáljuk a jelszót!
         if (user != null && BCrypt.Net.BCrypt.Verify(loginModel.Password, user.Password))
         {
-
-            Nav.NavigateTo("/admin");
+            // A korábbi egyetlen NavigateTo helyett ide jön a logikád
+            switch (user.RoleId)
+            {
+                case 1:
+                    Nav.NavigateTo("/DiakHome");
+                    break;
+                case 2:
+                    Nav.NavigateTo("/OfoHome");
+                    break;
+                case 3:
+                    Nav.NavigateTo("/IgazgatoHelyettesHome");
+                    break;
+                case 4:
+                    Nav.NavigateTo("/SzakképzésvezetoHome");
+                    break;
+                case 5:
+                    Nav.NavigateTo("/IgazgatoHome");
+                    break;
+                case 6:
+                    Nav.NavigateTo("/GazdaságiTitkárHome");
+                    break;
+                case 7:
+                    Nav.NavigateTo("/TitkárHome");
+                    break;
+                case 8:
+                    Nav.NavigateTo("/KonyvtarosHome");
+                    break;
+                case 9:
+                    Nav.NavigateTo("/Admin");
+                    break;
+                default:
+                    Nav.NavigateTo("/Home");
+                    break;
+            }
         }
         else
         {
-
             errorMessage = "Hibás email cím vagy jelszó!";
         }
     }

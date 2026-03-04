@@ -1,0 +1,128 @@
+﻿@page "/register"
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.Web
+@inject IDbContextFactory<AppDbContext> DbFactory
+@inject NavigationManager NavManager
+@rendermode InteractiveServer
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-lg border-0" style="width: 100%; max-width: 450px; border-radius: 15px;">
+        <div class="card-body p-5 text-center">
+            <h2 class="fw-bold mb-4">Regisztráció</h2>
+
+            <EditForm Model="@registrationUser" OnValidSubmit="HandleRegistration" FormName="registerForm">
+                <DataAnnotationsValidator />
+
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold">Vezetéknév</label>
+                    <InputText @bind-Value="registrationUser.FirstName" class="form-control" />
+                    <ValidationMessage For="@(() => registrationUser.FirstName)" class="text-danger small" />
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold">Keresztnév</label>
+                    <InputText @bind-Value="registrationUser.LastName" class="form-control" />
+                    <ValidationMessage For="@(() => registrationUser.LastName)" class="text-danger small" />
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold">Email cím</label>
+                    <InputText @bind-Value="registrationUser.Email" class="form-control" />
+                    <ValidationMessage For="@(() => registrationUser.Email)" class="text-danger small" />
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold">Fiók típusa</label>
+                    <InputSelect @bind-Value="registrationUser.RoleId" class="form-select">
+                        <option value="0">Válassz típust...</option>
+                        <option value="1">Diák</option>
+                        <option value="2">Osztályfőnök</option>
+                        <option value="3">Igazgatóhelyettes</option>
+                        <option value="4">Szakképzés Vezető</option>
+                        <option value="5">Igazgató</option>
+                        <option value="6">Gazdasági Titkár</option>
+                        <option value="7">Titkár</option>
+                        <option value="8">Könyvtáros</option>
+                        <option value="9">Admin</option>
+                    </InputSelect>
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label class="form-label small fw-bold">Telefonszám</label>
+                    <InputText @bind-Value="registrationUser.PhoneNumber" class="form-control" />
+                    <ValidationMessage For="@(() => registrationUser.PhoneNumber)" class="text-danger small" />
+                </div>
+
+                <div class="mb-4 text-start">
+                    <label class="form-label small fw-bold">Jelszó</label>
+                    <InputText @bind-Value="registrationUser.Password" type="password" class="form-control" />
+                    <ValidationMessage For="@(() => registrationUser.Password)" class="text-danger small" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2">Regisztráció</button>
+            </EditForm>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger mt-3">@errorMessage</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private User registrationUser { get; set; } = new User()
+    {
+        Id = Guid.NewGuid(),
+        FirstName = "",
+        LastName = "",
+        Email = "",
+        PhoneNumber = "",
+        Password = "",
+        RoleId = 0
+    };
+
+    private string? errorMessage;
+
+    private async Task HandleRegistration()
+    {
+        try
+        {
+            errorMessage = null; 
+
+ 
+            using var context = await DbFactory.CreateDbContextAsync();
+
+
+            registrationUser.Password = BCrypt.Net.BCrypt.HashPassword(registrationUser.Password);
+
+
+            if (registrationUser.Id == Guid.Empty)
+                registrationUser.Id = Guid.NewGuid();
+
+
+            context.Users.Add(registrationUser);
+
+
+            int rowsAffected = await context.SaveChangesAsync();
+
+            if (rowsAffected > 0)
+            {
+                NavManager.NavigateTo("/admin");
+            }
+            else
+            {
+                errorMessage = "A rendszer nem mentett el új adatot. Ellenőrizd a kapcsolatot!";
+            }
+        }
+        catch (Exception ex)
+        {
+
+            errorMessage = $"Hiba: {ex.GetBaseException().Message}";
+            Console.WriteLine(ex.ToString());
+        }
+    }
+}

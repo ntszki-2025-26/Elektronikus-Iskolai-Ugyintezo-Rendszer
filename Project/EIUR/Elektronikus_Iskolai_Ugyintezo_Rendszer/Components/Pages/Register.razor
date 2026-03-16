@@ -1,128 +1,98 @@
-﻿@page "/register"
-@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
-@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
-@using Microsoft.EntityFrameworkCore
-@using Microsoft.AspNetCore.Components.Web
-@inject IDbContextFactory<AppDbContext> DbFactory
-@inject NavigationManager NavManager
+﻿@page "/Register"
 @rendermode InteractiveServer
 
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="card shadow-lg border-0" style="width: 100%; max-width: 450px; border-radius: 15px;">
-        <div class="card-body p-5 text-center">
-            <h2 class="fw-bold mb-4">Regisztráció</h2>
+<div class="login-container">
+    <div class="card login-card shadow-lg">
+        <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <i class="bi bi-person-plus-fill school-icon"></i>
+                <h2 class="fw-bold mt-2">Regisztráció</h2>
+                <p class="text-muted small">Hozzon létre új fiókot az ügyintézéshez!</p>
+            </div>
 
             <EditForm Model="@registrationUser" OnValidSubmit="HandleRegistration" FormName="registerForm">
                 <DataAnnotationsValidator />
 
-                <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold">Vezetéknév</label>
-                    <InputText @bind-Value="registrationUser.FirstName" class="form-control" />
-                    <ValidationMessage For="@(() => registrationUser.FirstName)" class="text-danger small" />
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-secondary small fw-bold">Vezetéknév</label>
+                        <div class="input-group custom-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <InputText @bind-Value="registrationUser.FirstName" class="form-control no-focus" />
+                        </div>
+                        <ValidationMessage For="@(() => registrationUser.FirstName)" class="text-danger small" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-secondary small fw-bold">Keresztnév</label>
+                        <div class="input-group custom-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <InputText @bind-Value="registrationUser.LastName" class="form-control no-focus" />
+                        </div>
+                        <ValidationMessage For="@(() => registrationUser.LastName)" class="text-danger small" />
+                    </div>
                 </div>
 
-                <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold">Keresztnév</label>
-                    <InputText @bind-Value="registrationUser.LastName" class="form-control" />
-                    <ValidationMessage For="@(() => registrationUser.LastName)" class="text-danger small" />
-                </div>
-
-                <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold">Email cím</label>
-                    <InputText @bind-Value="registrationUser.Email" class="form-control" />
+                <div class="mb-3">
+                    <label class="form-label text-secondary small fw-bold">Email cím</label>
+                    <div class="input-group custom-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <InputText @bind-Value="registrationUser.Email" class="form-control no-focus" />
+                    </div>
                     <ValidationMessage For="@(() => registrationUser.Email)" class="text-danger small" />
                 </div>
 
-                <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold">Fiók típusa</label>
-                    <InputSelect @bind-Value="registrationUser.RoleId" class="form-select">
-                        <option value="0">Válassz típust...</option>
-                        <option value="1">Diák</option>
-                        <option value="2">Osztályfőnök</option>
-                        <option value="3">Igazgatóhelyettes</option>
-                        <option value="4">Szakképzés Vezető</option>
-                        <option value="5">Igazgató</option>
-                        <option value="6">Gazdasági Titkár</option>
-                        <option value="7">Titkár</option>
-                        <option value="8">Könyvtáros</option>
-                        <option value="9">Admin</option>
-                    </InputSelect>
+                <div class="mb-3">
+                    <label class="form-label text-secondary small fw-bold">Fiók típusa</label>
+                    <div class="input-group custom-group">
+                        <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+                        <InputSelect @bind-Value="registrationUser.RoleId" class="form-select no-focus">
+                            <option value="0">Válassz típust...</option>
+                            <option value="1">Diák</option>
+                            <option value="2">Osztályfőnök</option>
+                            <option value="3">Igazgatóhelyettes</option>
+                            <option value="4">Szakképzés Vezető</option>
+                            <option value="5">Igazgató</option>
+                            <option value="6">Gazdasági Titkár</option>
+                            <option value="7">Titkár</option>
+                            <option value="8">Könyvtáros</option>
+                            <option value="9">Admin</option>
+                        </InputSelect>
+                    </div>
                 </div>
 
-                <div class="mb-3 text-start">
-                    <label class="form-label small fw-bold">Telefonszám</label>
-                    <InputText @bind-Value="registrationUser.PhoneNumber" class="form-control" />
+                <div class="mb-3">
+                    <label class="form-label text-secondary small fw-bold">Telefonszám</label>
+                    <div class="input-group custom-group">
+                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                        <InputText @bind-Value="registrationUser.PhoneNumber" class="form-control no-focus" />
+                    </div>
                     <ValidationMessage For="@(() => registrationUser.PhoneNumber)" class="text-danger small" />
                 </div>
 
-                <div class="mb-4 text-start">
-                    <label class="form-label small fw-bold">Jelszó</label>
-                    <InputText @bind-Value="registrationUser.Password" type="password" class="form-control" />
+                <div class="mb-4">
+                    <label class="form-label text-secondary small fw-bold">Jelszó</label>
+                    <div class="input-group custom-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <InputText type="@PasswordInputType" @bind-Value="registrationUser.Password" class="form-control no-focus" />
+                        <button type="button" class="password-toggle" @onclick="TogglePasswordVisibility">
+                            <i class="bi @PasswordIcon"></i>
+                        </button>
+                    </div>
                     <ValidationMessage For="@(() => registrationUser.Password)" class="text-danger small" />
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 py-2">Regisztráció</button>
-            </EditForm>
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                    Regisztráció
+                </button>
 
-            @if (!string.IsNullOrEmpty(errorMessage))
-            {
-                <div class="alert alert-danger mt-3">@errorMessage</div>
-            }
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger mt-3 text-center p-2 small">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> @errorMessage
+                    </div>
+                }
+            </EditForm>
         </div>
+       
     </div>
 </div>
-
-@code {
-    [SupplyParameterFromForm]
-    private User registrationUser { get; set; } = new User()
-    {
-        Id = Guid.NewGuid(),
-        FirstName = "",
-        LastName = "",
-        Email = "",
-        PhoneNumber = "",
-        Password = "",
-        RoleId = 0
-    };
-
-    private string? errorMessage;
-
-    private async Task HandleRegistration()
-    {
-        try
-        {
-            errorMessage = null; 
-
- 
-            using var context = await DbFactory.CreateDbContextAsync();
-
-
-            registrationUser.Password = BCrypt.Net.BCrypt.HashPassword(registrationUser.Password);
-
-
-            if (registrationUser.Id == Guid.Empty)
-                registrationUser.Id = Guid.NewGuid();
-
-
-            context.Users.Add(registrationUser);
-
-
-            int rowsAffected = await context.SaveChangesAsync();
-
-            if (rowsAffected > 0)
-            {
-                NavManager.NavigateTo("/admin");
-            }
-            else
-            {
-                errorMessage = "A rendszer nem mentett el új adatot. Ellenőrizd a kapcsolatot!";
-            }
-        }
-        catch (Exception ex)
-        {
-
-            errorMessage = $"Hiba: {ex.GetBaseException().Message}";
-            Console.WriteLine(ex.ToString());
-        }
-    }
-}

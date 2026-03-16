@@ -38,7 +38,6 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages
 
                 using var context = await DbFactory.CreateDbContextAsync();
 
-                // Ellenőrizzük, hogy létezik-e már ilyen email
                 var existingUser = await context.Users.AnyAsync(u => u.Email == registrationUser.Email);
                 if (existingUser)
                 {
@@ -46,7 +45,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages
                     return;
                 }
 
-                // Jelszó hashelése BCrypt-tel
+
                 registrationUser.Password = BCrypt.Net.BCrypt.HashPassword(registrationUser.Password);
 
                 if (registrationUser.Id == Guid.Empty)

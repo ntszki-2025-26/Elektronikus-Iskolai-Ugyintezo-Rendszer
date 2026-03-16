@@ -4,7 +4,7 @@
     min-height: 100vh;
 }
 
-/* Kártya stílusok */
+
 .stat-card {
     transition: transform 0.2s;
 }
@@ -23,7 +23,7 @@
     font-size: 1.5rem;
 }
 
-/* Egyedi Badge színek (halvány háttér, sötét szöveg) */
+
 .bg-primary-light {
     background-color: rgba(13, 110, 253, 0.1);
 }
@@ -54,7 +54,7 @@
     font-weight: 600;
 }
 
-/* Táblázat stílus */
+
 .table thead th {
     font-size: 0.8rem;
     text-transform: uppercase;

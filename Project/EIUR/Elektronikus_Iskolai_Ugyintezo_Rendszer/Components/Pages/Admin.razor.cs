@@ -16,14 +16,13 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages
             try
             {
                 using var context = await DbFactory.CreateDbContextAsync();
-                // Csak azokat kérjük le, ahol az alapvető adatok megvannak, 
-                // hogy elkerüljük a null hibát a listázásnál
+
                 users = await context.Users.AsNoTracking().ToListAsync();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Hiba az adatok betöltésekor: {ex.Message}");
-                users = new List<User>(); // Üres lista, hogy ne omoljon össze az UI
+                users = new List<User>(); 
             }
         }
 

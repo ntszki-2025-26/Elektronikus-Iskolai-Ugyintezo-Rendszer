@@ -22,10 +22,10 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages
             var user = await db.Users
                 .FirstOrDefaultAsync(u => u.Email == loginModel.Email);
 
-            // Csak egyszer vizsgáljuk a jelszót!
+
             if (user != null && BCrypt.Net.BCrypt.Verify(loginModel.Password, user.Password))
             {
-                // A korábbi egyetlen NavigateTo helyett ide jön a logikád
+
                 switch (user.RoleId)
                 {
                     case 1:
@@ -74,13 +74,13 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages
 
         private bool isPasswordVisible = false;
 
-        // Ezt a metódust fogjuk hívni a szem ikonra kattintva
+
         private void TogglePasswordVisibility()
         {
             isPasswordVisible = !isPasswordVisible;
         }
 
-        // Segédváltozó a HTML attribútumhoz
+
         private string PasswordInputType => isPasswordVisible ? "text" : "password";
         private string PasswordIcon => isPasswordVisible ? "bi-eye-slash" : "bi-eye";
     }

@@ -1,0 +1,65 @@
+﻿/* Fő konténer */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    border: none;
+    border-radius: 16px;
+}
+
+.school-icon {
+    font-size: 3rem;
+    color: #0d6efd;
+}
+
+/* EGYSÉGES INPUT CSOPORT (A titok nyitja) */
+.custom-group {
+    border: 1px solid #dee2e6 !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    transition: all 0.2s ease;
+}
+
+    /* Fókusz állapot: az egész doboz kerete változik */
+    .custom-group:focus-within {
+        border-color: #0d6efd !important;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15) !important;
+        background-color: #ffffff;
+    }
+
+/* Belső elemek tisztítása (vonalak eltüntetése) */
+::deep .custom-group .input-group-text,
+::deep .custom-group .form-control,
+.password-toggle {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 10px 15px;
+}
+
+/* Jelszó váltó gomb egyedi stílusa */
+.password-toggle {
+    cursor: pointer;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .password-toggle:hover {
+        color: #0d6efd;
+    }
+
+/* Makacs kék keret végleges tiltása az inputon */
+::deep .no-focus:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}

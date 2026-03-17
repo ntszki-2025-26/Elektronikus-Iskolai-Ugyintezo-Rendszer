@@ -1,0 +1,26 @@
+﻿body {
+    background-color: white;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; 
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    min-width: 300px;
+    transition: none;
+}
+
+
+
+

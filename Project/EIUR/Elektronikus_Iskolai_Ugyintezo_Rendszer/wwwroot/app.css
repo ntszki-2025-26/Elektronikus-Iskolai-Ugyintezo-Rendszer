@@ -1,6 +1,9 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
+body {
+    background-color: #d8cfca;
+}
 
 a, .btn-link {
     color: #006bb7;
@@ -58,3 +61,139 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+.designbox {
+    background-color: #e0fcfc;
+    border-radius: 20px;
+    padding: 25px 40px;
+    max-width: 500px;
+    margin: 30px auto;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+}
+
+.mud-input-control {
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+}
+
+.field-title {
+    color: #666;
+    font-weight: 500;
+    font-size: 14px;
+    margin-top: 8px;
+    display: block;
+}
+
+
+.add-btn {
+    background-color: #4a49b8 !important;
+    color: white !important;
+    margin-top: 20px;
+    width: 100%;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+
+.nav-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 25px 20px;
+    color: #222;
+    border-bottom: 1px solid #eee;
+}
+
+
+.login-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg,#f39c8c,#f26a5a);
+    overflow: hidden;
+}
+
+    .login-page::before {
+        content: "";
+        position: absolute;
+        width: 900px;
+        height: 500px;
+        background: #a8d8ff;
+        opacity: 0.35;
+        border-radius: 120px;
+        top: -150px;
+        left: -200px;
+        transform: rotate(-15deg);
+        z-index: 1;
+    }
+
+    .login-page::after {
+        content: "";
+        position: absolute;
+        width: 900px;
+        height: 500px;
+        background: #a8d8ff;
+        opacity: 0.35;
+        border-radius: 120px;
+        bottom: -200px;
+        right: -250px;
+        transform: rotate(-15deg);
+        z-index: 1;
+    }
+
+.login-card {
+    width: 340px;
+    max-width: 90%;
+    padding: 40px;
+    background: white;
+    border-radius: 6px;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+body {
+    background-color: #f3e7e4 !important;
+    margin: 0;
+}
+
+.designbox {
+    background-color: #e0fcfc;
+    border-radius: 20px;
+    padding: 20px 35px;
+    max-width: 450px;
+    margin: 20px auto;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.05);
+}
+
+.field-title {
+    color: #666;
+    font-weight: 500;
+    font-size: 13px;
+    margin-top: 6px;
+    display: block;
+}
+
+.mud-input-control {
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+}
+
+
+.custom-drawer {
+    background-color: white !important;
+}
+
+
+.add-btn {
+    background-color: #4a49b8 !important;
+    color: white !important;
+    margin-top: 15px;
+    width: 100%;
+    font-weight: bold;
+}
+

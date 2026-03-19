@@ -1,6 +1,8 @@
 using Elektronikus_Iskolai_Ugyintezo_Rendszer.Components;
 using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data;
+using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 
 namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
 {
@@ -17,6 +19,8 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContextFactory<AppDbContext>(options =>
                 options.UseSqlServer(connectionString));
+            builder.Services.AddMudServices();
+            builder.Services.AddScoped<IUserManagementService, UserManagementService>();
 
 
             var app = builder.Build();

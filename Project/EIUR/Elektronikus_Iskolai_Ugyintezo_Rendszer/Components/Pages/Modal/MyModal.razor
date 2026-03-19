@@ -1,0 +1,36 @@
+﻿<MudDialog>
+    <TitleContent>
+        Felhasználó módosítása
+    </TitleContent>
+    <DialogContent>
+        Id: <input class="form-control mb-1" type="text" disabled @bind="id"/><br />
+        Vezetéknév: <input class="form-control mb-1" type="text" @bind="firstName" /><br />
+        Második név: <input class="form-control mb-1" type="text" @bind="middleName" /><br />
+        Keresztnév: <input class="form-control mb-1" type="text" @bind="lastName" /><br />
+        Aktív: <input type="checkbox" @bind="isEnabled" /><br />
+        Email: <input class="form-control mb-1" type="email" @bind="email" /><br />
+        Telefonszám: <input class="form-control mb-1" type="tel" @bind="phoneNumber" /><br />
+        Jelszó: <input class="form-control mb-1" type="password" @bind="password" /><br />
+        Szerepkör: <input class="form-control mb-1" type="number" @bind="roleId" /><br />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Mégse</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">OK</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialogInstance { get; set; } = default!;
+
+    private Guid id = "";
+    private string firstName = "";
+    private string? middleName;
+    private string lastName = "";
+    private bool isEnabled;
+    private string email = "";
+    private string phoneNumber = "";
+    private string password = "";
+    private int roleId;
+
+    private void Cancel() => MudDialogInstance.Cancel();
+    private void Submit() => MudDialogInstance.Close(DialogResult.Ok(true));
+}

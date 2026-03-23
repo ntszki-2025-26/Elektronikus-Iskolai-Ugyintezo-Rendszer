@@ -1,0 +1,69 @@
+﻿@page "/tasks"
+@rendermode InteractiveServer
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudIconButton Icon="@Icons.Material.Filled.Menu" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+    <MudSpacer />
+    <MudDrawer @bind-Open="@_open" Elevation="1" Variant="DrawerVariant.Temporary">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">Feladatok</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu>
+            <MudNavLink Match="NavLinkMatch.All">Profil</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All">Értesítések</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All">Kilépés</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+</MudLayout>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="faq-container">
+
+    <MudExpansionPanels Elevation="2">
+
+        @foreach (var task in tasks)
+        {
+            <MudExpansionPanel Text="Feladat">
+                <MudText>
+                    @task
+                </MudText>
+
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Class="accept-button">
+                    Elfogadom
+                </MudButton>
+
+            </MudExpansionPanel>
+        }
+
+    </MudExpansionPanels>
+
+</MudContainer>
+
+@code {
+    private List<string> tasks = new()
+    {
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore."
+    };
+
+    private string GetPanelClass(int index)
+    {
+        return index % 2 == 0 ? "panel-large" : "panel-small";
+    }
+
+    private bool _open = false;
+
+    private void ToggleDrawer()
+    {
+        _open = !_open;
+    }
+}

@@ -1,0 +1,30 @@
+﻿@page "/mm"
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<div class="menu-container">
+
+    <div class="top-buttons">
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary">
+            <MudLink Href="/tanaradd">Tanulók</MudLink>
+        </MudButton>
+
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary">
+            <MudLink Href="/tasks">Kérvény</MudLink>
+        </MudButton>
+
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary">
+            <MudLink Href="/reports">Reportok</MudLink>
+        </MudButton>
+    </div>
+
+    <div class="bottom-button">
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary">
+            Kilépés
+        </MudButton>
+    </div>
+
+</div>

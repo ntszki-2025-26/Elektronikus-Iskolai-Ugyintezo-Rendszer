@@ -1,6 +1,10 @@
-﻿using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models;
+﻿using Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Modal;
+using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models;
+using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Admin
 {
@@ -8,9 +12,53 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Admin
     {
         [Inject] private IDbContextFactory<Data.AppDbContext> DbFactory { get; set; } = default!;
         [Inject] private NavigationManager Nav { get; set; } = default!;
+        [Inject] private IDialogService DialogService { get; set; }
+
+        [Inject] private IUserManagementService UserManagementService { get; set; } = default!;
 
         private List<User> users = new();
 
+
+        private async Task OpenDialog(User user)
+        {
+            var options = new DialogOptions { CloseOnEscapeKey = true };
+
+            var parameters = new DialogParameters<MyModal>
+            {
+                { x => x.EditedUser, user }
+            };
+
+            var dialog = await DialogService.ShowAsync<MyModal>("Admin Szerkesztés", parameters, options);
+            var result = await dialog.Result;
+
+            if (!result.Canceled && result.Data is User updatedUser)
+            {
+                await UserManagementService.UpdateUser(updatedUser.Id, updatedUser);
+                int idx = users.FindIndex(u => u.Id == updatedUser.Id);
+                if (idx >= 0) users[idx] = updatedUser;
+                StateHasChanged();
+            }
+        }
+
+        private async Task HandleDisable(User user)
+        {
+            try
+            {
+                // 1. Lefuttatjuk az adatbázis módosítást a szervizen keresztül
+                await UserManagementService.DisableUser(user.Id);
+
+                // 2. Mivel AsNoTracking-ot használtál, az adatbázisból jövő objektum 
+                // és a memóriában lévő lista szétvált. Átírjuk a memóriában is:
+                user.IsEnabled = 0;
+
+                // 3. Szólunk a Blazornak, hogy rajzolja újra a táblázatot
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Hiba a tiltás során: {ex.Message}");
+            }
+        }
         protected override async Task OnInitializedAsync()
         {
             try
@@ -22,7 +70,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Admin
             catch (Exception ex)
             {
                 Console.WriteLine($"Hiba az adatok betöltésekor: {ex.Message}");
-                users = new List<User>(); 
+                users = new List<User>();
             }
         }
 

@@ -19,7 +19,8 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Register
             Email = "",
             PhoneNumber = "",
             Password = "",
-            RoleId = 0
+            RoleId = 0,
+            IsEnabled = 1
         };
 
         private string? errorMessage;

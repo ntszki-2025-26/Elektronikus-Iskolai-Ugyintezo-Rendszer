@@ -1,76 +1,77 @@
 ﻿@page "/DiakHome"
-@using Microsoft.AspNetCore.Components.Authorization
-@using System.Security.Claims
-@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
-@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
-@inject AuthenticationStateProvider AuthStateProvider
-@inject AbsenceService AbsenceService
 @rendermode InteractiveServer
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer
+@inject IDialogService DialogService
 
-<h3>Új hiányzás bejelentése</h3>
+<MudThemeProvider IsDarkMode="false" />
 
-<button class="btn btn-primary" @onclick="() => showForm = true">Űrlap megnyitása</button>
 
-@if (showForm)
-{
-    <div class="card mt-3" style="max-width: 500px;">
-        <div class="card-body">
-            <EditForm Model="newAbsence" OnValidSubmit="HandleSubmit">
-                <div class="mb-3">
-                    <label>Mettől:</label>
-                    <InputDate @bind-Value="newAbsence.DateFrom" class="form-control" />
+<MudLayout>
+    <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive" Class="sidebar-dark">
+        <MudDrawerHeader Class="pa-8">
+            <MudText Typo="Typo.h5" Style="color: white; font-weight: 800; letter-spacing: 1px;">Admin Panel</MudText>
+        </MudDrawerHeader>
+
+        <MudNavMenu Class="nav-menu-custom">
+            <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All">Műszerfal</MudNavLink>
+            <MudNavLink Href="/regisztracio" Icon="@Icons.Material.Filled.PersonAdd">Regisztráció</MudNavLink>
+
+            <div class="logout-wrapper">
+                <div class="logout-btn-box">
+                    <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
+                    <span>Kijelentkezés</span>
                 </div>
-                <div class="mb-3">
-                    <label>Meddig:</label>
-                    <InputDate @bind-Value="newAbsence.DateTo" class="form-control" />
-                </div>
-                <div class="mb-3">
-                    <label>Indoklás:</label>
-                    <InputTextArea @bind-Value="newAbsence.Message" class="form-control" />
-                </div>
-                <button type="submit" class="btn btn-success">Beküldés</button>
-                <button type="button" class="btn btn-secondary" @onclick="() => showForm = false">Mégse</button>
-            </EditForm>
-        </div>
-    </div>
-}
+            </div>
+        </MudNavMenu>
+    </MudDrawer>
 
+    <MudMainContent Class="main-bg">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-10">
+            <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Rendszer áttekintés</MudText>
+
+            <MudGrid>
+                @foreach (var item in GetMenuItems())
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <div class="custom-card" @onclick="item.Action">
+                            @* Itt térnek vissza a fontos színek *@
+                            <div class="card-accent" style="background-color: @item.Color;"></div>
+                            <div class="card-body">
+                                <div class="d-flex flex-column">
+                                    <MudText Typo="Typo.caption" Style="color: #718096; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Ügyintézés</MudText>
+                                    <MudText Typo="Typo.subtitle1" Class="card-title-text">@item.Title</MudText>
+                                </div>
+                                <MudIcon Icon="@Icons.Material.Filled.ArrowForwardIos" Size="Size.Small" Style="color: #cbd5e0;" />
+                            </div>
+                        </div>
+                    </MudItem>
+                }
+            </MudGrid>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 @code {
-
-    private bool showForm = false;
-    private Hianyzasok newAbsence = new Hianyzasok
+    private class MenuItem
     {
-        Id = 0,
-        UserId = Guid.Empty,
-        DateFrom = DateTime.Now,
-        DateTo = DateTime.Now,
-        Message = ""
+        public string Title { get; set; } = "";
+        public Func<Task> Action { get; set; } = default!;
+        public string Color { get; set; } = "#594ae2";
+    }
+
+    private List<MenuItem> GetMenuItems() => new()
+    {
+        new MenuItem { Title = "Iskolalátogatási igazolás", Action = Iskolalatogatas, Color = "#2196F3" },
+        new MenuItem { Title = "Jogviszony igazolás", Action = Jogviszony, Color = "#4CAF50" },
+        new MenuItem { Title = "MÁK / Árvásági dokumentum", Action = MAKarvasagi, Color = "#FF9800" },
+        new MenuItem { Title = "Érettségi adatbegyűjtés", Action = Erettsegi, Color = "#E91E63" },
+        new MenuItem { Title = "Lakcím bejelentés", Action = Lakcim, Color = "#9C27B0" },
+        new MenuItem { Title = "Törzslap másolat", Action = Korabbierettsegi, Color = "#795548" }
     };
 
-    private async Task HandleSubmit()
-    {
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
-
-        if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out Guid currentUserId))
-        {
-            await AbsenceService.CreateAbsenceWithNotification(newAbsence, 5, currentUserId);
-
-            showForm = false;
-            // Alaphelyzetbe állítás minden kötelező mezővel
-            newAbsence = new Hianyzasok
-            {
-                Id = 0,
-                UserId = Guid.Empty,
-                DateFrom = DateTime.Now,
-                DateTo = DateTime.Now,
-                Message = ""
-            };
-        }
-        else
-        {
-            Console.WriteLine("Hiba: Nem található bejelentkezett felhasználó!");
-        }
-    }
+    private Task Iskolalatogatas() => DialogService.ShowAsync<Pages.IskolaLatDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task MAKarvasagi() => DialogService.ShowAsync<Pages.JogviszonyDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Jogviszony() => DialogService.ShowAsync<Pages.ErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Erettsegi() => DialogService.ShowAsync<Pages.KorabbiErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Lakcim() => DialogService.ShowAsync<Pages.LakcimDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Korabbierettsegi() => DialogService.ShowAsync<Pages.KorabbiErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
 }

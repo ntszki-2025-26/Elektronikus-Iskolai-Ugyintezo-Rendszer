@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages
+namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Admin
 {
     public partial class Admin
     {

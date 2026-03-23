@@ -64,14 +64,14 @@
         new MenuItem { Title = "Jogviszony igazolás", Action = Jogviszony, Color = "#4CAF50" },
         new MenuItem { Title = "MÁK / Árvásági dokumentum", Action = MAKarvasagi, Color = "#FF9800" },
         new MenuItem { Title = "Érettségi adatbegyűjtés", Action = Erettsegi, Color = "#E91E63" },
-        new MenuItem { Title = "Lakcím bejelentés", Action = Lakcim, Color = "#9C27B0" },
-        new MenuItem { Title = "Törzslap másolat", Action = Korabbierettsegi, Color = "#795548" }
+        new MenuItem { Title = "Hiányzás bejelentés", Action = Lakcim, Color = "#9C27B0" },
+        new MenuItem { Title = "Törzslap másolat", Action = Korabbierettsegi, Color = "#795548" },
     };
 
-    private Task Iskolalatogatas() => DialogService.ShowAsync<Pages.IskolaLatDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task MAKarvasagi() => DialogService.ShowAsync<Pages.JogviszonyDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Jogviszony() => DialogService.ShowAsync<Pages.ErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Erettsegi() => DialogService.ShowAsync<Pages.KorabbiErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Lakcim() => DialogService.ShowAsync<Pages.LakcimDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Korabbierettsegi() => DialogService.ShowAsync<Pages.KorabbiErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Iskolalatogatas() => DialogService.ShowAsync<Pages.Dialogok.IskolaLatDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task MAKarvasagi() => DialogService.ShowAsync<Pages.Dialogok.JogviszonyDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Jogviszony() => DialogService.ShowAsync<Pages.Dialogok.ErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Erettsegi() => DialogService.ShowAsync < Pages.Dialogok.KorabbiErettsegiDialog > ("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Lakcim() => DialogService.ShowAsync<Pages.Dialogok.LakcimDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Korabbierettsegi() => DialogService.ShowAsync<Pages.Dialogok.KorabbiErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
 }

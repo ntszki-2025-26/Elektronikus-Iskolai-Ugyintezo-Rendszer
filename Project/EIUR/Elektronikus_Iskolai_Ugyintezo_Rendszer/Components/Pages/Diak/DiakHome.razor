@@ -1,0 +1,76 @@
+﻿@page "/DiakHome"
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
+@inject AuthenticationStateProvider AuthStateProvider
+@inject AbsenceService AbsenceService
+@rendermode InteractiveServer
+
+<h3>Új hiányzás bejelentése</h3>
+
+<button class="btn btn-primary" @onclick="() => showForm = true">Űrlap megnyitása</button>
+
+@if (showForm)
+{
+    <div class="card mt-3" style="max-width: 500px;">
+        <div class="card-body">
+            <EditForm Model="newAbsence" OnValidSubmit="HandleSubmit">
+                <div class="mb-3">
+                    <label>Mettől:</label>
+                    <InputDate @bind-Value="newAbsence.DateFrom" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label>Meddig:</label>
+                    <InputDate @bind-Value="newAbsence.DateTo" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label>Indoklás:</label>
+                    <InputTextArea @bind-Value="newAbsence.Message" class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-success">Beküldés</button>
+                <button type="button" class="btn btn-secondary" @onclick="() => showForm = false">Mégse</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+
+    private bool showForm = false;
+    private Hianyzasok newAbsence = new Hianyzasok
+    {
+        Id = 0,
+        UserId = Guid.Empty,
+        DateFrom = DateTime.Now,
+        DateTo = DateTime.Now,
+        Message = ""
+    };
+
+    private async Task HandleSubmit()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out Guid currentUserId))
+        {
+            await AbsenceService.CreateAbsenceWithNotification(newAbsence, 5, currentUserId);
+
+            showForm = false;
+            // Alaphelyzetbe állítás minden kötelező mezővel
+            newAbsence = new Hianyzasok
+            {
+                Id = 0,
+                UserId = Guid.Empty,
+                DateFrom = DateTime.Now,
+                DateTo = DateTime.Now,
+                Message = ""
+            };
+        }
+        else
+        {
+            Console.WriteLine("Hiba: Nem található bejelentkezett felhasználó!");
+        }
+    }
+}

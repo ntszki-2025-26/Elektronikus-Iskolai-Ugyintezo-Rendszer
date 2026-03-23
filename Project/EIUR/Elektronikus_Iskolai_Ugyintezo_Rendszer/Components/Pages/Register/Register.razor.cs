@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
 
-namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages
+namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Register
 {
     public partial class Register
     {

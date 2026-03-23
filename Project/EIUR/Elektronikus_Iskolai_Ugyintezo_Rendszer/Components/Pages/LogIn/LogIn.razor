@@ -1,11 +1,8 @@
 ﻿@page "/"
 @page "/Login"
-@using Microsoft.EntityFrameworkCore
-@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
+@namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.LogIn
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
 @rendermode InteractiveServer
-@inject IDbContextFactory<AppDbContext> DbFactory
-@inject NavigationManager Nav
 
 <div class="login-container">
     <div class="card login-card shadow-lg">

@@ -1,0 +1,28 @@
+﻿@page "/OfoHome"
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
+@inject AbsenceService AbsenceService
+@rendermode InteractiveServer
+
+<h3>Beérkezett hiányzások</h3>
+<button class="btn btn-primary mb-3" @onclick="Load">Frissítés</button>
+
+@if (absences != null)
+{
+    <table class="table">
+        <thead>
+            <tr><th>Név</th><th>Időpont</th><th>Üzenet</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var a in absences)
+            {
+                <tr><td>@a.SenderName</td><td>@a.ReportDate</td><td>@a.Message</td></tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<NotificationDto>? absences;
+    private async Task Load() => absences = await AbsenceService.GetNotificationsByRole(2);
+}

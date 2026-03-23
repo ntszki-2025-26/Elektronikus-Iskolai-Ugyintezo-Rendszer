@@ -3,79 +3,80 @@
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer
 @inject IDialogService DialogService
 
-<MudThemeProvider />
+<MudThemeProvider IsDarkMode="false" />
 <MudPopoverProvider />
 <MudSnackbarProvider />
 <MudDialogProvider />
 
-<MudPaper Width="250px" Elevation="0">
-    <MudNavMenu Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
-        <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.Prefix" Href="/components/navmenu" Icon="@Icons.Material.Filled.Storage">Servers</MudNavLink>
-        <MudNavLink Href="/thelab" Icon="@Icons.Material.Filled.Science">The Lab</MudNavLink>
-    </MudNavMenu>
-</MudPaper>
+<MudLayout>
+    <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive" Class="sidebar-dark">
+        <MudDrawerHeader Class="pa-8">
+            <MudText Typo="Typo.h5" Style="color: white; font-weight: 800; letter-spacing: 1px;">Admin Panel</MudText>
+        </MudDrawerHeader>
 
+        <MudNavMenu Class="nav-menu-custom">
+            <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All">Műszerfal</MudNavLink>
+            <MudNavLink Href="/regisztracio" Icon="@Icons.Material.Filled.PersonAdd">Regisztráció</MudNavLink>
 
-
-<div class="menu-container">
-    <MudButton @onclick="Iskolalatogatas" Variant="Variant.Filled" Color="Color.Primary">
-        Iskolalátogatási igazolás magyar, német
-    </MudButton>
-   <MudButton @onclick="Jogviszony" Variant="Variant.Filled" Color="Color.Primary">
-        Jogviszony igazolás
-    </MudButton>
-    <MudButton @onclick="MAKarvasagi" Variant="Variant.Filled" Color="Color.Primary">
-        MÁK igazolás / árvásági dokumentum
-    </MudButton>
-    <MudButton @onclick="Erettsegi" Variant="Variant.Filled" Color="Color.Primary">
-        Érettségi vizsga adatbegyűjtés
-    </MudButton>
-    <MudButton @onclick="Lakcim" Variant="Variant.Filled" Color="Color.Primary">
-        Lakcím adatok változásának bejelentése
-    </MudButton>
-    <MudButton @onclick="Korabbierettsegi" Variant="Variant.Filled" Color="Color.Primary">
-        Korábbi érettségi vizsgák törzslap másolata
-    </MudButton>
-
+            <div class="logout-wrapper">
+                <div class="logout-btn-box">
+                    <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
+                    <span>Kijelentkezés</span>
+                </div>
 </div>
+        </MudNavMenu>
+    </MudDrawer>
 
+    <MudMainContent Class="main-bg">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-10">
+            <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Rendszer áttekintés</MudText>
+
+            <MudGrid>
+                @foreach (var item in GetMenuItems())
+    {
+                    <MudItem xs="12" sm="6" md="4">
+                        <div class="custom-card" @onclick="item.Action">
+                            @* Itt térnek vissza a fontos színek *@
+                            <div class="card-accent" style="background-color: @item.Color;"></div>
+                            <div class="card-body">
+                                <div class="d-flex flex-column">
+                                    <MudText Typo="Typo.caption" Style="color: #718096; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Ügyintézés</MudText>
+                                    <MudText Typo="Typo.subtitle1" Class="card-title-text">@item.Title</MudText>
+                                </div>
+                                <MudIcon Icon="@Icons.Material.Filled.ArrowForwardIos" Size="Size.Small" Style="color: #cbd5e0;" />
+                            </div>
+                        </div>
+                    </MudItem>
+    }
+            </MudGrid>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 @code {
-    private Task Iskolalatogatas()
+    private class MenuItem
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        return DialogService.ShowAsync<Pages.IskolaLatDialog>("");
-
-    }
-    private Task MAKarvasagi()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        return DialogService.ShowAsync<Pages.JogviszonyDialog>("");
-    }
-    private Task Jogviszony()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        return DialogService.ShowAsync<Pages.ErettsegiDialog>("");
+        public string Title { get; set; } = "";
+        public Func<Task> Action { get; set; } = default!;
+        public string Color { get; set; } = "#594ae2";
     }
     private Task Erettsegi()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        return DialogService.ShowAsync<Pages.KorabbiErettsegiDialog>("");
-    }
-    private Task Lakcim()
+    private List<MenuItem> GetMenuItems() => new()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
+        new MenuItem { Title = "Iskolalátogatási igazolás", Action = Iskolalatogatas, Color = "#2196F3" },
+        new MenuItem { Title = "Jogviszony igazolás", Action = Jogviszony, Color = "#4CAF50" },
+        new MenuItem { Title = "MÁK / Árvásági dokumentum", Action = MAKarvasagi, Color = "#FF9800" },
+        new MenuItem { Title = "Érettségi adatbegyűjtés", Action = Erettsegi, Color = "#E91E63" },
+        new MenuItem { Title = "Lakcím bejelentés", Action = Lakcim, Color = "#9C27B0" },
+        new MenuItem { Title = "Törzslap másolat", Action = Korabbierettsegi, Color = "#795548" }
+    };
 
-        return DialogService.ShowAsync<Pages.LakcimDialog>("");
-    }
-    private Task Korabbierettsegi()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        return DialogService.ShowAsync<Pages.KorabbiErettsegiDialog>("");
-    }
+    private Task Iskolalatogatas() => DialogService.ShowAsync<Pages.IskolaLatDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task MAKarvasagi() => DialogService.ShowAsync<Pages.JogviszonyDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Jogviszony() => DialogService.ShowAsync<Pages.ErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Erettsegi() => DialogService.ShowAsync<Pages.KorabbiErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Lakcim() => DialogService.ShowAsync<Pages.LakcimDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Korabbierettsegi() => DialogService.ShowAsync<Pages.KorabbiErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
  }

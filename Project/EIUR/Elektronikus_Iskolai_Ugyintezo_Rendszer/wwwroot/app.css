@@ -63,7 +63,11 @@ html, body {
 }
 
 body {
+<<<<<<< Updated upstream
     background-color: #f3e7e4 !important;
+=======
+    background-color: #f8f9fa;
+>>>>>>> Stashed changes
 }
 .mud-expansion-panel:hover {
     transform: translateY(-4px);
@@ -180,4 +184,9 @@ h1:focus {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
+<<<<<<< Updated upstream
 }
+=======
+}
+
+>>>>>>> Stashed changes

@@ -23,7 +23,7 @@
                     <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
                     <span>Kijelentkezés</span>
                 </div>
-</div>
+            </div>
         </MudNavMenu>
     </MudDrawer>
 
@@ -33,7 +33,7 @@
 
             <MudGrid>
                 @foreach (var item in GetMenuItems())
-    {
+                {
                     <MudItem xs="12" sm="6" md="4">
                         <div class="custom-card" @onclick="item.Action">
                             @* Itt térnek vissza a fontos színek *@
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                     </MudItem>
-    }
+                }
             </MudGrid>
         </MudContainer>
     </MudMainContent>
@@ -59,9 +59,6 @@
         public Func<Task> Action { get; set; } = default!;
         public string Color { get; set; } = "#594ae2";
     }
-    private Task Erettsegi()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
 
     private List<MenuItem> GetMenuItems() => new()
     {
@@ -79,4 +76,4 @@
     private Task Erettsegi() => DialogService.ShowAsync<Pages.KorabbiErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Lakcim() => DialogService.ShowAsync<Pages.LakcimDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Korabbierettsegi() => DialogService.ShowAsync<Pages.KorabbiErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
- }
+}

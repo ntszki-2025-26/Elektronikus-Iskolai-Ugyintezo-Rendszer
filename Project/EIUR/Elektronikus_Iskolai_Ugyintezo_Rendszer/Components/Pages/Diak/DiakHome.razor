@@ -7,10 +7,6 @@
 @inject AbsenceService AbsenceService
 @rendermode InteractiveServer
 
-<h3>Új hiányzás bejelentése</h3>
-
-<button class="btn btn-primary" @onclick="() => showForm = true">Űrlap megnyitása</button>
-
 @if (showForm)
 {
     <div class="card mt-3" style="max-width: 500px;">
@@ -36,6 +32,8 @@
 }
 
 @code {
+
+
 
     private bool showForm = false;
     private Hianyzasok newAbsence = new Hianyzasok

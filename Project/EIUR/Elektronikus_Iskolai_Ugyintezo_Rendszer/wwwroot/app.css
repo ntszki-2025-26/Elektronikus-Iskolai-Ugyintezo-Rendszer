@@ -102,6 +102,9 @@ body {
 .menu-container .mud-button-root {
     transition: all 0.3s ease;
 }
+body {
+    background-color: #d8cfca;
+}
 
 .btn-students:hover {
     background-color: #2196f3;

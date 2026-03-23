@@ -70,7 +70,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages
             catch (Exception ex)
             {
                 Console.WriteLine($"Hiba az adatok betöltésekor: {ex.Message}");
-                users = new List<User>(); 
+                users = new List<User>();
             }
         }
 

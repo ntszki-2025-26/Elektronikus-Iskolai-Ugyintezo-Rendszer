@@ -13,6 +13,8 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddMudServices();
+            builder.Services.AddRazorComponents();
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 

@@ -2,15 +2,17 @@
 using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services;
 
 public class AbsenceService
 {
     private readonly AppDbContext _context;
+    private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
-    public AbsenceService(AppDbContext context)
+    public AbsenceService(IDbContextFactory<AppDbContext> contextFactory)
     {
-        _context = context;
+        _contextFactory = contextFactory;
     }
 
     public async Task CreateAbsenceWithNotification(Hianyzasok absence, int taskTypeId, Guid currentUserId)
@@ -42,6 +44,10 @@ public class AbsenceService
 
     public async Task<List<NotificationDto>> GetNotificationsByRole(int userRoleId)
     {
+        // 1. Létrehozunk egy saját contextet csak ehhez a lekérdezéshez
+        using var _context = await _contextFactory.CreateDbContextAsync();
+
+        // 2. Lefuttatjuk a lekérdezést (a kódod többi része marad változatlan)
         var notifications = await (from task in _context.Tasks
                                    join user in _context.Users on task.SenderUserId equals user.Id
                                    select new NotificationDto

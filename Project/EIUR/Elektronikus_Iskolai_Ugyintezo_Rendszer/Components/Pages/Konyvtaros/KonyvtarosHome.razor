@@ -1,6 +1,94 @@
 ﻿@page "/KonyvtarosHome"
-<h3>KonyvtarosHome</h3>
+@inject ISnackbar Snackbar
+@rendermode InteractiveServer
+<MudThemeProvider IsDarkMode="false" />
+
+<MudLayout>
+    <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive">
+        <MudDrawerHeader Class="pa-8">
+            <MudText Typo="Typo.h5" Style="color: white; font-weight: 800;">Tanári Panel</MudText>
+        </MudDrawerHeader>
+
+        <MudNavMenu Class="nav-menu-custom">
+            <MudNavLink Href="/SzakkepzesvezetoHome" Icon="@Icons.Material.Filled.Assignment" Match="NavLinkMatch.All">Profil</MudNavLink>
+            <MudNavLink Href="/osztalyok" Icon="@Icons.Material.Filled.People">Osztályaim</MudNavLink>
+
+            <div class="logout-btn-box mt-4">
+                <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
+                <span>Kijelentkezés</span>
+            </div>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent Class="main-bg">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-10">
+            <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Aktuális feladatok</MudText>
+
+
+            <div class="section-container">
+                <MudExpansionPanels MultiExpansion="true" Elevation="0">
+                    @foreach (var task in _tasks)
+                    {
+                        <MudExpansionPanel Class="task-item-box">
+                            <TitleContent>
+                                <div class="d-flex align-center w-100 py-2">
+                                    <div class="mr-4" style="width: 6px; height: 30px; background-color: @(task.IsDone ? "#4CAF50" : "#3b82f6"); border-radius: 3px;"></div>
+                                    <div class="flex-grow-1">
+                                        <MudText Typo="Typo.subtitle1" Style="font-weight: 700; color: #2d3748;">@task.StudentName - @task.DocumentType</MudText>
+                                        <MudText Typo="Typo.caption" Style="color: #64748b;">Beküldve: @task.Date.ToShortDateString()</MudText>
+                                    </div>
+                                    @if (task.IsDone)
+                                    {
+                                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Class="mr-2" />
+                                    }
+                                </div>
+                            </TitleContent>
+                            <ChildContent>
+                                <div class="pa-4">
+                                    <MudText Typo="Typo.body2" Class="mb-4" Style="color: #475569;">
+                                        <b>Részletek:</b> @task.Description
+                                    </MudText>
+
+                                    <div class="d-flex justify-end gap-2 mt-4">
+                                        <MudButton Variant="Variant.Filled"
+                                                   Color="@(task.IsDone ? Color.Default : Color.Primary)"
+                                                   OnClick="(() => HandleResponse(task))"
+                                                   Disabled="@task.IsDone"
+                                                   EndIcon="@Icons.Material.Filled.Send"
+                                                   Style="border-radius: 8px; font-weight: 600;">
+                                            @(task.IsDone ? "Elvégezve" : "Visszajelzés küldése")
+                                        </MudButton>
+                                    </div>
+                                </div>
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    }
+                </MudExpansionPanels>
+            </div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
 @code {
+    private List<UserTask> _tasks = new()
+    {
+        new UserTask { StudentName = "Kovács Adél", DocumentType = "Iskolalátogatási igazolás", Date = DateTime.Now.AddDays(-1), Description = "Német nyelvű igazolást kér külföldi ösztöndíjhoz.", IsDone = false },
+        new UserTask { StudentName = "Nagy Péter", DocumentType = "Jogviszony igazolás", Date = DateTime.Now, Description = "Diákhitel ügyintézéshez szükséges sürgős dokumentum.", IsDone = false },
+        new UserTask { StudentName = "Szabó Zoltán", DocumentType = "Törzslap másolat", Date = DateTime.Now.AddDays(-3), Description = "Érettségi bizonyítvány pótlásához szükséges adatok.", IsDone = true }
+    };
 
+    private void HandleResponse(UserTask task)
+    {
+        task.IsDone = true;
+        Snackbar.Add("Visszajelzés sikeresen elküldve!", MudBlazor.Severity.Success);
+    }
+
+    public class UserTask
+    {
+        public string StudentName { get; set; } = string.Empty;
+        public string DocumentType { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public DateTime Date { get; set; }
+        public bool IsDone { get; set; }
+    }
 }

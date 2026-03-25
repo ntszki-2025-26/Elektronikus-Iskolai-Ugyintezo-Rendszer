@@ -9,7 +9,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
         public async Task Deactivate(Guid Id)
         {
             User user = db.Users.Single(a => a.Id == Id);
-            user.IsEnabled = 1;
+            user.IsEnabled = true;
             await db.SaveChangesAsync();
             
     }

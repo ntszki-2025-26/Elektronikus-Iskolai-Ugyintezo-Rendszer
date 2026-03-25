@@ -18,6 +18,6 @@
         public required string PhoneNumber { get; set; }
         [Required]
         public required string Password { get; set; }
-        public required byte IsEnabled { get; set; } 
+        public required bool? IsEnabled { get; set; } 
     }
 }

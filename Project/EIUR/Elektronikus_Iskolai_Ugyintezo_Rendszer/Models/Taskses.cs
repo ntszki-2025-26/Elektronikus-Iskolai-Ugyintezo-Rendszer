@@ -4,7 +4,7 @@
     public class Taskses
     {
         [Key]
-        public required int Id { get; set; }
+        public  int Id { get; set; }
         [Required]
         public required string Title { get; set; }
         [Required]

@@ -20,6 +20,8 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            builder.Services.AddScoped<ITaskService, TaskService>();
+
             // Egyedi szolgáltatások regisztrálása
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<AbsenceService>();

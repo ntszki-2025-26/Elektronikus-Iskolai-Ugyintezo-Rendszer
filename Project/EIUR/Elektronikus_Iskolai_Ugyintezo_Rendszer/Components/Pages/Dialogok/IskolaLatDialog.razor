@@ -1,4 +1,6 @@
 ﻿@using MudBlazor
+@inject ITaskService TaskService
+@inject ISnackbar Snackbar
 
 <MudDialog Class="custom-dialog-container">
     <TitleContent>
@@ -14,6 +16,7 @@
                 Kérjük, válassza ki, milyen nyelven szeretné igényelni az igazolást.
             </MudText>
 
+            @* Itt a @bind-Value="value" a kulcs *@
             <MudSelect @bind-Value="_value"
                        Label="Nyelv kiválasztása"
                        Variant="Variant.Outlined"
@@ -22,7 +25,7 @@
                        AdornmentColor="Color.Primary">
                 @foreach (var nyelv in _nyelvek)
                 {
-                    <MudSelectItem Value="nyelv">@nyelv</MudSelectItem>
+                    <MudSelectItem Value="@nyelv">@nyelv</MudSelectItem>
                 }
             </MudSelect>
         </div>
@@ -30,36 +33,45 @@
 
     <DialogActions>
         <div class="d-flex justify-end gap-2 pa-4 w-100">
-            <MudButton OnClick="Cancel"
-                       Variant="Variant.Text"
-                       Class="action-btn">Mégse</MudButton>
+            <MudButton OnClick="Cancel" Variant="Variant.Text" Class="action-btn">Mégse</MudButton>
 
+            @* A gomb hívja meg a Submit metódust *@
             <MudButton OnClick="Submit"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
                        EndIcon="@Icons.Material.Filled.Download"
-                       Class="action-btn"
-                       Disabled="@(string.IsNullOrEmpty(_value))">
+                       Disabled="@(string.IsNullOrEmpty(_value))"
+                       Class="action-btn">
                 Igénylés leadása
             </MudButton>
         </div>
     </DialogActions>
 </MudDialog>
 
-
 @code {
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
 
-    private void Submit() => MudDialog.Close(DialogResult.Ok(_value));
+    [CascadingParameter]
+    private MudBlazor.IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private string _value = ""; // Itt tároljuk a kiválasztott nyelvet
+
+    private readonly string[] _nyelvek = { "Magyar", "Német", "Angol" };
+
+    private async Task Submit()
+    {
+        // Meghívjuk a szervizt a mentéshez
+        var siker = await TaskService.CreateIskolaLatogatasiRequest(_value);
+
+        if (siker)
+        {
+            Snackbar.Add("Az igénylést sikeresen rögzítettük!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(_value));
+        }
+        else
+        {
+            Snackbar.Add("Hiba történt a mentés során. Kérjük, próbálja újra!", Severity.Error);
+        }
+    }
 
     private void Cancel() => MudDialog.Cancel();
-
-    private string _value;
-    private bool _modal;
-
-    private readonly string[] _nyelvek =
-    {
-        "Magyar", "Német", "Angol"
-    };
 }

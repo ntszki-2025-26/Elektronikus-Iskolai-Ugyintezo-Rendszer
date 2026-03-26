@@ -13,6 +13,6 @@
         public required DateTime ReportDate { get; set; } = DateTime.Now;
         public string? Message { get; set; }
         [Required]
-        public required int SenderUserId { get; set; }
+        public required Guid SenderUserId { get; set; }
     }
 }

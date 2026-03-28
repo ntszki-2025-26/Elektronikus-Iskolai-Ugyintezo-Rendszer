@@ -1,4 +1,6 @@
 ﻿@page "/IgazgatoHelyettesHome"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Igazgatóhelyettes")]
 @inject ISnackbar Snackbar
 @rendermode InteractiveServer
 <MudThemeProvider IsDarkMode="false" />

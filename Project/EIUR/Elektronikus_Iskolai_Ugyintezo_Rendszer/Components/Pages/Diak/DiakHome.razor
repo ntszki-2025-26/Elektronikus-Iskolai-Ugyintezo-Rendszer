@@ -1,5 +1,9 @@
 ﻿@page "/DiakHome"
 @rendermode InteractiveServer
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Diák")]
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer
 @inject IDialogService DialogService
 

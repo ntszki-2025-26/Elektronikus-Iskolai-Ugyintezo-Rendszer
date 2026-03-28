@@ -1,6 +1,8 @@
 ﻿@page "/OfoHome"
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Osztályfőnök")]
 @inject ISnackbar Snackbar
 @inject AbsenceService AbsenceService
 @rendermode InteractiveServer

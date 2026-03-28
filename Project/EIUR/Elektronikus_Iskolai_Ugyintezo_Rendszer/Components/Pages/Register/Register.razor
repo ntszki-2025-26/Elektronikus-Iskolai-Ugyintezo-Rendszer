@@ -1,4 +1,6 @@
 ﻿@page "/Register"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
 @rendermode InteractiveServer
 
 <div class="login-container">

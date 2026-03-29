@@ -7,14 +7,16 @@
 
 
 <MudLayout>
-    <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive" Class="sidebar-dark">
+    <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive">
         <MudDrawerHeader Class="pa-8">
-            <MudText Typo="Typo.h5" Style="color: white; font-weight: 800; letter-spacing: 1px;">Admin Panel</MudText>
+            <MudButton Typo="Typo.h5"
+                       Style="color: black; font-weight: 800;"
+                       OnClick="ProfileDialog">
+               Diák neve
+            </MudButton>
         </MudDrawerHeader>
 
         <MudNavMenu Class="nav-menu-custom">
-            <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All">Műszerfal</MudNavLink>
-            <MudNavLink Href="/regisztracio" Icon="@Icons.Material.Filled.PersonAdd">Regisztráció</MudNavLink>
 
             <div class="logout-wrapper">
                 <div class="logout-btn-box">
@@ -34,7 +36,6 @@
                 {
                     <MudItem xs="12" sm="6" md="4">
                         <div class="custom-card" @onclick="item.Action">
-                            @* Itt térnek vissza a fontos színek *@
                             <div class="card-accent" style="background-color: @item.Color;"></div>
                             <div class="card-body">
                                 <div class="d-flex flex-column">
@@ -47,9 +48,38 @@
                     </MudItem>
                 }
             </MudGrid>
+
+            <div class="mt-12">
+                <MudText Typo="Typo.h5" Class="mb-6" Style="font-weight: 800; color: #1a202c;">
+                    Kérelmek állapota
+                </MudText>
+
+                <MudTable Items="@GetRequests()" Hover="true" Elevation="0" Class="rounded-xl border border-solid mud-border-default shadow-sm">
+                    <HeaderContent>
+                        <MudTh Style="font-weight: 700;">Típus</MudTh>
+                        <MudTh Style="font-weight: 700;">Dátum</MudTh>
+                        <MudTh Style="font-weight: 700;">Állapot</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.Type</MudTd>
+                        <MudTd>@context.Date.ToString("yyyy.MM.dd.")</MudTd>
+                        <MudTd>
+                            <MudChip T="string"
+                                     Color="@GetStatusColor(context.Status)"
+                                     Variant="Variant.Text"
+                                     Size="Size.Small"
+                                     Style="font-weight: 800; background-color: rgba(0,0,0,0.03);">
+                                @context.StatusText
+                            </MudChip>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </div>
         </MudContainer>
     </MudMainContent>
 </MudLayout>
+
+
 @code {
     private class MenuItem
     {
@@ -63,15 +93,54 @@
         new MenuItem { Title = "Iskolalátogatási igazolás", Action = Iskolalatogatas, Color = "#2196F3" },
         new MenuItem { Title = "Jogviszony igazolás", Action = Jogviszony, Color = "#4CAF50" },
         new MenuItem { Title = "MÁK / Árvásági dokumentum", Action = MAKarvasagi, Color = "#FF9800" },
-        new MenuItem { Title = "Érettségi adatbegyűjtés", Action = Erettsegi, Color = "#E91E63" },
+        new MenuItem { Title = "Érettségi", Action = Erettsegi, Color = "#E91E63" },
         new MenuItem { Title = "Lakcím bejelentés", Action = Lakcim, Color = "#9C27B0" },
-        new MenuItem { Title = "Törzslap másolat", Action = Korabbierettsegi, Color = "#795548" }
+        new MenuItem { Title = "Törzslap másolat", Action = Torzslap, Color = "#795548" },
     };
 
     private Task Iskolalatogatas() => DialogService.ShowAsync<Pages.IskolaLatDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task MAKarvasagi() => DialogService.ShowAsync<Pages.JogviszonyDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Jogviszony() => DialogService.ShowAsync<Pages.ErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Erettsegi() => DialogService.ShowAsync<Pages.KorabbiErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task MAKarvasagi() => DialogService.ShowAsync<Pages.MAKDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Jogviszony() => DialogService.ShowAsync<Pages.JogviszonyDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Erettsegi() => DialogService.ShowAsync<Pages.ErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Lakcim() => DialogService.ShowAsync<Pages.LakcimDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Korabbierettsegi() => DialogService.ShowAsync<Pages.KorabbiErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Torzslap() => DialogService.ShowAsync<Pages.TorzslapDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+
+    private Task ProfileDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+
+
+        return DialogService.ShowAsync<ProfileDialog>("", options);
+    }
+
+    private class RequestItem
+    {
+        public string Type { get; set; } = "";
+        public DateTime Date { get; set; }
+        public int Status { get; set; } // 0: Új/Nem foglalkoztak vele, 1: Folyamatban, 2: Kész
+        public string StatusText => Status switch
+        {
+            0 => "Beérkezett",
+            1 => "Folyamatban",
+            2 => "Elkészült",
+            _ => "Ismeretlen"
+        };
+    }
+
+    
+    private List<RequestItem> GetRequests() => new()
+    {
+        new RequestItem { Type = "Iskolalátogatási igazolás", Date = DateTime.Now.AddDays(-2), Status = 2 },
+        new RequestItem { Type = "Érettségi jelentkezés", Date = DateTime.Now.AddDays(-1), Status = 1 },
+        new RequestItem { Type = "Lakcím bejelentés", Date = DateTime.Now, Status = 0 }
+    };
+
+ 
+    private Color GetStatusColor(int status) => status switch
+    {
+        2 => Color.Success,  
+        1 => Color.Warning, 
+        0 => Color.Error,   
+        _ => Color.Default
+    };
 }

@@ -1,4 +1,4 @@
-﻿/* 1. OLDALSÁV (FEKETE ÉS TELJES MAGASSÁG) */
+﻿
 ::deep .mud-drawer {
     height: 100vh !important;
     background-color: #1a1c23 !important;
@@ -9,7 +9,7 @@
     background-color: #1a1c23 !important;
 }
 
-/* 2. NAVIGÁCIÓS GOMBOK (KERETEZVE ÉS KIEMELVE) */
+
 ::deep .nav-menu-custom .mud-nav-link {
     margin: 8px 16px !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
@@ -32,7 +32,6 @@
         color: white !important;
     }
 
-/* 3. KIJELENTKEZÉS GOMB (KÖZVETLENÜL A MENÜ ALATT) */
 .logout-wrapper {
     padding: 8px 16px;
 }
@@ -57,7 +56,6 @@
         color: white;
     }
 
-/* 4. FŐ TARTALOM ÉS SZÍNES KÁRTYÁK */
 .main-bg {
     background-color: #f8f9fc !important;
     min-height: 100vh;
@@ -96,4 +94,21 @@
     font-weight: 700;
     color: #2d3748;
     font-size: 1rem;
+}
+
+::deep .mud-table-root {
+    background-color: white !important;
+}
+
+::deep .mud-table-head {
+    background-color: #fcfcfd !important;
+}
+
+.shadow-sm {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+.card-title-text {
+    line-height: 1.2;
+    margin-top: 4px;
 }

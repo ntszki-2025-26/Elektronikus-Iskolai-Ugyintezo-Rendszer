@@ -1,20 +1,30 @@
-﻿<MudDialog>
+﻿
+
+<MudDialog>
     <TitleContent>
-        Dialog Title
+        MÁK / Árvasági papír 
     </TitleContent>
     <DialogContent>
-        Dialog Content
+        <MudContainer Class="d-flex justify-center align-center" Style="height: 100px;">
+            <MudText Typo="Typo.h5" Align="Align.Center"><b>MÁK / Árvasági papír igénylése</b></MudText>
+        </MudContainer>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Send</MudButton>
+        <div class="pa-4 d-flex justify-center" style="width: 100%;">
+            <MudButton OnClick="Cancel" Class="mr-2">Mégse</MudButton>
+            <MudButton Variant="Variant.Filled"
+                       EndIcon="@Icons.Material.Filled.Send"
+                       Color="Color.Primary"
+                       OnClick="Submit">
+                Küldés
+            </MudButton>
+        </div>
     </DialogActions>
 </MudDialog>
 
-
 @code {
     [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
+    private MudBlazor.IMudDialogInstance MudDialog { get; set; }
 
     private void Submit() => MudDialog.Close(DialogResult.Ok(true));
 

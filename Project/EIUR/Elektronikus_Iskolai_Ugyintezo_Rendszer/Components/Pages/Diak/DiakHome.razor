@@ -1,11 +1,13 @@
 ﻿@page "/DiakHome"
 @rendermode InteractiveServer
+@inject ISnackbar Snackbar
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Roles = "Diák")]
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer
 @inject IDialogService DialogService
+@inject RequestService RequestService
 
 <MudThemeProvider IsDarkMode="false" />
 
@@ -55,6 +57,7 @@
     </MudMainContent>
 </MudLayout>
 @code {
+
     private class MenuItem
     {
         public string Title { get; set; } = "";
@@ -78,4 +81,21 @@
     private Task Erettsegi() => DialogService.ShowAsync < Pages.Dialogok.KorabbiErettsegiDialog > ("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Lakcim() => DialogService.ShowAsync<Pages.Dialogok.LakcimDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Korabbierettsegi() => DialogService.ShowAsync<Pages.Dialogok.KorabbiErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+
+   private async Task IskolalatogatasiKerese()
+{
+
+    var ujKerelem = new Elektronikus_Iskolai_Ugyintezo_Rendszer.Models.Taskses
+    {
+        Title = "Iskolalátogatási igazolás",
+        TaskTypeId = 1,
+        ReportDate = DateTime.Now,
+        Message = "Iskolalátogatási papírt szeretnék kérni.",
+        SenderUserId = Guid.Empty 
+    };
+
+    await RequestService.AddRequestAsync(ujKerelem);
+    Snackbar.Add("Kérelem elküldve!", MudBlazor.Severity.Success);
+}
+
 }

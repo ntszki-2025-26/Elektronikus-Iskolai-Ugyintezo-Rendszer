@@ -43,7 +43,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
                 SenderUserId = Guid.Parse(userIdStr)
             };
 
-            _context.Tasks.Add(ujIgenyles);
+            _context.Taskses.Add(ujIgenyles);
             return await _context.SaveChangesAsync() > 0;
         }
     }

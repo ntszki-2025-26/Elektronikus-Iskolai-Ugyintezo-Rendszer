@@ -22,6 +22,8 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
 
             builder.Services.AddScoped<ITaskService, TaskService>();
 
+            builder.Services.AddSingleton<RequestService>();
+
             // Egyedi szolgáltatások regisztrálása
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<AbsenceService>();

@@ -1,12 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
-@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
-@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
-@using MudBlazor
 @using Microsoft.AspNetCore.Components
-@inject AuthenticationStateProvider AuthStateProvider
-@inject AbsenceService AbsenceService
-@rendermode InteractiveServer
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
+
+@inject ITaskService TaskService
+@inject ISnackbar Snackbar
 
 <MudDialog>
     <TitleContent>
@@ -20,13 +18,13 @@
 
         <MudGrid>
             <MudItem xs="12" sm="6">
-                <MudDatePicker Label="Mettől" @bind-Date="newAbsencerequest.DateFrom" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                <MudDatePicker Label="Mettől" @bind-Date="dateFrom" Variant="Variant.Outlined" Margin="Margin.Dense" />
             </MudItem>
             <MudItem xs="12" sm="6">
-                <MudDatePicker Label="Meddig" @bind-Date="newAbsencerequest.DateTo" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                <MudDatePicker Label="Meddig" @bind-Date="dateTo" Variant="Variant.Outlined" Margin="Margin.Dense" />
             </MudItem>
             <MudItem xs="12">
-                <MudTextField Label="Indoklás" @bind-Value="newAbsencerequest.Message" Variant="Variant.Outlined" Lines="3" FullWidth="true" />
+                <MudTextField Label="Indoklás" @bind-Value="message" Variant="Variant.Outlined" Lines="3" FullWidth="true" />
             </MudItem>
         </MudGrid>
     </DialogContent>
@@ -35,7 +33,9 @@
         <MudButton Variant="Variant.Filled"
                    EndIcon="@Icons.Material.Filled.Send"
                    Color="Color.Primary"
-                   OnClick="Submit">IGÉNYLÉS LEADÁSA</MudButton>
+                   OnClick="Submit">
+            HIÁNYZÁS LEADÁSA
+        </MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -43,53 +43,36 @@
     [CascadingParameter]
     private MudBlazor.IMudDialogInstance MudDialog { get; set; } = default!;
 
-    private AbsenceRequest newAbsencerequest = new AbsenceRequest();
+    // A MudDatePicker nullable DateTime-ot vár (DateTime?)
+    private DateTime? dateFrom = DateTime.Now;
+    private DateTime? dateTo = DateTime.Now;
+    private string message = "";
 
-    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
-    private void Cancel() => MudDialog.Cancel();
-
-    public class AbsenceRequest
+    // A metódus async Task legyen, és NE várjon bemeneti paramétereket,
+    // hanem a fenti globális változókat használja!
+    private async Task Submit()
     {
-        public DateTime? DateFrom { get; set; } = DateTime.Now;
-        public DateTime? DateTo { get; set; } = DateTime.Now;
-        public string Message { get; set; } = "";
-    }
-
-
-    private Hianyzasok newAbsence = new Hianyzasok
-    {
-        Id = 0,
-        UserId = Guid.Empty,
-        DateFrom = DateTime.Now,
-        DateTo = DateTime.Now,
-        Message = ""
-    };
-
-
-    private async Task HandleSubmit()
-    {
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
-
-        if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out Guid currentUserId))
+        // Védelem: csak akkor küldjük el, ha mindkét dátum ki van választva
+        if (dateFrom.HasValue && dateTo.HasValue)
         {
-            await AbsenceService.CreateAbsenceWithNotification(newAbsence, 5, currentUserId);
-
-
-            // Alaphelyzetbe állítás minden kötelező mezővel
-            newAbsence = new Hianyzasok
+            // A .Value-val megkapjuk a tényleges DateTime értéket
+            var siker = await TaskService.HianyzasHandle(dateFrom.Value, dateTo.Value, message);
+            
+            if (siker)
             {
-                Id = 0,
-                UserId = Guid.Empty,
-                DateFrom = DateTime.Now,
-                DateTo = DateTime.Now,
-                Message = ""
-            };
+                Snackbar.Add("Hiányzás sikeresen rögzítve!", Severity.Success);
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+            else
+            {
+                Snackbar.Add("Hiba történt a rögzítés során!", Severity.Error);
+            }
         }
         else
         {
-            Console.WriteLine("Hiba: Nem található bejelentkezett felhasználó!");
+            Snackbar.Add("Kérjük, töltse ki a dátumokat!", Severity.Warning);
         }
     }
+
+    private void Cancel() => MudDialog.Cancel();
 }

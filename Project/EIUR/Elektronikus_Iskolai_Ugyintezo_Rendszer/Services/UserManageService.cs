@@ -1,5 +1,8 @@
 ﻿using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data;
 using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
 {
@@ -9,15 +12,18 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
     {
         Task DisableUser(Guid id);
         Task UpdateUser(Guid id, User user);
+        Task<string> GetCurrentUserNameAsync();
     }
 
     public class UserManagementService : IUserManagementService
     {
-        public UserManagementService(AppDbContext context)
+        public UserManagementService(AppDbContext context, AuthenticationStateProvider authStateProvider)
         {
             this.context = context;
+            this.authStateProvider = authStateProvider;
         }
         private readonly AppDbContext context;
+        private readonly AuthenticationStateProvider authStateProvider;
         public async Task DisableUser(Guid id)
         {
             var user = await context.Users.FindAsync(id);
@@ -47,6 +53,25 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
 
             await context.SaveChangesAsync();
 
+        }
+
+        public async Task<string> GetCurrentUserNameAsync()
+        {
+            var authState = await authStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out Guid userId))
+            {
+                return "Vendég";
+            }
+
+            var dbUser = await context.Users.FindAsync(userId);
+
+            if (dbUser == null) return "Ismeretlen Felhasználó";
+            string middle = string.IsNullOrWhiteSpace(dbUser.MiddleName) ? "" : $" {dbUser.MiddleName}";
+
+            return $"{dbUser.LastName} {dbUser.FirstName}{middle}";
         }
     }
     

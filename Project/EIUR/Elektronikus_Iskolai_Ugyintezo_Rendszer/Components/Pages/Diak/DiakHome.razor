@@ -6,8 +6,12 @@
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Roles = "Diák")]
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IDialogService DialogService
 @inject RequestService RequestService
+@inject IUserManagementService UserManagementService
+@inject GetRequestService GetReq
+@inject AuthenticationStateProvider AuthStateProvider
 
 <MudThemeProvider IsDarkMode="false" />
 
@@ -18,7 +22,7 @@
             <MudButton Typo="Typo.h5"
                        Style="color: black; font-weight: 800;"
                        OnClick="ProfileDialog">
-               Diák neve
+               @StudentName
             </MudButton>
         </MudDrawerHeader>
 
@@ -62,22 +66,22 @@
                     Kérelmek állapota
                 </MudText>
 
-                <MudTable Items="@GetRequests()" Hover="true" Elevation="0" Class="rounded-xl border border-solid mud-border-default shadow-sm">
+                <MudTable Items="@requests" Hover="true" Elevation="0" Class="rounded-xl border border-solid mud-border-default shadow-sm">
                     <HeaderContent>
                         <MudTh Style="font-weight: 700;">Típus</MudTh>
                         <MudTh Style="font-weight: 700;">Dátum</MudTh>
                         <MudTh Style="font-weight: 700;">Állapot</MudTh>
                     </HeaderContent>
                     <RowTemplate>
-                        <MudTd>@context.Type</MudTd>
-                        <MudTd>@context.Date.ToString("yyyy.MM.dd.")</MudTd>
+                        <MudTd>@context.Title</MudTd>
+                        <MudTd>@context.ReportDate.ToString("yyyy.MM.dd.")</MudTd>
                         <MudTd>
                             <MudChip T="string"
-                                     Color="@GetStatusColor(context.Status)"
+                                     Color="@GetStatusColor(context.State)"
                                      Variant="Variant.Text"
                                      Size="Size.Small"
                                      Style="font-weight: 800; background-color: rgba(0,0,0,0.03);">
-                                @context.StatusText
+                                @GetStatusText(context.State)
                             </MudChip>
                         </MudTd>
                     </RowTemplate>
@@ -89,6 +93,8 @@
 
 
 @code {
+
+    private List<Taskses> requests = new();
 
     private class MenuItem
     {
@@ -124,29 +130,24 @@
         return DialogService.ShowAsync<ProfileDialog>("", options);
     }
 
-    private class RequestItem
+    private string GetStatusText(int? status) => status switch
     {
-        public string Type { get; set; } = "";
-        public DateTime Date { get; set; }
-        public int Status { get; set; } // 0: Új/Nem foglalkoztak vele, 1: Folyamatban, 2: Kész
-        public string StatusText => Status switch
-        {
-            0 => "Beérkezett",
-            1 => "Folyamatban",
-            2 => "Elkészült",
-            _ => "Ismeretlen"
-        };
-    }
+        0 => "Beérkezett",
+        1 => "Folyamatban",
+        2 => "Elkészült",
+        _ => "Ismeretlen"
+    };
 
-    
-    private List<RequestItem> GetRequests() => new()
+
+    @*private List<RequestItem> GetRequests() => new()
     {
         new RequestItem { Type = "Iskolalátogatási igazolás", Date = DateTime.Now.AddDays(-2), Status = 2 },
         new RequestItem { Type = "Érettségi jelentkezés", Date = DateTime.Now.AddDays(-1), Status = 1 },
         new RequestItem { Type = "Lakcím bejelentés", Date = DateTime.Now, Status = 0 }
-    };
 
- 
+    };*@
+
+
     private Color GetStatusColor(int status) => status switch
     {
         2 => Color.Success,  
@@ -171,4 +172,21 @@
         Snackbar.Add("Kérelem elküldve!", MudBlazor.Severity.Success);
     }
 
+
+    private string StudentName { get; set; } = "Betöltés...";
+
+    protected override async Task OnInitializedAsync()
+    {
+        StudentName = await UserManagementService.GetCurrentUserNameAsync();
+
+        // 2. Felhasználó ID lekérése
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var userIdStr = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (Guid.TryParse(userIdStr, out var userId))
+        {
+            // 3. Adatok lekérése a szerviz segítségével
+            requests = await GetReq.GetDiakTasks(userId);
+        }
+    }
 }

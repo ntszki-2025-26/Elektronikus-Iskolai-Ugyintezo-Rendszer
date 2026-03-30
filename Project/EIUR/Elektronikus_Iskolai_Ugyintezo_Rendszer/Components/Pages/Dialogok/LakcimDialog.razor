@@ -1,4 +1,7 @@
-﻿<MudDialog>
+﻿@inject ITaskService TaskService
+@inject ISnackbar Snackbar
+
+<MudDialog>
     <TitleContent>
         <div class="d-flex align-center">
             <MudIcon Icon="@Icons.Material.Filled.Home" Color="Color.Primary" Class="mr-3" />
@@ -52,12 +55,31 @@
     [CascadingParameter] private MudBlazor.IMudDialogInstance MudDialog { get; set; }
 
     // Külön változók a mezőknek a jobb kezelhetőségért
-    public string Irszam { get; set; }
+    public int Irszam { get; set; }
     public string Varos { get; set; }
     public string Utca { get; set; }
-    public string Hazszam { get; set; }
+    public int Hazszam { get; set; }
     public string Egyeb { get; set; }
 
-    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    private async void Submit()
+    {
+        if (Irszam != null && Varos != null && Utca != null && Hazszam != null)
+        {
+            var siker = await TaskService.LakcimValtoztatas(Irszam, Varos, Utca, Hazszam, Egyeb);
+            if (siker)
+            {
+                Snackbar.Add("Lakcímváltoztatás kérése sikeresen rögzítve!", Severity.Success);
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+            else
+            {
+                Snackbar.Add("Hiba történt a rögzítés során!", Severity.Error);
+            }
+        }
+        else
+        {
+            Snackbar.Add("Kérjük, töltse ki a dátumokat!", Severity.Warning);
+        }
+    }  
     private void Cancel() => MudDialog.Cancel();
 }

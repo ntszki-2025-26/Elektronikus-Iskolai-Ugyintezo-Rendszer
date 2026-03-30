@@ -1,4 +1,6 @@
 ﻿@using MudBlazor
+@inject ITaskService TaskService
+@inject ISnackbar Snackbar
 
 <MudDialog>
     <TitleContent>
@@ -9,26 +11,6 @@
     </TitleContent>
     <DialogContent>
         <MudContainer Style="max-height: 500px; overflow-y: auto" Class="pa-4">
-
-            @* --- KORÁBBI EREDMÉNYEK LEKÉRÉSE --- *@
-            <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-2"><b>Korábbi érettségi lekérése</b></MudText>
-            <MudGrid Class="mb-6">
-                <MudItem xs="12" sm="8">
-                    <MudSelect T="string" Label="Válassz korábbi vizsgát" @bind-Value="_korabbiTantargy" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
-                        <MudSelectItem Value="@("Magyar nyelv és irodalom")" />
-                        <MudSelectItem Value="@("Matematika")" />
-                        <MudSelectItem Value="@("Történelem")" />
-                        <MudSelectItem Value="@("Angol nyelv")" />
-                        <MudSelectItem Value="@("Német nyelv")" />
-                        <MudSelectItem Value="@("Informatika")" />
-                    </MudSelect>
-                </MudItem>
-                <MudItem xs="12" sm="4" Class="d-flex align-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" FullWidth="true" OnClick="Lekeres">Lekérés</MudButton>
-                </MudItem>
-            </MudGrid>
-
-            <MudDivider Class="my-4" />
 
             @* --- ÚJ JELENTKEZÉS --- *@
             <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-2"><b>Új jelentkezés leadása</b></MudText>
@@ -71,24 +53,26 @@
 @code {
     [CascadingParameter] MudBlazor.IMudDialogInstance MudDialog { get; set; }
 
-    private string _korabbiTantargy;
     private string _ujTantargy;
     private string _szint = "Középszint";
 
-    private void Lekeres()
-    {
-        // Itt kezelheted a lekérést (pl. Snackbar üzenet)
-        if (string.IsNullOrEmpty(_korabbiTantargy)) return;
 
-        Console.WriteLine($"Lekérés: {_korabbiTantargy}");
-    }
-
-    private void Submit()
+    private async void Submit()
     {
+        var siker = await TaskService.ErettsegiJelentkezes(_ujTantargy, _szint);
         // Itt küldheted el a jelentkezést
         if (string.IsNullOrEmpty(_ujTantargy)) return;
 
-        MudDialog.Close(DialogResult.Ok(new { Targy = _ujTantargy, Szint = _szint }));
+        if (siker)
+        {
+            Snackbar.Add("A jelentkezést sikeresen rögzítettük!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(new { Targy = _ujTantargy, Szint = _szint }));
+        }
+        else
+        {
+            Snackbar.Add("Hiba történt a mentés során. Kérjük, próbálja újra!", Severity.Error);
+        }
+        
     }
 
     private void Cancel() => MudDialog.Cancel();

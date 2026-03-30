@@ -96,6 +96,7 @@
         new MenuItem { Title = "Érettségi", Action = Erettsegi, Color = "#E91E63" },
         new MenuItem { Title = "Lakcím bejelentés", Action = Lakcim, Color = "#9C27B0" },
         new MenuItem { Title = "Törzslap másolat", Action = Torzslap, Color = "#795548" },
+        new MenuItem { Title = "Hiányzás bejelentése", Action = Hianyzas, Color = "#751915" },
     };
 
     private Task Iskolalatogatas() => DialogService.ShowAsync<Pages.IskolaLatDialog>("", new DialogOptions { CloseOnEscapeKey = true });
@@ -104,6 +105,7 @@
     private Task Erettsegi() => DialogService.ShowAsync<Pages.ErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Lakcim() => DialogService.ShowAsync<Pages.LakcimDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Torzslap() => DialogService.ShowAsync<Pages.TorzslapDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Hianyzas() => DialogService.ShowAsync<Pages.HianyzasDialog>("", new DialogOptions { CloseOnEscapeKey = true });
 
     private Task ProfileDialog()
     {

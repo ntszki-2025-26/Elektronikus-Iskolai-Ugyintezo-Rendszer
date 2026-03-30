@@ -1,5 +1,5 @@
-﻿using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data;   // <--- Ellenőrizd, hogy ez a pontos névtér!
-using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models; // <--- Itt vannak a Taskses.cs-ben lévő osztályok
+﻿using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data;
+using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 

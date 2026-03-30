@@ -108,13 +108,13 @@
         new MenuItem { Title = "Hiányzás bejelentése", Action = Hianyzas, Color = "#751915" },
     };
 
-    private Task Iskolalatogatas() => DialogService.ShowAsync<Pages.IskolaLatDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task MAKarvasagi() => DialogService.ShowAsync<Pages.MAKDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Jogviszony() => DialogService.ShowAsync<Pages.JogviszonyDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Erettsegi() => DialogService.ShowAsync<Pages.ErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Lakcim() => DialogService.ShowAsync<Pages.LakcimDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Torzslap() => DialogService.ShowAsync<Pages.TorzslapDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Hianyzas() => DialogService.ShowAsync<Pages.HianyzasDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Iskolalatogatas() => DialogService.ShowAsync<Pages.Dialogok.IskolaLatDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task MAKarvasagi() => DialogService.ShowAsync<Pages.Dialogok.MAKDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Jogviszony() => DialogService.ShowAsync<Pages.Dialogok.JogviszonyDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Erettsegi() => DialogService.ShowAsync<Pages.Dialogok.ErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Lakcim() => DialogService.ShowAsync<Pages.Dialogok.LakcimDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Torzslap() => DialogService.ShowAsync<Pages.Dialogok.TorzslapDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Hianyzas() => DialogService.ShowAsync<Pages.Dialogok.HianyzasDialog>("", new DialogOptions { CloseOnEscapeKey = true });
 
     private Task ProfileDialog()
     {
@@ -154,8 +154,21 @@
         0 => Color.Error,   
         _ => Color.Default
     };
-    await RequestService.AddRequestAsync(ujKerelem);
-    Snackbar.Add("Kérelem elküldve!", MudBlazor.Severity.Success);
-}
+
+    private async Task IskolalatogatasiKerese()
+    {
+
+        var ujKerelem = new Elektronikus_Iskolai_Ugyintezo_Rendszer.Models.Taskses
+        {
+            Title = "Iskolalátogatási igazolás",
+            TaskTypeId = 1,
+            ReportDate = DateTime.Now,
+            Message = "Iskolalátogatási papírt szeretnék kérni.",
+            SenderUserId = Guid.Empty
+        };
+
+        await RequestService.AddRequestAsync(ujKerelem);
+        Snackbar.Add("Kérelem elküldve!", MudBlazor.Severity.Success);
+    }
 
 }

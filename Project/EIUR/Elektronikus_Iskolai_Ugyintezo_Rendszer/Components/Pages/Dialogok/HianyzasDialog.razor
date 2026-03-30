@@ -1,0 +1,95 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
+@using MudBlazor
+@using Microsoft.AspNetCore.Components
+@inject AuthenticationStateProvider AuthStateProvider
+@inject AbsenceService AbsenceService
+@rendermode InteractiveServer
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Home" Class="mr-3 mb-n1" />
+            Hiányzás bejelentés
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText Class="mb-4">Kérjük, adja meg a hiányzás kezdeti, illetve az utolsó napját.</MudText>
+
+        <MudGrid>
+            <MudItem xs="12" sm="6">
+                <MudDatePicker Label="Mettől" @bind-Date="newAbsencerequest.DateFrom" Variant="Variant.Outlined" Margin="Margin.Dense" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudDatePicker Label="Meddig" @bind-Date="newAbsencerequest.DateTo" Variant="Variant.Outlined" Margin="Margin.Dense" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Indoklás" @bind-Value="newAbsencerequest.Message" Variant="Variant.Outlined" Lines="3" FullWidth="true" />
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">MÉGSE</MudButton>
+        <MudButton Variant="Variant.Filled"
+                   EndIcon="@Icons.Material.Filled.Send"
+                   Color="Color.Primary"
+                   OnClick="Submit">IGÉNYLÉS LEADÁSA</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudBlazor.IMudDialogInstance MudDialog { get; set; }
+
+    private AbsenceRequest newAbsencerequest = new AbsenceRequest();
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    private void Cancel() => MudDialog.Cancel();
+
+    public class AbsenceRequest
+    {
+        public DateTime? DateFrom { get; set; } = DateTime.Now;
+        public DateTime? DateTo { get; set; } = DateTime.Now;
+        public string Message { get; set; }
+    }
+
+    private bool showForm = false;
+    private Hianyzasok newAbsence = new Hianyzasok
+    {
+        Id = 0,
+        UserId = Guid.Empty,
+        DateFrom = DateTime.Now,
+        DateTo = DateTime.Now,
+        Message = ""
+    };
+
+
+    private async Task HandleSubmit()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out Guid currentUserId))
+        {
+            await AbsenceService.CreateAbsenceWithNotification(newAbsence, 5, currentUserId);
+
+            showForm = false;
+            // Alaphelyzetbe állítás minden kötelező mezővel
+            newAbsence = new Hianyzasok
+            {
+                Id = 0,
+                UserId = Guid.Empty,
+                DateFrom = DateTime.Now,
+                DateTo = DateTime.Now,
+                Message = ""
+            };
+        }
+        else
+        {
+            Console.WriteLine("Hiba: Nem található bejelentkezett felhasználó!");
+        }
+    }
+}

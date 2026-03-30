@@ -38,11 +38,9 @@
             @* A gomb hívja meg a Submit metódust *@
             <MudButton OnClick="Submit"
                        Variant="Variant.Filled"
-                       Variant="Variant.Filled"
                        EndIcon="@Icons.Material.Filled.Download"
                        Disabled="@(string.IsNullOrEmpty(_value))"
                        Class="action-btn">
-                       Disabled="@(string.IsNullOrEmpty(_value))">
                 Igénylés leadása
             </MudButton>
         </div>

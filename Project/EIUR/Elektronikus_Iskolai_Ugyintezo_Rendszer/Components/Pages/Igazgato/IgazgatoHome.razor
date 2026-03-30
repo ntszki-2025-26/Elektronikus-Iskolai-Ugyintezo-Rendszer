@@ -3,20 +3,16 @@
 @attribute [Authorize(Roles = "Igazgató")]
 @inject ISnackbar Snackbar
 @rendermode InteractiveServer
+
 <MudThemeProvider IsDarkMode="false" />
 
 <MudLayout>
-    @* --- OLDALSÁV --- *@
     <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive">
         <MudDrawerHeader Class="pa-8">
-            <MudText Typo="Typo.h5" Style="color: white; font-weight: 800;">Osztályfőnök</MudText>
+            <MudButton Typo="Typo.h5" Style="color: black; font-weight: 800;">Igo neve</MudButton>
         </MudDrawerHeader>
 
         <MudNavMenu Class="nav-menu-custom">
-            <MudNavLink Href="/OsztalyfonokHome" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All">Áttekintés</MudNavLink>
-            <MudNavLink Href="/hianyzasok" Icon="@Icons.Material.Filled.EventBusy">Hiányzások</MudNavLink>
-            <MudNavLink Href="/osztaly-list" Icon="@Icons.Material.Filled.FormatListNumbered">Osztálynévsor</MudNavLink>
-
             <div class="pa-4 mt-auto">
                 <MudButton Variant="Variant.Outlined" Color="Color.Error" FullWidth="true"
                            StartIcon="@Icons.Material.Filled.Logout" Style="border-radius: 10px;">
@@ -26,14 +22,12 @@
         </MudNavMenu>
     </MudDrawer>
 
-    @* --- FŐ TARTALOM --- *@
     <MudMainContent Class="main-bg">
         <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-10">
 
             <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Osztályfőnöki Felügyelet (12.B)</MudText>
 
-            @* 1. SZEKCIÓ: HIÁNYZÁS ELŐREJELZÉSEK (ÚJ FUNKCIÓ) *@
-            <div class="section-card">
+            <div class="section-card mb-6">
                 <div class="d-flex align-center mb-4">
                     <MudIcon Icon="@Icons.Material.Filled.HistoryEdu" Color="Color.Warning" Class="mr-3" />
                     <MudText Typo="Typo.h6" Style="font-weight: 700;">Bejelentett hiányzások</MudText>
@@ -70,7 +64,6 @@
                 </MudExpansionPanels>
             </div>
 
-            @* 2. SZEKCIÓ: EGYÉB ÜGYINTÉZÉSEK *@
             <div class="section-card">
                 <div class="d-flex align-center mb-4">
                     <MudIcon Icon="@Icons.Material.Filled.Assignment" Color="Color.Info" Class="mr-3" />
@@ -83,18 +76,33 @@
                         <MudExpansionPanel Class="task-item-box">
                             <TitleContent>
                                 <div class="d-flex align-center w-100">
-                                    <div class="mr-4" style="width: 6px; height: 30px; background-color: #2196F3; border-radius: 3px;"></div>
+                                    <div class="mr-4" style="width: 6px; height: 30px; background-color: @(task.IsDone ? "#4CAF50" : "#2196F3"); border-radius: 3px;"></div>
+
                                     <div class="flex-grow-1">
-                                        <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">@task.StudentName - @task.DocumentType</MudText>
+                                        <MudText Typo="Typo.subtitle1" Style="@($"font-weight: 700; color: {(task.IsDone ? "#4CAF50" : "#2d3748")};")">
+                                            @task.StudentName - @task.DocumentType
+                                        </MudText>
                                         <MudText Typo="Typo.caption">Beküldve: @task.Date.ToShortDateString()</MudText>
                                     </div>
+
+                                    @if (task.IsDone)
+                                    {
+                                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Class="mr-2" />
+                                    }
                                 </div>
                             </TitleContent>
                             <ChildContent>
                                 <div class="pa-4">
-                                    <MudText Typo="Typo.body2">@task.Description</MudText>
+                                    <MudText Typo="Typo.body2" Class="mb-4">@task.Description</MudText>
                                     <div class="d-flex justify-end mt-4">
-                                        <MudButton Variant="Variant.Filled" Color="Color.Info" Style="border-radius: 8px;">Visszajelzés</MudButton>
+                                        <MudButton Variant="Variant.Filled"
+                                                   Color="@(task.IsDone ? Color.Default : Color.Info)"
+                                                   OnClick="(() => HandleTaskResponse(task))"
+                                                   Disabled="@task.IsDone"
+                                                   EndIcon="@(task.IsDone ? Icons.Material.Filled.CheckCircle : Icons.Material.Filled.Send)"
+                                                   Style="border-radius: 8px;">
+                                            @(task.IsDone ? "Elküldve" : "Visszajelzés küldése")
+                                        </MudButton>
                                     </div>
                                 </div>
                             </ChildContent>
@@ -114,6 +122,13 @@
         Snackbar.Add($"{h.StudentName} hiányzása rögzítve.", MudBlazor.Severity.Success);
     }
 
+    private void HandleTaskResponse(UserTask task)
+    {
+        task.IsDone = true;
+        Snackbar.Add($"{task.StudentName} kérése feldolgozva!", MudBlazor.Severity.Info);
+        StateHasChanged();
+    }
+
     private List<Hianyzas> _hianyzasok = new()
     {
         new Hianyzas { StudentName = "Kovács Adél", StartDate = DateTime.Now.AddDays(2), EndDate = DateTime.Now.AddDays(5), Reason = "Családi esemény miatt távol lesz." },
@@ -122,7 +137,7 @@
 
     private List<UserTask> _tasks = new()
     {
-        new UserTask { StudentName = "Szabó Zoltán", DocumentType = "Iskolalátogatási igazolás", Date = DateTime.Now, Description = "MÁK igényléshez szükséges." }
+        new UserTask { StudentName = "Szabó Zoltán", DocumentType = "Iskolalátogatási igazolás", Date = DateTime.Now, Description = "MÁK igényléshez szükséges.", IsDone = false }
     };
 
     public class Hianyzas
@@ -139,5 +154,6 @@
         public string DocumentType { get; set; } = "";
         public DateTime Date { get; set; }
         public string Description { get; set; } = "";
+        public bool IsDone { get; set; }
     }
 }

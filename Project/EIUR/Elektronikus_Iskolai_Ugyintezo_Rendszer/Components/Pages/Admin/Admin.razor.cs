@@ -49,7 +49,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Admin
 
                 // 2. Mivel AsNoTracking-ot használtál, az adatbázisból jövő objektum 
                 // és a memóriában lévő lista szétvált. Átírjuk a memóriában is:
-                user.IsEnabled = 0;
+                user.IsEnabled = false;
 
                 // 3. Szólunk a Blazornak, hogy rajzolja újra a táblázatot
                 StateHasChanged();

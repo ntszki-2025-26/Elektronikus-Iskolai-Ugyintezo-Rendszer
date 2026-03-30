@@ -5,6 +5,7 @@
 @attribute [Authorize(Roles = "Admin")]
 @rendermode InteractiveServer
 
+
 <div class="d-flex" style="min-height: 100vh; background-color: #f8f9fa;">
     <div class="bg-dark text-white p-3 shadow" style="width: 280px;">
         <div class="text-center mb-4">
@@ -60,6 +61,7 @@
                             <th class="border-0 ps-4">Név</th>
                             <th class="border-0">Email</th>
                             <th class="border-0">Szerepkör</th>
+                            <th class="border-0">Státusz</th>
                             <th class="border-0 text-end pe-4">Műveletek</th>
                         </tr>
                     </thead>
@@ -72,6 +74,11 @@
                                 <td>
                                     <span class="badge @GetBadgeClass(user.RoleId)">
                                         @GetRoleName(user.RoleId)
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge @GetStatusColor(user.IsEnabled)">
+                                        @GetStatus(user.IsEnabled)
                                     </span>
                                 </td>
 

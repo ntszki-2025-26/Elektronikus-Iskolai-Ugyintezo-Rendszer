@@ -91,5 +91,17 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Admin
             9 => "bg-primary-light text-primary",
             _ => "bg-secondary-light text-secondary"
         };
+
+        private string GetStatus(bool isEnabled) => isEnabled switch
+        {
+            false => "Inaktív",
+            true => "Aktív"
+        };
+
+        private string GetStatusColor(bool isEnabled) => isEnabled switch
+        {
+            false => "bg-secondary-light text-secondary",
+            true => "bg-success-light text-success"
+        };
     }
 }

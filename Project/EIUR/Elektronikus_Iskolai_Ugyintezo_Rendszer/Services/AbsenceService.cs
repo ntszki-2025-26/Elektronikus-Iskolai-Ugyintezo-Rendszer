@@ -7,7 +7,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services;
 
 public class AbsenceService
 {
-    private readonly AppDbContext _context;
+
     private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
     public AbsenceService(IDbContextFactory<AppDbContext> contextFactory)
@@ -17,29 +17,30 @@ public class AbsenceService
 
     public async Task CreateAbsenceWithNotification(Hianyzasok absence, int taskTypeId, Guid currentUserId)
     {
-        // A hiányzáshoz rendeljük a bejelentkezett felhasználót
+        using var context = await _contextFactory.CreateDbContextAsync();
+
         absence.UserId = currentUserId;
 
-        // SQL Datetime korrekció (1753 előtti dátumok kezelése)
+
         if (absence.DateFrom < new DateTime(1753, 1, 1)) absence.DateFrom = DateTime.Now;
         if (absence.DateTo < new DateTime(1753, 1, 1)) absence.DateTo = DateTime.Now;
 
-        _context.Hianyzas.Add(absence);
-        await _context.SaveChangesAsync();
+        context.Hianyzas.Add(absence);
+        await context.SaveChangesAsync();
 
-        // Értesítés létrehozása
+
         var task = new Taskses
         {
-            Id = 0, // Kötelező kezdőérték
+            Id = 0, 
             Title = "Hiányzás bejelentés",
             TaskTypeId = taskTypeId,
-            SenderUserId = currentUserId, // Guid típus
+            SenderUserId = currentUserId, 
             ReportDate = DateTime.Now,
             Message = $"Időszak: {absence.DateFrom:yyyy.MM.dd} - {absence.DateTo:yyyy.MM.dd}. Indok: {absence.Message}"
         };
 
-        _context.Taskses.Add(task);
-        await _context.SaveChangesAsync();
+        context.Taskses.Add(task);
+        await context.SaveChangesAsync();
     }
 
     public async Task<List<NotificationDto>> GetNotificationsByRole(int userRoleId)

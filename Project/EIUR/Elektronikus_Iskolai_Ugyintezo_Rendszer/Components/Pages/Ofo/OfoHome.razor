@@ -162,7 +162,7 @@
             absences = await AbsenceService.GetNotificationsByRole(2);
             StateHasChanged(); 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             Snackbar.Add("Hiba történt az adatok lekérésekor!", Severity.Error);
         }

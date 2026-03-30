@@ -6,6 +6,10 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
     public class UserService
     {
         AppDbContext db;
+        public UserService(AppDbContext context)
+        {
+            db = context;
+        }
         public async Task Deactivate(Guid Id)
         {
             User user = db.Users.Single(a => a.Id == Id);

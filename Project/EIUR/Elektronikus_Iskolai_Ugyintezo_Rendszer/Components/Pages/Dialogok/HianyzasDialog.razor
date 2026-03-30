@@ -41,7 +41,7 @@
 
 @code {
     [CascadingParameter]
-    private MudBlazor.IMudDialogInstance MudDialog { get; set; }
+    private MudBlazor.IMudDialogInstance MudDialog { get; set; } = default!;
 
     private AbsenceRequest newAbsencerequest = new AbsenceRequest();
 
@@ -52,10 +52,10 @@
     {
         public DateTime? DateFrom { get; set; } = DateTime.Now;
         public DateTime? DateTo { get; set; } = DateTime.Now;
-        public string Message { get; set; }
+        public string Message { get; set; } = "";
     }
 
-    private bool showForm = false;
+
     private Hianyzasok newAbsence = new Hianyzasok
     {
         Id = 0,
@@ -76,7 +76,7 @@
         {
             await AbsenceService.CreateAbsenceWithNotification(newAbsence, 5, currentUserId);
 
-            showForm = false;
+
             // Alaphelyzetbe állítás minden kötelező mezővel
             newAbsence = new Hianyzasok
             {

@@ -42,7 +42,7 @@
             firstName   = EditedUser.FirstName;
             middleName  = EditedUser.MiddleName;
             lastName    = EditedUser.LastName;
-            isEnabled   = EditedUser.IsEnabled == 1;
+            isEnabled   = EditedUser.IsEnabled == true;
             email       = EditedUser.Email;
             phoneNumber = EditedUser.PhoneNumber;
             password    = EditedUser.Password;
@@ -75,7 +75,7 @@
             FirstName   = firstName,
             MiddleName  = middleName,
             LastName    = lastName,
-            IsEnabled   = (byte)(isEnabled ? 1 : 0),
+            IsEnabled   = (bool)(isEnabled ? true : false),
             Email       = email,
             PhoneNumber = phoneNumber,
             Password    = finalPassword,

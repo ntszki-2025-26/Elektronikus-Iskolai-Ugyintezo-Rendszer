@@ -1,4 +1,6 @@
 ﻿@page "/IgazgatoHome"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Igazgató")]
 @inject ISnackbar Snackbar
 @rendermode InteractiveServer
 

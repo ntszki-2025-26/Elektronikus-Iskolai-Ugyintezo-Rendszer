@@ -20,7 +20,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Register
             PhoneNumber = "",
             Password = "",
             RoleId = 0,
-            IsEnabled = 1
+            IsEnabled = true
         };
 
         private string? errorMessage;

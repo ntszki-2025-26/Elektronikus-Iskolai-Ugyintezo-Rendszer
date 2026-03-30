@@ -20,6 +20,10 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            builder.Services.AddScoped<ITaskService, TaskService>();
+
+            builder.Services.AddSingleton<RequestService>();
+
             // Egyedi szolgáltatások regisztrálása
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<AbsenceService>();
@@ -42,9 +46,13 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
             //builder.Services.AddHttpContextAccessor();
 
             // Adatbázis konfiguráció (DefaultConnection használatával)
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            //builder.Services.AddDbContextFactory<AppDbContext>(options =>
+              //W  options.UseSqlServer(connectionString));
+
             builder.Services.AddDbContextFactory<AppDbContext>(options =>
-                options.UseSqlServer(connectionString));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
             builder.Services.AddMudServices();
             builder.Services.AddScoped<IUserManagementService, UserManagementService>();
 

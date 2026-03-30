@@ -20,6 +20,6 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
         public DbSet<StudentDatas> StudentData { get; set; }
         public DbSet<TaskTypeRole> TaskTypeRoles { get; set; }
         public DbSet<TaskTypes> TaskType { get; set; }
-        public DbSet<Taskses> Tasks { get; set; }
+        public DbSet<Taskses> Taskses { get; set; }
     }
 }

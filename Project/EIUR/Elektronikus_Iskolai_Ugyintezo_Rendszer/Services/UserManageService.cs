@@ -23,7 +23,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
             var user = await context.Users.FindAsync(id);
             if (user != null)
             {
-                user.IsEnabled = 0;
+                user.IsEnabled = false;
                await context.SaveChangesAsync();
             }
             else

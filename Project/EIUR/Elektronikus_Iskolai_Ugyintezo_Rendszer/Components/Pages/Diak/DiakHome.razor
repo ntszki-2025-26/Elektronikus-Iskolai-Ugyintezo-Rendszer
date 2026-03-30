@@ -1,7 +1,13 @@
 ﻿@page "/DiakHome"
 @rendermode InteractiveServer
+@inject ISnackbar Snackbar
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Diák")]
 @using Elektronikus_Iskolai_Ugyintezo_Rendszer
 @inject IDialogService DialogService
+@inject RequestService RequestService
 
 <MudThemeProvider IsDarkMode="false" />
 
@@ -17,6 +23,8 @@
         </MudDrawerHeader>
 
         <MudNavMenu Class="nav-menu-custom">
+            <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All">Műszerfal</MudNavLink>
+            <MudNavLink Href="/regisztracio" Icon="@Icons.Material.Filled.PersonAdd">Regisztráció</MudNavLink>
 
             <div class="logout-wrapper">
                 <div class="logout-btn-box">
@@ -81,6 +89,7 @@
 
 
 @code {
+
     private class MenuItem
     {
         public string Title { get; set; } = "";
@@ -145,4 +154,8 @@
         0 => Color.Error,   
         _ => Color.Default
     };
+    await RequestService.AddRequestAsync(ujKerelem);
+    Snackbar.Add("Kérelem elküldve!", MudBlazor.Severity.Success);
+}
+
 }

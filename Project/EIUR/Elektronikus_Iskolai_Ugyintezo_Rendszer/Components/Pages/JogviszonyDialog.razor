@@ -1,21 +1,37 @@
-﻿
-
-<MudDialog>
+﻿<MudDialog>
     <TitleContent>
-        Jogviszonyi papír
+        <div class="d-flex align-center">
+            <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" Class="mr-3" />
+            <MudText Typo="Typo.h6">Jogviszonyi papír</MudText>
+        </div>
     </TitleContent>
+
     <DialogContent>
-        <MudContainer Class="d-flex justify-center align-center" Style="height: 100px;">
-            <MudText Typo="Typo.h5" Align="Align.Center"><b>Jogviszonyi papír igénylése</b></MudText>
+        <MudContainer Style="padding: 24px 16px;">
+            <MudStack Spacing="2" AlignItems="AlignItems.Center">
+                <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Dark">
+                    <b>Jogviszonyi paír igénylése</b>
+                </MudText>
+                <MudText Typo="Typo.body2" Align="Align.Center" Color="Color.Secondary">
+                    A gombra kattintva elküldjük az igénylést a rendszerbe.
+                </MudText>
+            </MudStack>
         </MudContainer>
     </DialogContent>
+
     <DialogActions>
-        <div class="pa-4 d-flex justify-center" style="width: 100%;">
-            <MudButton OnClick="Cancel" Class="mr-2">Mégse</MudButton>
+        <div class="px-6 pb-4 d-flex justify-space-between w-100">
+            <MudButton OnClick="Cancel"
+                       Variant="Variant.Text"
+                       Color="Color.Default">
+                Mégse
+            </MudButton>
+
             <MudButton Variant="Variant.Filled"
                        EndIcon="@Icons.Material.Filled.Send"
                        Color="Color.Primary"
-                       OnClick="Submit">
+                       OnClick="Submit"
+                       Size="Size.Large">
                 Küldés
             </MudButton>
         </div>

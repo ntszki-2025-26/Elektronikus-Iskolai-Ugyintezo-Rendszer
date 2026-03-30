@@ -1,4 +1,8 @@
-﻿<MudDialog>
+﻿@using MudBlazor
+@inject ITaskService TaskService
+@inject ISnackbar Snackbar
+
+<MudDialog>
     <TitleContent>
         <div class="d-flex align-center">
             <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" Class="mr-3" />
@@ -10,7 +14,7 @@
         <MudContainer Style="padding: 24px 16px;">
             <MudStack Spacing="2" AlignItems="AlignItems.Center">
                 <MudText Typo="Typo.h5" Align="Align.Center" Color="Color.Dark">
-                    <b>Jogviszonyi paír igénylése</b>
+                    <b>Jogviszonyi papír igénylése</b>
                 </MudText>
                 <MudText Typo="Typo.body2" Align="Align.Center" Color="Color.Secondary">
                     A gombra kattintva elküldjük az igénylést a rendszerbe.
@@ -42,7 +46,22 @@
     [CascadingParameter]
     private MudBlazor.IMudDialogInstance MudDialog { get; set; }
 
-    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    @*private void Submit() => MudDialog.Close(DialogResult.Ok(true));*@
 
     private void Cancel() => MudDialog.Cancel();
+
+    private async void Submit()
+    {
+        var siker = await TaskService.CreateJogViszonyIgazolasRequest();
+
+        if (siker)
+        {
+            Snackbar.Add("Az igénylést sikeresen rögzítettük!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        else
+        {
+            Snackbar.Add("Hiba történt a mentés során. Kérjük, próbálja újra!", Severity.Error);
+        }
+    }
 }

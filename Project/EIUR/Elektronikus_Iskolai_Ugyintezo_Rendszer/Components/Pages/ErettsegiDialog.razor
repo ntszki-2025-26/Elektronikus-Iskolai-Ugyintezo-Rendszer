@@ -56,13 +56,15 @@
         </MudContainer>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Mégse</MudButton>
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.Send"
-                   OnClick="Submit">
-            Jelentkezés beküldése
-        </MudButton>
+        <div class="pa-4 d-flex justify-center" style="width: 100%;">
+            <MudButton OnClick="Cancel" Class="mr-2">Mégse</MudButton>
+            <MudButton Variant="Variant.Filled"
+                       EndIcon="@Icons.Material.Filled.Send"
+                       Color="Color.Primary"
+                       OnClick="Submit">
+                Jelentlezés küldése
+            </MudButton>
+        </div>
     </DialogActions>
 </MudDialog>
 

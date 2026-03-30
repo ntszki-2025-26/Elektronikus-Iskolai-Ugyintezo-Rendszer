@@ -29,17 +29,12 @@
     </DialogContent>
 
     <DialogActions>
-        <div class="d-flex justify-end gap-2 pa-4 w-100">
-            <MudButton OnClick="Cancel"
-                       Variant="Variant.Text"
-                       Class="action-btn">Mégse</MudButton>
-
-            <MudButton OnClick="Submit"
-                       Variant="Variant.Filled"
+        <div class="pa-4 d-flex justify-center" style="width: 100%;">
+            <MudButton OnClick="Cancel" Class="mr-2">Mégse</MudButton>
+            <MudButton Variant="Variant.Filled"
+                       EndIcon="@Icons.Material.Filled.Send"
                        Color="Color.Primary"
-                       EndIcon="@Icons.Material.Filled.Download"
-                       Class="action-btn"
-                       Disabled="@(string.IsNullOrEmpty(_value))">
+                       OnClick="Submit">
                 Igénylés leadása
             </MudButton>
         </div>

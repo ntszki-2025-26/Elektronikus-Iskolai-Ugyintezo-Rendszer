@@ -16,9 +16,6 @@
                 <MudItem xs="12">
                     <MudTextField @bind-Value="_email" Label="Email" Variant="Variant.Outlined" ReadOnly="_readOnly" />
                 </MudItem>
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="_lakcim" Label="Lakcím" Variant="Variant.Outlined" ReadOnly="_readOnly" />
-                </MudItem>
             </MudGrid>
         </MudContainer>
     </DialogContent>
@@ -42,7 +39,6 @@
     private bool _readOnly = true;
     private string _nev = "Profil neve";
     private string _email = "profil.eamil@iskola.hu";
-    private string _lakcim = "Szhely";
 
     // Szerkesztés engedélyezése
     private void EnableEditing()

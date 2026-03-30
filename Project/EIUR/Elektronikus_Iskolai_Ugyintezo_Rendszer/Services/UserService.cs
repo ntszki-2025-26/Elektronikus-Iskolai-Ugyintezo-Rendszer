@@ -12,10 +12,12 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
             user.IsEnabled = 1;
             await db.SaveChangesAsync();
             
-    }
+        }
         public Guid? CurrentUserId { get; set; }
         public int CurrentRoleId { get; set; }
         public string? CurrentUserName { get; set; }
 
     }
+
+
 }

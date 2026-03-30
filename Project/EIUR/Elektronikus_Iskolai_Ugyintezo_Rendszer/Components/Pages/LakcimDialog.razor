@@ -1,32 +1,63 @@
-﻿
-
-<MudDialog>
+﻿<MudDialog>
     <TitleContent>
-        Jogviszonyi papír
+        <div class="d-flex align-center">
+            <MudIcon Icon="@Icons.Material.Filled.Home" Color="Color.Primary" Class="mr-3" />
+            <MudText Typo="Typo.h6">Lakcím változás bejelentése</MudText>
+        </div>
     </TitleContent>
+
     <DialogContent>
-        <MudContainer Class="d-flex justify-center align-center" Style="height: 100px;">
-            <MudText Typo="Typo.h5" Align="Align.Center"><b>Jogviszonyi papír igénylése</b></MudText>
+        <MudContainer Style="max-height: 400px; overflow-y: auto;">
+            <MudText Typo="Typo.body2" Class="mb-4" Color="Color.Secondary">
+                Kérjük, adja meg az új állandó lakcímét a pontos nyilvántartáshoz.
+            </MudText>
+
+            <MudGrid Spacing="2">
+                <MudItem xs="12" sm="4">
+                    <MudTextField @bind-Value="Irszam" Label="Irányítószám" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12" sm="8">
+                    <MudTextField @bind-Value="Varos" Label="Város/Falu" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+
+                <MudItem xs="12" sm="9">
+                    <MudTextField @bind-Value="Utca" Label="Utca / Közterület neve" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+                <MudItem xs="12" sm="3">
+                    <MudTextField @bind-Value="Hazszam" Label="Házszám" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+
+                <MudItem xs="12">
+                    <MudTextField @bind-Value="Egyeb" Label="Emelet, ajtó, egyéb (opcionális)" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                </MudItem>
+            </MudGrid>
         </MudContainer>
     </DialogContent>
+
     <DialogActions>
-        <div class="pa-4 d-flex justify-center" style="width: 100%;">
-            <MudButton OnClick="Cancel" Class="mr-2">Mégse</MudButton>
+        <div class="px-6 pb-4 d-flex justify-end w-100">
+            <MudButton OnClick="Cancel" Variant="Variant.Text" Class="mr-2">Mégse</MudButton>
             <MudButton Variant="Variant.Filled"
-                       EndIcon="@Icons.Material.Filled.Send"
+                       EndIcon="@Icons.Material.Filled.Save"
                        Color="Color.Primary"
-                       OnClick="Submit">
-                Küldés
+                       OnClick="Submit"
+                       Size="Size.Large">
+                Mentés és küldés
             </MudButton>
         </div>
     </DialogActions>
 </MudDialog>
 
 @code {
-    [CascadingParameter]
-    private MudBlazor.IMudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] private MudBlazor.IMudDialogInstance MudDialog { get; set; }
+
+    // Külön változók a mezőknek a jobb kezelhetőségért
+    public string Irszam { get; set; }
+    public string Varos { get; set; }
+    public string Utca { get; set; }
+    public string Hazszam { get; set; }
+    public string Egyeb { get; set; }
 
     private void Submit() => MudDialog.Close(DialogResult.Ok(true));
-
     private void Cancel() => MudDialog.Cancel();
 }

@@ -7,7 +7,9 @@
         public required Guid Id { get; set; }
         [Required]
         public required string FirstName { get; set; }
+
         public string? MiddleName { get; set; }
+
         [Required]
         public required string LastName { get; set; }
         [Required]
@@ -18,6 +20,7 @@
         public required string PhoneNumber { get; set; }
         [Required]
         public required string Password { get; set; }
-        public required bool? IsEnabled { get; set; } 
+        [Required]
+        public required bool IsEnabled { get; set; } 
     }
 }

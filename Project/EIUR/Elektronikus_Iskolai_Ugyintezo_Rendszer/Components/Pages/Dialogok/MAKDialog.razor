@@ -1,4 +1,8 @@
-﻿<MudDialog>
+﻿@using MudBlazor
+@inject ITaskService TaskService
+@inject ISnackbar Snackbar
+
+<MudDialog>
     <TitleContent>
         <div class="d-flex align-center">
             <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Primary" Class="mr-3" />
@@ -42,7 +46,20 @@
     [CascadingParameter]
     private MudBlazor.IMudDialogInstance MudDialog { get; set; }
 
-    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    private async void Submit()
+    {
+        var siker = await TaskService.CreateMakRequest();
+
+        if (siker)
+        {
+            Snackbar.Add("Az igénylést sikeresen rögzítettük!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        else
+        {
+            Snackbar.Add("Hiba történt a mentés során. Kérjük, próbálja újra!", Severity.Error);
+        }
+    }
 
     private void Cancel() => MudDialog.Cancel();
 }

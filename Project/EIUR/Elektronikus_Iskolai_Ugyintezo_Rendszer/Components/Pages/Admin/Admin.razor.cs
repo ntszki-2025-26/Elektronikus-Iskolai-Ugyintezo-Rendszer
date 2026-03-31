@@ -79,7 +79,9 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Admin
         {
             1 => "Diák",
             2 => "Osztályfőnök",
+            3 => "Igazgatóhelyettes",
             5 => "Igazgató",
+            7 => "Titkár",
             9 => "Admin",
             _ => "Egyéb"
         };

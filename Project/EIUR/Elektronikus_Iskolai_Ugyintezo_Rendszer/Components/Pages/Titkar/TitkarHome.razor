@@ -2,32 +2,41 @@
 @inject ISnackbar Snackbar
 @using Microsoft.AspNetCore.Authorization
 @using DbTask = Elektronikus_Iskolai_Ugyintezo_Rendszer.Models.Taskses
+@using Microsoft.AspNetCore.Components.Authorization
 @attribute [Authorize(Roles = "Titkár")]
 @rendermode InteractiveServer
 @inject RequestService RequestService
 @inject UserManagementService UserManagementService
 @inject NavigationManager Nav
-<MudThemeProvider IsDarkMode="false" />
+@inject ISnackbar Snackbar
+@inject AbsenceService AbsenceService
+@inject AuthenticationStateProvider AuthStateProvider
 
+
+
+
+<MudThemeProvider IsDarkMode="false" />
 
 <MudLayout>
     <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive">
         <MudDrawerHeader Class="pa-8">
-            <MudButton Typo="Typo.h5" Style="color: black; font-weight: 800;">@TitkarName</MudButton>
+            <MudText Typo="Typo.h5" Style="color: black; font-weight: 800;">@TitkarName</MudText>
         </MudDrawerHeader>
 
         <MudNavMenu Class="nav-menu-custom">
+            <div class="pa-4 mt-auto">
 
-            <div class="logout-wrapper">
+                <div class="logout-wrapper">
 
-                <form id="logout-form" action="/" method="post" style="display: none;">
-                    <AntiforgeryToken />
-                </form>
+                    <form id="logout-form" action="/" method="post" style="display: none;">
+                        <AntiforgeryToken />
+                    </form>
 
 
-                <div class="logout-btn-box" @onclick="HandleLogout" style="cursor: pointer;">
-                    <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
-                    <span>Kijelentkezés</span>
+                    <div class="logout-btn-box" @onclick="HandleLogout" style="cursor: pointer;">
+                        <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
+                        <span>Kijelentkezés</span>
+                    </div>
                 </div>
             </div>
         </MudNavMenu>
@@ -35,44 +44,62 @@
 
     <MudMainContent Class="main-bg">
         <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-10">
-            <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Aktuális feladatok</MudText>
 
+            <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Titkár Felület</MudText>
 
-            <div class="section-container">
+            @* --- ADMIN KÉRÉSEK SZEKCIÓ --- *@
+            <div class="section-card">
+                <div class="d-flex align-center mb-4">
+                    <MudIcon Icon="@Icons.Material.Filled.Assignment" Color="Color.Info" Class="mr-3" />
+                    <MudText Typo="Typo.h6" Style="font-weight: 700;">Adminisztratív kérések</MudText>
+                </div>
+
                 <MudExpansionPanels MultiExpansion="true" Elevation="0">
-                    @if (_tasks == null || !_tasks.Any())
+                    @if (adminNotifications != null)
                     {
-                        <MudAlert Severity="Severity.Info">Jelenleg nincs feldolgozandó kérelem.</MudAlert>
-                    }
-                    else
-                    {
-                        @foreach (var task in _tasks)
+                        @foreach (var task in adminNotifications)
                         {
                             <MudExpansionPanel Class="task-item-box">
                                 <TitleContent>
-                                    <div class="d-flex align-center w-100 py-1">
+                                    <div class="d-flex align-center w-100">
+                                        <div class="mr-4" style="width: 6px; height: 30px; background-color: @(GetStateColor(task.State)); border-radius: 3px;"></div>
 
-                                        <div class="mr-4" style="width: 8px; height: 30px; background-color: @(task.IsDone ? "#4CAF50" : "#FF5252"); border-radius: 5px;"></div>
                                         <div class="flex-grow-1">
-
-                                            <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">@task.BaseTask.Title</MudText>
-                                            <MudText Typo="Typo.caption">Tanuló: @task.StudentName | Típus: @task.DocumentType</MudText>
+                                            <MudText Typo="Typo.subtitle1" Style="@($"font-weight: 700; color: {(task.State == 2 ? "#4CAF50" : "#2d3748")};")">
+                                                @task.SenderName - @task.Title
+                                            </MudText>
+                                            <div class="d-flex align-center">
+                                                <MudText Typo="Typo.caption" Class="mr-2">Beküldve: @task.ReportDate.ToShortDateString()</MudText>
+                                                <MudChip T="string" Size="Size.Small" Color="@GetStateColor(task.State)" Variant="Variant.Text" Style="font-size: 10px;">
+                                                    @GetStateText(task.State)
+                                                </MudChip>
+                                            </div>
                                         </div>
-                                        <div>
 
-                                            <MudText Typo="Typo.caption">Beküldve: @task.BaseTask.ReportDate.ToShortDateString()</MudText>
-                                        </div>
+                                        @if (task.State == 2)
+                                        {
+                                            <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Class="mr-2" />
+                                        }
                                     </div>
                                 </TitleContent>
                                 <ChildContent>
                                     <div class="pa-4">
-                                        <MudText Typo="Typo.body2">@task.Description</MudText>
-                                        <div class="d-flex justify-end mt-4">
-                                            <MudButton Variant="Variant.Filled"
-                                                       Color="@(task.IsDone ? Color.Default : Color.Primary)"
-                                                       OnClick="@(() => HandleResponse(task))">
-                                                @(task.IsDone ? "Elvégezve" : "Visszajelzés küldése")
-                                            </MudButton>
+                                        <MudText Typo="Typo.body2" Class="mb-4">@task.Message</MudText>
+                                        <div class="d-flex justify-end gap-2 mt-4">
+                                            @if (task.State != 2)
+                                            {
+                                                <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+                                                           OnClick="@(() => FrissitAllapot(task, 3))"
+                                                           Size="Size.Small">
+                                                    Aláírás szükséges
+                                                </MudButton>
+                                                <MudButton Variant="Variant.Filled" Color="Color.Info"
+                                                           OnClick="@(() => FrissitAllapot(task, 2))"
+                                                           EndIcon="@Icons.Material.Filled.Send"
+                                                           Style="border-radius: 8px;">
+                                                    Elkészült
+                                                </MudButton>
+                                            }
                                         </div>
                                     </div>
                                 </ChildContent>
@@ -81,60 +108,87 @@
                     }
                 </MudExpansionPanels>
             </div>
+
         </MudContainer>
     </MudMainContent>
 </MudLayout>
 
 @code {
-
     private void HandleLogout()
     {
         Nav.NavigateTo("/", forceLoad: true);
     }
-
     private string TitkarName { get; set; } = "Betöltés...";
+    private List<NotificationDto>? allNotifications;
 
+    // Szűrt listák az adatbázisból
+    private List<NotificationDto> absenceNotifications => allNotifications?
+        .Where(x => x.Title == "Hiányzás bejelentés").ToList() ?? new();
 
-    private List<TaskDisplayModel> _tasks;
+    private List<NotificationDto> adminNotifications => allNotifications?
+        .Where(x => x.Title != "Hiányzás bejelentés").ToList() ?? new();
 
     protected override async Task OnInitializedAsync()
     {
-        TitkarName = await UserManagementService.GetCurrentUserNameAsync();
-        await LoadTasks();
+        await InitialLoad();
+        await LoadData();
     }
 
-    private async Task LoadTasks()
+    private async Task FrissitAllapot(NotificationDto task, int ujAllapot)
     {
-        try
-        {
-            var rawData = await RequestService.GetRequestsAsync();
-
-            if (rawData != null)
-            {
-                _tasks = rawData
-
-                    .OrderByDescending(t => t.ReportDate)
-                    .Select(t => new TaskDisplayModel
-                    {
-                        BaseTask = t,
-                        IsDone = false,
-                        StudentName = "Betöltés...",
-                        DocumentType = "Igazolás"
-                    }).ToList();
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Hiba a betöltés során: {ex.Message}");
-        }
-    }
-
-    private async Task HandleResponse(TaskDisplayModel task)
-    {
-
-        task.IsDone = true;
+        // 1. Frissítés az adatbázisban a Service segítségével
+        await UserManagementService.StateChange(task.TaskId, ujAllapot);
+    
+        // 2. Frissítés a UI-on a visszajelzéshez
+        task.State = ujAllapot;
+        Snackbar.Add($"Állapot módosítva: {GetStateText(ujAllapot)}", Severity.Info);
         StateHasChanged();
     }
 
 
+    private async Task InitialLoad()
+    {
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                TitkarName = await UserManagementService.GetCurrentUserNameAsync() ?? "Ismeretlen Titkár";
+            }
+        }
+        catch { TitkarName = "Hiba"; }
+    }
+
+    private async Task LoadData()
+    {
+        allNotifications = await AbsenceService.GetNotificationsByRole(5); 
+        StateHasChanged();
+    }
+
+    private void TudomasulVetel(NotificationDto h)
+    {
+        // Itt törölheted vagy archiválhatod
+        allNotifications?.Remove(h);
+        Snackbar.Add($"{h.SenderName} hiányzása rögzítve.", Severity.Success);
+    }
+
+    // Állapot segédfüggvények
+    private string GetStateText(int? state) => state switch
+    {
+        0 => "Beérkezett",
+        1 => "Folyamatban",
+        2 => "Elkészült",
+        3 => "Aláírásra vár",
+        _ => "Ismeretlen"
+    };
+
+    private Color GetStateColor(int? state) => state switch
+    {
+        0 => Color.Error,
+        1 => Color.Warning,
+        2 => Color.Success,
+        3 => Color.Secondary,
+        _ => Color.Default
+    };
 }

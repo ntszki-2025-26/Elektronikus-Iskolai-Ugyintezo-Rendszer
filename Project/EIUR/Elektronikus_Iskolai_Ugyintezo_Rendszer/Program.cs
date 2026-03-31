@@ -1,10 +1,11 @@
 using Elektronikus_Iskolai_Ugyintezo_Rendszer.Components;
 using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data;
 using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services;
-using Microsoft.EntityFrameworkCore;
-using MudBlazor.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 
 namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
 {
@@ -60,6 +61,8 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+
 
             app.UseStatusCodePagesWithReExecute("/not-found", "?statusCode={0}");
             app.UseHttpsRedirection();

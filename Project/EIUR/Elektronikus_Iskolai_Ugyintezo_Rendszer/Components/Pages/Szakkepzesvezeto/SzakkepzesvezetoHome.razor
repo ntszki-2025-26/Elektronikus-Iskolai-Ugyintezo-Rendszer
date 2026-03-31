@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Roles = "Szakképzésvezető")]
 @inject ISnackbar Snackbar
+@inject NavigationManager Nav
 @rendermode InteractiveServer
 
 <MudThemeProvider IsDarkMode="false" />
@@ -14,9 +15,17 @@
 
         <MudNavMenu Class="nav-menu-custom">
 
-            <div class="logout-btn-box mt-4">
-                <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
-                <span>Kijelentkezés</span>
+            <div class="logout-wrapper">
+
+                <form id="logout-form" action="/" method="post" style="display: none;">
+                    <AntiforgeryToken />
+                </form>
+
+
+                <div class="logout-btn-box" @onclick="HandleLogout" style="cursor: pointer;">
+                    <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
+                    <span>Kijelentkezés</span>
+                </div>
             </div>
         </MudNavMenu>
     </MudDrawer>
@@ -71,6 +80,10 @@
 </MudLayout>
 
 @code {
+    private void HandleLogout()
+    {
+        Nav.NavigateTo("/", forceLoad: true);
+    }
     private List<UserTask> _tasks = new()
     {
         new UserTask { StudentName = "Kovács Adél", DocumentType = "Iskolalátogatási igazolás", Date = DateTime.Now.AddDays(-1), Description = "Német nyelvű igazolást kér külföldi ösztöndíjhoz.", IsDone = false },

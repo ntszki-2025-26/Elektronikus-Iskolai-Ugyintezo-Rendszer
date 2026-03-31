@@ -5,13 +5,14 @@
 @attribute [Authorize(Roles = "Titkár")]
 @rendermode InteractiveServer
 @inject RequestService RequestService
+@inject UserManagementService UserManagementService
 <MudThemeProvider IsDarkMode="false" />
 
 
 <MudLayout>
     <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive">
         <MudDrawerHeader Class="pa-8">
-            <MudButton Typo="Typo.h5" Style="color: black; font-weight: 800;">Titkar neve</MudButton>
+            <MudButton Typo="Typo.h5" Style="color: black; font-weight: 800;">@TitkarName</MudButton>
         </MudDrawerHeader>
 
         <MudNavMenu Class="nav-menu-custom">
@@ -76,11 +77,14 @@
 </MudLayout>
 
 @code {
+    private string TitkarName { get; set; } = "Betöltés...";
+
 
     private List<TaskDisplayModel> _tasks;
 
     protected override async Task OnInitializedAsync()
     {
+        TitkarName = await UserManagementService.GetCurrentUserNameAsync();
         await LoadTasks();
     }
 
@@ -116,4 +120,6 @@
         task.IsDone = true;
         StateHasChanged();
     }
+
+
 }

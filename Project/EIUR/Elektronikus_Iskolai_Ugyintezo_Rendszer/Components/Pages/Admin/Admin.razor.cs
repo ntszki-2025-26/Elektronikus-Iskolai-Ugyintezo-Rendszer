@@ -4,7 +4,6 @@ using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Admin
 {
@@ -14,7 +13,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Admin
         [Inject] private NavigationManager Nav { get; set; } = default!;
         [Inject] private IDialogService DialogService { get; set; }
 
-        [Inject] private IUserManagementService UserManagementService { get; set; } = default!;
+        [Inject] private UserManagementService UserManagementService { get; set; } = default!;
 
         private List<User> users = new();
 

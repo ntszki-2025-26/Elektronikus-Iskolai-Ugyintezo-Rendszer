@@ -3,13 +3,14 @@
 @attribute [Authorize(Roles = "Igazgatóhelyettes")]
 @inject ISnackbar Snackbar
 @rendermode InteractiveServer
+@inject UserManagementService UserManagementService
 
 <MudThemeProvider IsDarkMode="false" />
 
 <MudLayout>
     <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive">
         <MudDrawerHeader Class="pa-8">
-            <MudButton Typo="Typo.h5" Style="color: black; font-weight: 800;">Igo neve</MudButton>
+            <MudButton Typo="Typo.h5" Style="color: black; font-weight: 800;">@IgohelyName</MudButton>
         </MudDrawerHeader>
 
         <MudNavMenu Class="nav-menu-custom">
@@ -25,7 +26,7 @@
     <MudMainContent Class="main-bg">
         <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-10">
 
-            <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Osztályfőnöki Felügyelet (12.B)</MudText>
+            <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Igazgatóhelyettesi felület</MudText>
 
             <div class="section-card mb-6">
                 <div class="d-flex align-center mb-4">
@@ -116,6 +117,8 @@
 </MudLayout>
 
 @code {
+    private string IgohelyName { get; set; } = "Betöltés...";
+
     private void TudomasulVetel(Hianyzas h)
     {
         _hianyzasok.Remove(h);
@@ -155,5 +158,10 @@
         public DateTime Date { get; set; }
         public string Description { get; set; } = "";
         public bool IsDone { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        IgohelyName = await UserManagementService.GetCurrentUserNameAsync();
     }
 }

@@ -5,6 +5,7 @@
 @attribute [Authorize(Roles = "Osztályfőnök")]
 @inject ISnackbar Snackbar
 @inject AbsenceService AbsenceService
+@inject NavigationManager Nav
 @rendermode InteractiveServer
 
 <MudThemeProvider IsDarkMode="false" />
@@ -21,10 +22,18 @@
             <MudNavLink Href="/osztaly-list" Icon="@Icons.Material.Filled.FormatListNumbered">Osztálynévsor</MudNavLink>
 
             <div class="pa-4 mt-auto">
-                <MudButton Variant="Variant.Outlined" Color="Color.Error" FullWidth="true"
-                           StartIcon="@Icons.Material.Filled.Logout" Style="border-radius: 10px;">
-                    Kijelentkezés
-                </MudButton>
+                <div class="logout-wrapper">
+
+                    <form id="logout-form" action="/" method="post" style="display: none;">
+                        <AntiforgeryToken />
+                    </form>
+
+
+                    <div class="logout-btn-box" @onclick="HandleLogout" style="cursor: pointer;">
+                        <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
+                        <span>Kijelentkezés</span>
+                    </div>
+                </div>
             </div>
         </MudNavMenu>
     </MudDrawer>
@@ -153,6 +162,10 @@
 </MudLayout>
 
 @code {
+    private void HandleLogout()
+    {
+        Nav.NavigateTo("/", forceLoad: true);
+    }
     private List<NotificationDto>? absences;
     private async Task Load()
     {

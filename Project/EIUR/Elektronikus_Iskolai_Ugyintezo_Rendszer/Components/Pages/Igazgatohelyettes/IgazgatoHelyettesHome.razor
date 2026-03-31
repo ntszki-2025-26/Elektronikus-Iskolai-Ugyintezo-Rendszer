@@ -3,6 +3,7 @@
 @attribute [Authorize(Roles = "Igazgatóhelyettes")]
 @inject ISnackbar Snackbar
 @rendermode InteractiveServer
+@inject NavigationManager Nav
 @inject UserManagementService UserManagementService
 
 <MudThemeProvider IsDarkMode="false" />
@@ -15,10 +16,18 @@
 
         <MudNavMenu Class="nav-menu-custom">
             <div class="pa-4 mt-auto">
-                <MudButton Variant="Variant.Outlined" Color="Color.Error" FullWidth="true"
-                           StartIcon="@Icons.Material.Filled.Logout" Style="border-radius: 10px;">
-                    Kijelentkezés
-                </MudButton>
+                <div class="logout-wrapper">
+
+                    <form id="logout-form" action="/" method="post" style="display: none;">
+                        <AntiforgeryToken />
+                    </form>
+
+
+                    <div class="logout-btn-box" @onclick="HandleLogout" style="cursor: pointer;">
+                        <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
+                        <span>Kijelentkezés</span>
+                    </div>
+                </div>
             </div>
         </MudNavMenu>
     </MudDrawer>
@@ -117,6 +126,11 @@
 </MudLayout>
 
 @code {
+
+    private void HandleLogout()
+    {
+        Nav.NavigateTo("/", forceLoad: true);
+    }
     private string IgohelyName { get; set; } = "Betöltés...";
 
     private void TudomasulVetel(Hianyzas h)

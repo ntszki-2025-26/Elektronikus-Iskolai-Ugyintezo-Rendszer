@@ -38,6 +38,10 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Admin
                 StateHasChanged();
             }
         }
+        private void HandleLogout()
+        {
+            Nav.NavigateTo("/", forceLoad: true);
+        }
 
         private async Task HandleDisable(User user)
         {

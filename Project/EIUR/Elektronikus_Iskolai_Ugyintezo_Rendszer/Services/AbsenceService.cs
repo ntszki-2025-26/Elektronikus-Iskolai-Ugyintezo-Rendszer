@@ -52,21 +52,19 @@ public class AbsenceService
 
     public async Task<List<NotificationDto>> GetNotificationsByRole(int userRoleId)
     {
-
         using var _context = await _contextFactory.CreateDbContextAsync();
-
 
         var notifications = await (from task in _context.Taskses
                                    join user in _context.Users on task.SenderUserId equals user.Id
                                    select new NotificationDto
                                    {
                                        TaskId = task.Id,
-
-                                       SenderName = user.LastName + " " +
-                                                   (user.MiddleName != null ? user.MiddleName + " " : "") +
-                                                   user.FirstName,
+                                       SenderName = user.LastName + " " + user.FirstName,
+                                       Title = task.Title,
                                        ReportDate = task.ReportDate,
-                                       Message = task.Message ?? ""
+                                       Message = task.Message ?? "",
+                                       // EZT ELLENŐRIZD: Az adatbázis 'Status' mezőjét kapja meg a DTO 'State' mezője
+                                       State = task.State
                                    }).ToListAsync();
 
         return notifications;

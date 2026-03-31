@@ -132,6 +132,7 @@
         0 => "Beérkezett",
         1 => "Folyamatban",
         2 => "Elkészült",
+        3 => "Titkársági aláírás szükséges",
         _ => "Ismeretlen"
     };
 
@@ -147,6 +148,7 @@
 
     private Color GetStatusColor(int status) => status switch
     {
+        3 => Color.Secondary,
         2 => Color.Success,  
         1 => Color.Warning, 
         0 => Color.Error,   

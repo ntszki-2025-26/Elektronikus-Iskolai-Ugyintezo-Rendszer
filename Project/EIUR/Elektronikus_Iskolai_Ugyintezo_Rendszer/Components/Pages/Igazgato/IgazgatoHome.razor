@@ -10,7 +10,6 @@
 @rendermode InteractiveServer
 @inject UserManagementService UserManagementService
 @inject AuthenticationStateProvider AuthStateProvider
-@rendermode InteractiveServer
 
 <MudThemeProvider IsDarkMode="false" />
 
@@ -86,12 +85,14 @@
                                             @if (task.State != 2)
                                             {
                                                 <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
-                                                           OnClick="@(() => FrissitAllapot(task, 3))" Size="Size.Small">
+                                                           OnClick="@(() => FrissitAllapot(task, 3))"
+                                                           Size="Size.Small">
                                                     Aláírás szükséges
                                                 </MudButton>
                                                 <MudButton Variant="Variant.Filled" Color="Color.Info"
                                                            OnClick="@(() => FrissitAllapot(task, 2))"
-                                                           EndIcon="@Icons.Material.Filled.Send" Style="border-radius: 8px;">
+                                                           EndIcon="@Icons.Material.Filled.Send"
+                                                           Style="border-radius: 8px;">
                                                     Elkészült
                                                 </MudButton>
                                             }
@@ -129,6 +130,18 @@
         await LoadData();
     }
 
+    private async Task FrissitAllapot(NotificationDto task, int ujAllapot)
+    {
+        // 1. Frissítés az adatbázisban a Service segítségével
+        await UserManagementService.StateChange(task.TaskId, ujAllapot);
+    
+        // 2. Frissítés a UI-on a visszajelzéshez
+        task.State = ujAllapot;
+        Snackbar.Add($"Állapot módosítva: {GetStateText(ujAllapot)}", Severity.Info);
+        StateHasChanged();
+    }
+
+
     private async Task InitialLoad()
     {
         try
@@ -154,14 +167,6 @@
         // Itt törölheted vagy archiválhatod
         allNotifications?.Remove(h);
         Snackbar.Add($"{h.SenderName} hiányzása rögzítve.", Severity.Success);
-    }
-
-    private void FrissitAllapot(NotificationDto task, int ujAllapot)
-    {
-        task.State = ujAllapot;
-        // Itt érdemes lenne egy szerviz hívás: await AbsenceService.UpdateTaskState(task.TaskId, ujAllapot);
-        Snackbar.Add($"{task.SenderName} kérése: {GetStateText(ujAllapot)}", Severity.Info);
-        StateHasChanged();
     }
 
     // Állapot segédfüggvények

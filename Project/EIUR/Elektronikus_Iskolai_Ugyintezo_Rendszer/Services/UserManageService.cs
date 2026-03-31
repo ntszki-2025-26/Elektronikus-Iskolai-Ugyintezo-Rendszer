@@ -2,6 +2,7 @@
 using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 using System.Security.Claims;
 
 namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
@@ -13,6 +14,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
         Task DisableUser(Guid id);
         Task UpdateUser(Guid id, User user);
         Task<string> GetCurrentUserNameAsync();
+        Task StateChange(int taskId, int ujAllapot);
     }
 
     public class UserManagementService : IUserManagementService
@@ -71,7 +73,22 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
             if (dbUser == null) return "Ismeretlen Felhasználó";
             string middle = string.IsNullOrWhiteSpace(dbUser.MiddleName) ? "" : $" {dbUser.MiddleName}";
 
-            return $"{dbUser.LastName} {dbUser.FirstName}{middle}";
+            return $"{dbUser.LastName} {middle} {dbUser.FirstName}";
+        }
+
+        public async Task StateChange(int taskId, int ujAllapot)
+        {
+
+            var task = await context.Taskses.FirstOrDefaultAsync(t => t.Id == taskId);
+
+            if (task != null)
+            {
+                // Itt a 'Status' az adatbázisoszlop neve a modelledben
+                task.State = ujAllapot;
+
+                // Elmentjük a változásokat az adatbázisba
+                await context.SaveChangesAsync();
+            }
         }
     }
     

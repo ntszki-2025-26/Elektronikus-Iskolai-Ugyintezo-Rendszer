@@ -12,7 +12,6 @@
     <DialogContent>
         <MudContainer Style="max-height: 500px; overflow-y: auto" Class="pa-4">
 
-            @* --- ÚJ JELENTKEZÉS --- *@
             <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-2"><b>Új jelentkezés leadása</b></MudText>
             <MudGrid>
                 <MudItem xs="12" sm="7">
@@ -60,7 +59,7 @@
     private async void Submit()
     {
         var siker = await TaskService.ErettsegiJelentkezes(_ujTantargy, _szint);
-        // Itt küldheted el a jelentkezést
+
         if (string.IsNullOrEmpty(_ujTantargy)) return;
 
         if (siker)

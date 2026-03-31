@@ -35,7 +35,6 @@
         <div class="d-flex justify-end gap-2 pa-4 w-100">
             <MudButton OnClick="Cancel" Variant="Variant.Text" Class="action-btn">Mégse</MudButton>
 
-            @* A gomb hívja meg a Submit metódust *@
             <MudButton OnClick="Submit"
                        Variant="Variant.Filled"
                        EndIcon="@Icons.Material.Filled.Download"
@@ -52,13 +51,12 @@
     [CascadingParameter]
     private MudBlazor.IMudDialogInstance MudDialog { get; set; } = default!;
 
-    private string _value = ""; // Itt tároljuk a kiválasztott nyelvet
+    private string _value = "";
 
     private readonly string[] _nyelvek = { "Magyar", "Német", "Angol" };
 
     private async Task Submit()
     {
-        // Meghívjuk a szervizt a mentéshez
         var siker = await TaskService.CreateIskolaLatogatasiRequest(_value);
 
         if (siker)

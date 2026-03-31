@@ -15,6 +15,13 @@ public class AbsenceService
         _contextFactory = contextFactory;
     }
 
+    public async Task<List<Hianyzasok>> GetAbsencesByUserId(Guid userId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        return await context.Hianyzas.Where(h => h.UserId == userId).ToListAsync();
+    }
+
+
     public async Task CreateAbsenceWithNotification(Hianyzasok absence, int taskTypeId, Guid currentUserId)
     {
         using var context = await _contextFactory.CreateDbContextAsync();

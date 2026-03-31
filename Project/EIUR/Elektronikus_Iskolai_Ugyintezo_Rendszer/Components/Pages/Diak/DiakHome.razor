@@ -20,15 +20,12 @@
     <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive">
         <MudDrawerHeader Class="pa-8">
             <MudButton Typo="Typo.h5"
-                       Style="color: black; font-weight: 800;"
-                       OnClick="ProfileDialog">
+                       Style="color: black; font-weight: 800;">
                @StudentName
             </MudButton>
         </MudDrawerHeader>
 
         <MudNavMenu Class="nav-menu-custom">
-            <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All">Műszerfal</MudNavLink>
-            <MudNavLink Href="/regisztracio" Icon="@Icons.Material.Filled.PersonAdd">Regisztráció</MudNavLink>
 
             <div class="logout-wrapper">
                 <div class="logout-btn-box">
@@ -41,7 +38,7 @@
 
     <MudMainContent Class="main-bg">
         <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-10">
-            <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Rendszer áttekintés</MudText>
+            <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Feladatok</MudText>
 
             <MudGrid>
                 @foreach (var item in GetMenuItems())

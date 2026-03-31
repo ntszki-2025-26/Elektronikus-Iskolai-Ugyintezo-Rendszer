@@ -19,7 +19,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
 
     public class TaskService : ITaskService
     {
-        // A hibaüzenet szerint nálad AppDbContext a neve, nem ApplicationDbContext
+
         private readonly AppDbContext _context;
         private readonly AuthenticationStateProvider _authStateProvider;
 
@@ -34,19 +34,18 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
             var authState = await _authStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
-            // A bejelentkezett user ID-ja stringként jön le
             var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userIdStr)) return false;
 
-            // Példányosítjuk a modellt
+
             var ujIgenyles = new Taskses
             {
                 Title = "Iskolalátogatási igazolás",
                 TaskTypeId = 1,
                 ReportDate = DateTime.Now,
                 Message = $"Választott nyelv: {nyelv}",
-                // Itt konvertáljuk a stringet Guid-ra, mert a modelled azt várja:
+
                 SenderUserId = Guid.Parse(userIdStr),
                 State = 0
             };
@@ -69,7 +68,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
                 TaskTypeId = 2,
                 ReportDate = DateTime.Now,
                 Message = "Jogviszony Igazolást szeretnék igényelni.",
-                // Itt konvertáljuk a stringet Guid-ra, mert a modelled azt várja:
+
                 SenderUserId = Guid.Parse(userIdStr),
                 State = 0
             };
@@ -127,12 +126,12 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
             var authState = await _authStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
-            // A bejelentkezett user ID-ja stringként jön le
+
             var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userIdStr)) return false;
 
-            // Példányosítjuk a modellt
+
             var ujHianyzas = new Hianyzasok
             {
                 UserId = Guid.Parse(userIdStr),
@@ -150,14 +149,14 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
             var authState = await _authStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
-            // A bejelentkezett user ID-ja stringként jön le
+
             var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userIdStr)) return false;
 
             var egyebText = string.IsNullOrEmpty(egyeb) ? "Nincs" : egyeb;
 
-            // Példányosítjuk a modellt
+
             var ujLakcim = new Taskses
             {
                 Title = "Lakcímváltoztatás kérelem",
@@ -178,19 +177,18 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
             var authState = await _authStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
-            // A bejelentkezett user ID-ja stringként jön le
+
             var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userIdStr)) return false;
 
-            // Példányosítjuk a modellt
             var ujJelentkezes = new Taskses
             {
                 Title = "Érettségi jelentkezés",
                 TaskTypeId = 8,
                 ReportDate = DateTime.Now,
                 Message = $"Tantárgy: {tantargy}, Szint: {szint}",
-                // Itt konvertáljuk a stringet Guid-ra, mert a modelled azt várja:
+
                 SenderUserId = Guid.Parse(userIdStr),
                 State = 0
             };

@@ -176,13 +176,12 @@
     {
         StudentName = await UserManagementService.GetCurrentUserNameAsync();
 
-        // 2. Felhasználó ID lekérése
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var userIdStr = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
         if (Guid.TryParse(userIdStr, out var userId))
         {
-            // 3. Adatok lekérése a szerviz segítségével
+
             requests = await GetReq.GetDiakTasks(userId);
         }
     }

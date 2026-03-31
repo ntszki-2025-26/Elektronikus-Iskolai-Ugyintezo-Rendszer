@@ -45,7 +45,6 @@
 
                 <MudExpansionPanels MultiExpansion="true" Elevation="0">
 
-                    @* --- ADATOK A SZERVIZBŐL --- *@
                     @if (absences != null)
                     {
                         @foreach (var a in absences)
@@ -70,7 +69,7 @@
                         }
                     }
 
-                    @* --- STATIKUS ADATOK (MEGLÉVŐ) --- *@
+
                     @foreach (var hianyzas in _hianyzasok)
                     {
                         <MudExpansionPanel Class="task-item-box">
@@ -101,7 +100,7 @@
                 </MudExpansionPanels>
             </div>
 
-            @* --- 2. SZEKCIÓ: EGYÉB ÜGYINTÉZÉSEK --- *@
+
             <div class="section-card mt-6">
                 <div class="d-flex align-center mb-4">
                     <MudIcon Icon="@Icons.Material.Filled.Assignment" Color="Color.Info" Class="mr-3" />

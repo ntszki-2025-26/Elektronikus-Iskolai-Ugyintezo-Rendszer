@@ -43,19 +43,18 @@
     [CascadingParameter]
     private MudBlazor.IMudDialogInstance MudDialog { get; set; } = default!;
 
-    // A MudDatePicker nullable DateTime-ot vár (DateTime?)
+
     private DateTime? dateFrom = DateTime.Now;
     private DateTime? dateTo = DateTime.Now;
     private string message = "";
 
-    // A metódus async Task legyen, és NE várjon bemeneti paramétereket,
-    // hanem a fenti globális változókat használja!
+
     private async Task Submit()
     {
-        // Védelem: csak akkor küldjük el, ha mindkét dátum ki van választva
+
         if (dateFrom.HasValue && dateTo.HasValue)
         {
-            // A .Value-val megkapjuk a tényleges DateTime értéket
+
             var siker = await TaskService.HianyzasHandle(dateFrom.Value, dateTo.Value, message);
             
             if (siker)

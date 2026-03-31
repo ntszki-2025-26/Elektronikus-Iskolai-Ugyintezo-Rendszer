@@ -21,7 +21,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.LogIn
 
         public string? errorMessage;
 
-        // Ezeket hiányolta a hibalista:
+
         public bool isPasswordVisible = false;
         public string PasswordInputType => isPasswordVisible ? "text" : "password";
         public string PasswordIcon => isPasswordVisible ? "bi-eye-slash" : "bi-eye";
@@ -41,7 +41,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.LogIn
             {
                 ((CustomAuthenticationStateProvider)AuthStateProvider)
                     .MarkUserAsAuthenticated(user.FirstName, user.Id.ToString(), user.RoleId.ToString());
-                // Itt most csak a navigációt hagyjuk meg, hogy ne rontsuk el a működő részeket
+
                 switch (user.RoleId)
                 {
                     case 1: Nav.NavigateTo("/DiakHome"); break;

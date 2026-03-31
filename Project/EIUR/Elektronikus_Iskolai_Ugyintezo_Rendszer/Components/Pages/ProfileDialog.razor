@@ -35,22 +35,21 @@
 @code {
     [CascadingParameter] MudBlazor.IMudDialogInstance MudDialog { get; set; }
 
-    // Alapértelmezett adatok és állapot
     private bool _readOnly = true;
     private string _nev = "Profil neve";
     private string _email = "profil.eamil@iskola.hu";
 
-    // Szerkesztés engedélyezése
+
     private void EnableEditing()
     {
         _readOnly = false;
     }
 
-    // Mentés (itt küldhetnéd el az adatokat az adatbázisba)
+
     private void SaveData()
     {
         _readOnly = true;
-        // Ide jöhet egy Snackbar üzenet vagy API hívás
+
     }
 
     void Submit() => MudDialog.Close(MudBlazor.DialogResult.Ok(true));

@@ -54,18 +54,18 @@
 
     private void Submit()
     {
-        // Ha a jelszó mező megváltozott (nem egyezik az eredeti hash-sel), lehashelje
+
         string finalPassword;
 
-        // Ellenőrizzük, hogy a beviteli mező (password) nem üres-e
+
         if (!string.IsNullOrWhiteSpace(password))
         {
-            // Ha írt be valamit, az az új jelszava, tehát lehash-eljük
+
             finalPassword = BCrypt.Net.BCrypt.HashPassword(password);
         }
         else
         {
-            // Ha üres a mező, megtartjuk a régi, már adatbázisban lévő hash-t
+
             finalPassword = EditedUser.Password;
         }
 

@@ -24,14 +24,14 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
 
             builder.Services.AddSingleton<RequestService>();
 
-            // Egyedi szolgáltatások regisztrálása
+
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<AbsenceService>();
             builder.Services.AddScoped<GetRequestService>();
 
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
-            // HITELESÍTÉS ÉS JOGOSULTSÁGKEZELÉS BEÁLLÍTÁSA
+
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -44,12 +44,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
             builder.Services.AddAuthorization();
             builder.Services.AddCascadingAuthenticationState();
             
-            //builder.Services.AddHttpContextAccessor();
 
-            // Adatbázis konfiguráció (DefaultConnection használatával)
-            //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-            //builder.Services.AddDbContextFactory<AppDbContext>(options =>
-              //W  options.UseSqlServer(connectionString));
 
             builder.Services.AddDbContextFactory<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -59,7 +54,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
 
             var app = builder.Build();
 
-            // HTTP kéréskezelési folyamat (Middleware)
+
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
@@ -70,7 +65,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            // FONTOS: Az Antiforgery és a hitelesítés sorrendje
+
             app.UseAntiforgery();
             app.UseAuthentication();
             app.UseAuthorization();

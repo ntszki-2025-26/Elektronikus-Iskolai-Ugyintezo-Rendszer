@@ -45,16 +45,16 @@ public class AbsenceService
 
     public async Task<List<NotificationDto>> GetNotificationsByRole(int userRoleId)
     {
-        // 1. Létrehozunk egy saját contextet csak ehhez a lekérdezéshez
+
         using var _context = await _contextFactory.CreateDbContextAsync();
 
-        // 2. Lefuttatjuk a lekérdezést (a kódod többi része marad változatlan)
+
         var notifications = await (from task in _context.Taskses
                                    join user in _context.Users on task.SenderUserId equals user.Id
                                    select new NotificationDto
                                    {
                                        TaskId = task.Id,
-                                       // Magyar név összefűzése
+
                                        SenderName = user.LastName + " " +
                                                    (user.MiddleName != null ? user.MiddleName + " " : "") +
                                                    user.FirstName,

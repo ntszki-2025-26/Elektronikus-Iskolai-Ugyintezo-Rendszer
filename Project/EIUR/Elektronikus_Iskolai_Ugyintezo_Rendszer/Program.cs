@@ -50,7 +50,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddMudServices();
-            builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+            builder.Services.AddScoped<UserManagementService>();
 
             var app = builder.Build();
 

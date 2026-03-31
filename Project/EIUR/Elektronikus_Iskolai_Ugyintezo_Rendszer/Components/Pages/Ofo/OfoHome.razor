@@ -7,13 +7,14 @@
 @inject AbsenceService AbsenceService
 @inject NavigationManager Nav
 @rendermode InteractiveServer
+@inject UserManagementService UserManagementService
 
 <MudThemeProvider IsDarkMode="false" />
 
 <MudLayout>
     <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive">
         <MudDrawerHeader Class="pa-8">
-            <MudButton Typo="Typo.h5" Style="color: black; font-weight: 800;">Ofo neve</MudButton>
+            <MudButton Typo="Typo.h5" Style="color: black; font-weight: 800;">@OfoName</MudButton>
         </MudDrawerHeader>
 
         <MudNavMenu Class="nav-menu-custom">
@@ -217,5 +218,12 @@
         public DateTime Date { get; set; }
         public string Description { get; set; } = "";
         public bool IsDone { get; set; }
+    }
+
+    private string OfoName { get; set; } = "Betöltés...";
+
+    protected override async Task OnInitializedAsync()
+    {
+        OfoName = await UserManagementService.GetCurrentUserNameAsync() ?? "Ismeretlen Osztályfőnök";
     }
 }

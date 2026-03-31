@@ -1,15 +1,18 @@
 ﻿@page "/IgazgatoHome"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @attribute [Authorize(Roles = "Igazgató")]
 @inject ISnackbar Snackbar
 @rendermode InteractiveServer
+@inject UserManagementService UserManagementService
+@inject AuthenticationStateProvider AuthStateProvider
 
 <MudThemeProvider IsDarkMode="false" />
 
 <MudLayout>
     <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive">
         <MudDrawerHeader Class="pa-8">
-            <MudButton Typo="Typo.h5" Style="color: black; font-weight: 800;">Igo neve</MudButton>
+            <MudButton Typo="Typo.h5" Style="color: black; font-weight: 800;">@IgoName</MudButton>
         </MudDrawerHeader>
 
         <MudNavMenu Class="nav-menu-custom">
@@ -25,7 +28,7 @@
     <MudMainContent Class="main-bg">
         <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-10">
 
-            <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Osztályfőnöki Felügyelet (12.B)</MudText>
+            <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Igazgatói Felület</MudText>
 
             <div class="section-card mb-6">
                 <div class="d-flex align-center mb-4">
@@ -116,6 +119,9 @@
 </MudLayout>
 
 @code {
+    private string IgoName { get; set; } = "Betöltés...";
+
+
     private void TudomasulVetel(Hianyzas h)
     {
         _hianyzasok.Remove(h);
@@ -155,5 +161,24 @@
         public DateTime Date { get; set; }
         public string Description { get; set; } = "";
         public bool IsDone { get; set; }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                IgoName = await UserManagementService.GetCurrentUserNameAsync() ?? "Ismeretlen Igazgató";
+            }
+        }
+        catch (Exception ex)
+        {
+            IgoName = "Hiba a betöltéskor";
+            Console.WriteLine($"Hiba: {ex.Message}");
+        }
     }
 }

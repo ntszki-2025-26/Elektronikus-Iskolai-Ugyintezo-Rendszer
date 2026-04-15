@@ -89,6 +89,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
                     new TaskTypes { Id = 6, Type = "korábbi érettségi vizsgák törzslap másolata" },
                     new TaskTypes { Id = 7, Type = "Hiányzás bejelentés" },
                     new TaskTypes { Id = 8, Type = "érettségi jelentkezés" },
+                    new TaskTypes { Id = 9, Type = "panasz bejelentés" },
                 };
 
                 using (var transaction = await context.Database.BeginTransactionAsync())

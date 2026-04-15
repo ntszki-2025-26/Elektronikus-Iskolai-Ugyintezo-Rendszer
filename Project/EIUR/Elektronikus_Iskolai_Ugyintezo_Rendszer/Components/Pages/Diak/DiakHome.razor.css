@@ -1,85 +1,69 @@
 ﻿
-::deep .mud-drawer {
-    height: 100vh !important;
-    background-color: #1a1c23 !important;
-    position: fixed !important;
-}
-
-::deep .mud-drawer-paper {
-    background-color: #1a1c23 !important;
-}
-
-
-::deep .nav-menu-custom .mud-nav-link {
-    margin: 8px 16px !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-radius: 10px !important;
-    background-color: rgba(255, 255, 255, 0.03);
-    color: rgba(255, 255, 255, 0.7) !important;
-    transition: all 0.2s ease-in-out;
-}
-
-    ::deep .nav-menu-custom .mud-nav-link:hover {
-        background-color: rgba(255, 255, 255, 0.08) !important;
-        border-color: rgba(255, 255, 255, 0.3) !important;
-        color: white !important;
-        transform: scale(1.02);
+@media (max-width: 959px) {
+    .mud-main-content,
+    ::deep .mud-main-content {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+        width: 100vw !important;
     }
 
-    ::deep .nav-menu-custom .mud-nav-link.active {
-        background-color: rgba(89, 74, 226, 0.15) !important;
-        border-color: #594ae2 !important;
-        color: white !important;
+    .content-wrapper-fix,
+    ::deep .mud-container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
-.logout-wrapper {
-    padding: 8px 16px;
-}
-
-.logout-btn-box {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    background: rgba(244, 67, 54, 0.05);
-    border: 1px solid rgba(244, 67, 54, 0.3);
-    border-radius: 10px;
-    color: #ff8a80;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-    .logout-btn-box:hover {
-        background: rgba(244, 67, 54, 0.15);
-        border-color: #f44336;
-        color: white;
+    ::deep .mud-drawer-responsive {
+        display: none !important;
+        width: 0 !important;
     }
+}
 
-.main-bg {
+.main-bg-fix {
     background-color: #f8f9fc !important;
     min-height: 100vh;
 }
 
-.custom-card {
-    background: white;
-    border-radius: 12px;
+.custom-mobile-header {
+    background-color: white !important;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 16px;
+    height: 64px;
     display: flex;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.04);
-    height: 100px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid #edf2f7;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-    .custom-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 15px rgba(0,0,0,0.08);
+.student-name-display {
+    font-weight: 800;
+    font-size: 1rem;
+    color: #1a202c;
+}
+
+.custom-card {
+    background: white;
+    border-radius: 16px;
+    display: flex;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    min-height: 85px;
+    cursor: pointer;
+    border: 1px solid #edf2f7;
+    transition: transform 0.1s;
+}
+
+    .custom-card:active {
+        transform: scale(0.98);
     }
 
 .card-accent {
-    width: 8px;
+    width: 6px;
+    flex-shrink: 0;
 }
 
 .card-body {
@@ -87,28 +71,40 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 0 24px;
+    padding: 16px;
 }
 
-.card-title-text {
-    font-weight: 700;
-    color: #2d3748;
-    font-size: 1rem;
+.table-container {
+    width: 100%;
+    overflow-x: auto;
 }
 
-::deep .mud-table-root {
+::deep .custom-table .mud-table-root {
     background-color: white !important;
 }
 
-::deep .mud-table-head {
-    background-color: #fcfcfd !important;
+::deep .sidebar-dark {
+    background-color: #1a1c23 !important;
 }
 
-.shadow-sm {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    ::deep .sidebar-dark .mud-drawer-paper {
+        background-color: #1a1c23 !important;
+    }
+
+.logout-btn-box {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(244, 67, 54, 0.08);
+    border: 1px solid rgba(244, 67, 54, 0.2);
+    border-radius: 12px;
+    color: #ff8a80;
+    font-weight: 600;
+    cursor: pointer;
 }
 
-.card-title-text {
-    line-height: 1.2;
-    margin-top: 4px;
+::deep .nav-menu-custom .mud-nav-link {
+    margin: 4px 16px !important;
+    border-radius: 10px !important;
+    color: rgba(255, 255, 255, 0.6) !important;
 }

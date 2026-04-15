@@ -9,7 +9,6 @@
     border-right: none !important;
 }
 
-/* NAVIGÁCIÓS GOMBOK */
 ::deep .nav-menu-custom .mud-nav-link {
     margin: 8px 16px !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
@@ -24,7 +23,6 @@
         color: white !important;
     }
 
-/* FŐ HÁTTÉR ÉS KÁRTYÁK */
 .main-bg {
     background-color: #f8f9fc !important;
     min-height: 100vh;
@@ -38,10 +36,40 @@
     margin-bottom: 24px;
 }
 
-/* SZÜRKE BOXOK A FELADATOKNAK */
 ::deep .task-item-box {
     background-color: #f8fafc !important;
     border: 1px solid #edf2f7 !important;
     border-radius: 10px !important;
     margin-bottom: 12px !important;
 }
+
+.m-nav-button {
+    flex: 1; 
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    background-color: #f8fafc;
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+    .m-nav-button.active {
+        background-color: #594ae2;
+        color: white;
+        border-color: #594ae2;
+        box-shadow: 0 4px 6px rgba(89, 74, 226, 0.2);
+    }
+
+.mobile-nav-buttons {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+    .mobile-nav-buttons::-webkit-scrollbar {
+        display: none;
+    }

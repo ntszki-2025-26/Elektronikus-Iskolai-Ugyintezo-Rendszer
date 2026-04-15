@@ -1,0 +1,18 @@
+﻿
+.erettsegi-select-popover {
+    z-index: 99999 !important;
+    position: fixed !important;
+}
+
+::deep .mud-dialog {
+    overflow: visible !important;
+}
+
+::deep .mud-dialog-content {
+    overflow: visible !important;
+}
+
+::deep .mud-popover-provider {
+    z-index: 99999 !important;
+}
+

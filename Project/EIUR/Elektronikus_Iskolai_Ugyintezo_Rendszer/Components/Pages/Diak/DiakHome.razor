@@ -16,25 +16,14 @@
 
 <MudThemeProvider IsDarkMode="false" />
 
-
 <MudLayout>
-    <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive">
-        <MudDrawerHeader Class="pa-8">
-            <MudButton Typo="Typo.h5"
-                       Style="color: black; font-weight: 800;">
-               @StudentName
-            </MudButton>
-        </MudDrawerHeader>
-
+    <MudDrawer Open="true" Elevation="1" Variant="@DrawerVariant.Responsive" Breakpoint="Breakpoint.Md" Class="sidebar-dark d-none d-md-flex">
+        <div class="pa-8 text-center" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <MudIcon Icon="@Icons.Material.Filled.School" Style="font-size: 3.5rem; color: #2196F3 !important;" />
+            <MudText Typo="Typo.h5" Style="color: black !important;">@StudentName</MudText>
+        </div>
         <MudNavMenu Class="nav-menu-custom">
-
-            <div class="logout-wrapper">
-
-                <form id="logout-form" action="/" method="post" style="display: none;">
-                    <AntiforgeryToken />
-                </form>
-
-
+            <div class="pa-4 mt-auto">
                 <div class="logout-btn-box" @onclick="HandleLogout" style="cursor: pointer;">
                     <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
                     <span>Kijelentkezés</span>
@@ -43,67 +32,98 @@
         </MudNavMenu>
     </MudDrawer>
 
-    <MudMainContent Class="main-bg">
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-10">
-            <MudText Typo="Typo.h4" Class="mb-8" Style="font-weight: 800; color: #1a202c;">Feladatok</MudText>
+    <MudMainContent Class="main-bg-fix">
+        <div class="custom-mobile-header d-md-none">
+            <div class="header-left-side">
+                <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Primary" Class="mr-2" />
+                <span class="student-name-display">@StudentName</span>
+            </div>
+            <div class="header-right-side">
+                <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Error" OnClick="HandleLogout" Size="Size.Small" />
+            </div>
+        </div>
 
-            <MudGrid>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-4 pa-md-10 content-wrapper-fix">
+            <MudText Typo="Typo.h4" Class="mb-8 d-none d-md-block" Style="font-weight: 800; color: #1a202c;">Feladatok</MudText>
+            <MudGrid Spacing="3">
                 @foreach (var item in GetMenuItems())
                 {
                     <MudItem xs="12" sm="6" md="4">
-                        <div class="custom-card" @onclick="item.Action">
+                        <div class="custom-card" @onclick="item.Action" style="cursor: pointer;">
                             <div class="card-accent" style="background-color: @item.Color;"></div>
                             <div class="card-body">
                                 <div class="d-flex flex-column">
-                                    <MudText Typo="Typo.caption" Style="color: #718096; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Ügyintézés</MudText>
-                                    <MudText Typo="Typo.subtitle1" Class="card-title-text">@item.Title</MudText>
+                                    <MudText Typo="Typo.caption" Style="color: #718096; font-weight: 600; text-transform: uppercase;">Ügyintézés</MudText>
+                                    <MudText Typo="Typo.subtitle1" Style="font-weight:700;">@item.Title</MudText>
                                 </div>
-                                <MudIcon Icon="@Icons.Material.Filled.ArrowForwardIos" Size="Size.Small" Style="color: #cbd5e0;" />
+                                <MudIcon Icon="@Icons.Material.Filled.ChevronRight" Size="Size.Small" Style="color: #cbd5e0;" />
                             </div>
                         </div>
                     </MudItem>
                 }
             </MudGrid>
+            <div class="mt-10">
+                <div class="d-flex flex-column flex-md-row align-md-center justify-md-space-between mb-6 gap-4">
+                    <div class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.History" Color="Color.Info" Class="mr-2" />
+                        <MudText Typo="Typo.h5" Style="font-weight: 800; color: #1a202c;">Kérelmek állapota</MudText>
+                    </div>
 
-            <div class="mt-12">
-                <MudText Typo="Typo.h5" Class="mb-6" Style="font-weight: 800; color: #1a202c;">
-                    Kérelmek állapota
-                </MudText>
+                    <div style="min-width: 280px;">
+                        <MudSelect T="int?" Label="Állapot szűrése" Value="@selectedStatus" ValueChanged="OnStatusChanged"
+                                   Variant="Variant.Outlined" Margin="Margin.Dense" Class="bg-white rounded-lg shadow-sm">
+                            <MudSelectItem T="int?" Value="@((int?)null)">Összes beküldött</MudSelectItem>
+                            <MudSelectItem T="int?" Value="@(0)">Beérkezett</MudSelectItem>
+                            <MudSelectItem T="int?" Value="@(1)">Folyamatban</MudSelectItem>
+                            <MudSelectItem T="int?" Value="@(3)">Titkársági aláírás szükséges</MudSelectItem>
+                            <MudSelectItem T="int?" Value="@(2)">Elkészült</MudSelectItem>
+                        </MudSelect>
+                    </div>
+                </div>
 
-                <MudTable Items="@requests" Hover="true" Elevation="0" Class="rounded-xl border border-solid mud-border-default shadow-sm">
-                    <HeaderContent>
-                        <MudTh Style="font-weight: 700;">Típus</MudTh>
-                        <MudTh Style="font-weight: 700;">Dátum</MudTh>
-                        <MudTh Style="font-weight: 700;">Állapot</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd>@context.Title</MudTd>
-                        <MudTd>@context.ReportDate.ToString("yyyy.MM.dd.")</MudTd>
-                        <MudTd>
-                            <MudChip T="string"
-                                     Color="@GetStatusColor(context.State)"
-                                     Variant="Variant.Text"
-                                     Size="Size.Small"
-                                     Style="font-weight: 800; background-color: rgba(0,0,0,0.03);">
-                                @GetStatusText(context.State)
-                            </MudChip>
-                        </MudTd>
-                    </RowTemplate>
-                </MudTable>
+                <div class="table-container">
+                    <MudTable Items="@FilteredRequests" Hover="true" Elevation="0" Class="rounded-xl border shadow-sm custom-table">
+                        <HeaderContent>
+                            <MudTh>Típus</MudTh>
+                            <MudTh>Dátum</MudTh>
+                            <MudTh>Állapot</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Típus">@context.Title</MudTd>
+                            <MudTd DataLabel="Dátum">@context.ReportDate.ToString("yyyy.MM.dd.")</MudTd>
+                            <MudTd DataLabel="Állapot">
+                                <MudChip T="string"
+                                         Color="@GetStatusColor(context.State)"
+                                         Variant="Variant.Text"
+                                         Size="Size.Small"
+                                         Style="font-weight: 800;">
+                                    @GetStatusText(context.State)
+                                </MudChip>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </div>
             </div>
         </MudContainer>
     </MudMainContent>
 </MudLayout>
 
-
 @code {
+    private string StudentName { get; set; } = "Betöltés...";
+    private List<Taskses> requests = new();
+    private int? selectedStatus = null;
 
-    private void HandleLogout()
+    private IEnumerable<Taskses> FilteredRequests => selectedStatus.HasValue
+        ? requests.Where(x => x.State == selectedStatus.Value)
+        : requests;
+
+    private void OnStatusChanged(int? newValue)
     {
-        Nav.NavigateTo("/", forceLoad: true);
+        selectedStatus = newValue;
+        StateHasChanged();
     }
 
-    private List<Taskses> requests = new();
+    private void HandleLogout() => Nav.NavigateTo("/", forceLoad: true);
 
     private class MenuItem
     {
@@ -126,18 +146,10 @@
     private Task Iskolalatogatas() => DialogService.ShowAsync<Pages.Dialogok.IskolaLatDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task MAKarvasagi() => DialogService.ShowAsync<Pages.Dialogok.MAKDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Jogviszony() => DialogService.ShowAsync<Pages.Dialogok.JogviszonyDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Erettsegi() => DialogService.ShowAsync<Pages.Dialogok.ErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Erettsegi() => DialogService.ShowAsync<Pages.Dialogok.ErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.Small, FullScreen = true });
     private Task Lakcim() => DialogService.ShowAsync<Pages.Dialogok.LakcimDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Torzslap() => DialogService.ShowAsync<Pages.Dialogok.TorzslapDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Hianyzas() => DialogService.ShowAsync<Pages.Dialogok.HianyzasDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-
-    private Task ProfileDialog()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small, FullWidth = true };
-
-
-        return DialogService.ShowAsync<ProfileDialog>("", options);
-    }
 
     private string GetStatusText(int? status) => status switch
     {
@@ -148,54 +160,23 @@
         _ => "Ismeretlen"
     };
 
-
-    @*private List<RequestItem> GetRequests() => new()
-    {
-        new RequestItem { Type = "Iskolalátogatási igazolás", Date = DateTime.Now.AddDays(-2), Status = 2 },
-        new RequestItem { Type = "Érettségi jelentkezés", Date = DateTime.Now.AddDays(-1), Status = 1 },
-        new RequestItem { Type = "Lakcím bejelentés", Date = DateTime.Now, Status = 0 }
-
-    };*@
-
-
-    private Color GetStatusColor(int status) => status switch
+    private Color GetStatusColor(int? status) => status switch
     {
         3 => Color.Secondary,
-        2 => Color.Success,  
-        1 => Color.Warning, 
-        0 => Color.Error,   
+        2 => Color.Success,
+        1 => Color.Warning,
+        0 => Color.Error,
         _ => Color.Default
     };
-
-    private async Task IskolalatogatasiKerese()
-    {
-
-        var ujKerelem = new Elektronikus_Iskolai_Ugyintezo_Rendszer.Models.Taskses
-        {
-            Title = "Iskolalátogatási igazolás",
-            TaskTypeId = 1,
-            ReportDate = DateTime.Now,
-            Message = "Iskolalátogatási papírt szeretnék kérni.",
-            SenderUserId = Guid.Empty
-        };
-
-        await RequestService.AddRequestAsync(ujKerelem);
-        Snackbar.Add("Kérelem elküldve!", MudBlazor.Severity.Success);
-    }
-
-
-    private string StudentName { get; set; } = "Betöltés...";
 
     protected override async Task OnInitializedAsync()
     {
         StudentName = await UserManagementService.GetCurrentUserNameAsync();
-
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         var userIdStr = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
         if (Guid.TryParse(userIdStr, out var userId))
         {
-
             requests = await GetReq.GetDiakTasks(userId);
         }
     }

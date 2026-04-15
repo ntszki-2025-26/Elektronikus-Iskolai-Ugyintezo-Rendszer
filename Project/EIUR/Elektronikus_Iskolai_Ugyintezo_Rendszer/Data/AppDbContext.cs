@@ -21,5 +21,22 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
         public DbSet<TaskTypeRole> TaskTypeRoles { get; set; }
         public DbSet<TaskTypes> TaskType { get; set; }
         public DbSet<Taskses> Taskses { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Role>()
+                .Property(r => r.Id)
+                .ValueGeneratedNever();
+
+            modelBuilder.Entity<Subjects>()
+                .Property(s => s.Id)
+                .ValueGeneratedNever();
+
+            modelBuilder.Entity<TaskTypes>()
+                .Property(t => t.Id)
+                .ValueGeneratedNever();
+        }
     }
 }

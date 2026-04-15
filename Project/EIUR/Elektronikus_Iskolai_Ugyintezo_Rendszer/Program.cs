@@ -11,9 +11,10 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
 
             // Add services to the container.
             builder.Services.AddMudServices();
@@ -62,7 +63,12 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
                 app.UseHsts();
             }
 
-
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                await db.Database.MigrateAsync();
+                await DbSeeder.SeedAsync(db);
+            }
 
             app.UseStatusCodePagesWithReExecute("/not-found", "?statusCode={0}");
             app.UseHttpsRedirection();

@@ -121,7 +121,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
                     Email = "admin@gmail.com",
                     RoleId = 9,
                     PhoneNumber = "+36301234567",
-                    Password = "$2a$12$fG6HPDueYrZv9VZwqlC.VuyFPMuoZWIXps6ALzszVSbMFHM1vygy.", //az "admin" szó BCrypt hash-e
+                    Password = "$2a$12$fG6HPDueYrZv9VZwqlC.VuyFPMuoZWIXps6ALzszVSbMFHM1vygy.",
                     IsEnabled = true,
                 };
 

@@ -49,7 +49,6 @@
 
     private async Task Submit()
     {
-        // 1. Ellenőrizzük, hogy ki vannak-e töltve a dátumok
         if (!dateFrom.HasValue || !dateTo.HasValue)
         {
             Snackbar.Add("Kérjük, töltse ki mindkét dátumot!", Severity.Warning);

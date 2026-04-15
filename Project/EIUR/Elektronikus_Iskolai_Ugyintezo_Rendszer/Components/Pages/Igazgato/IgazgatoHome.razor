@@ -115,7 +115,6 @@
                                 <MudSelectItem T="int?" Value="@(0)">Függőben</MudSelectItem>
                                 <MudSelectItem T="int?" Value="@(2)">Elfogadva</MudSelectItem>
                                 <MudSelectItem T="int?" Value="@(1)">Elutasítva</MudSelectItem>
-                                @* Új szűrő elem *@
                             }
                             else
                             {
@@ -161,9 +160,8 @@
                                         <div class="d-flex flex-wrap justify-end gap-2">
                                             @if (task.Title == "Hiányzás bejelentés")
                                             {
-                                                @if (task.State != 2 && task.State != 1) @* Ne jelenjen meg, ha már el van fogadva vagy el van utasítva *@
+                                                @if (task.State != 2 && task.State != 1)
                                                 {
-                                                    @* Itt az ujAllapot most már 1-es (Elutasítva) *@
                                                     <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(() => FrissitAllapot(task, 1))" Size="Size.Small">Elutasít</MudButton>
                                                     <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@(() => FrissitAllapot(task, 2))" Size="Size.Small">Elfogad</MudButton>
                                                 }
@@ -274,10 +272,10 @@
 
     private Color GetStateColor(int? state) => state switch
     {
-        0 => Color.Warning,   // Sárga
-        1 => Color.Error,     // Piros
-        2 => Color.Success,   // Zöld
-        3 => Color.Secondary, // Lila
+        0 => Color.Warning,   
+        1 => Color.Error,    
+        2 => Color.Success,   
+        3 => Color.Secondary,
         _ => Color.Default
     };
     private string GetStateColorName(int? state) => state switch 

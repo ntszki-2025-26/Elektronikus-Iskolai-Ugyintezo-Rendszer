@@ -69,7 +69,7 @@
         </div>
 
         <MudContainer MaxWidth="MaxWidth.False" Class="pa-4 pa-md-10 content-wrapper-fix">
-            <MudText Typo="Typo.h4" Class="mb-8 d-none d-md-block" Style="font-weight: 800; color: #1a202c;">Igazgatóhelyettesi Felület</MudText>
+            <MudText Typo="Typo.h4" Class="mb-8 d-none d-md-block" Style="font-weight: 800; color: #1a202c;">Igazgatói Felület</MudText>
 
             <div class="section-card">
                 <div class="d-flex flex-column flex-md-row align-start align-md-center justify-md-space-between mb-6 gap-4">
@@ -96,9 +96,20 @@
                             </MudSelect>
                         }
 
-                        <MudSelect T="int?" Label="Állapot" Value="@selectedStatus" ValueChanged="OnStatusFilterChanged"
-                                   Variant="Variant.Outlined" Margin="Margin.Dense" Class="bg-white">
+                        <MudSelect @key="@($"filter_{currentNavFilter}")"
+                                   T="int?"
+                                   Label="Állapot"
+                                   Value="@selectedStatus"
+                                   ValueChanged="OnStatusFilterChanged"
+                                   Variant="Variant.Outlined"
+                                   Margin="Margin.Dense"
+                                   Class="bg-white"
+                                   TransformOrigin="Origin.TopCenter"
+                                   AnchorOrigin="Origin.BottomCenter">
+                                   
+    
                             <MudSelectItem T="int?" Value="@((int?)null)">Összes állapot</MudSelectItem>
+    
                             @if (currentNavFilter == "hianyzas")
                             {
                                 <MudSelectItem T="int?" Value="@(0)">Függőben</MudSelectItem>
@@ -130,7 +141,14 @@
                                             </MudText>
                                             <div class="d-flex align-center flex-wrap">
                                                 <MudText Typo="Typo.caption" Class="mr-2">Beküldve: @task.ReportDate.ToShortDateString() @task.ReportDate.ToShortTimeString()</MudText>
-                                                <MudChip T="string" Size="Size.Small" Color="@GetStateColor(task.State)" Variant="Variant.Text">@GetStateText(task.State)</MudChip>
+                                                <MudChip @key="@($"{task.TaskId}_{task.State}_{currentNavFilter}")"
+                                                         T="string"
+                                                         Size="Size.Small"
+                                                         Color="@GetStateColor(task.State)"
+                                                         Variant="Variant.Text">
+                                                         
+                                                    @GetStateText(task)
+                                                </MudChip>
                                             </div>
                                         </div>
                                     </div>
@@ -225,7 +243,30 @@
 
     private async Task LoadData() => allNotifications = await AbsenceService.GetNotificationsByRole(5);
 
-    private string GetStateText(int? state) => state switch { 0 => "Beérkezett", 1 => "Folyamatban", 2 => "Kész", 3 => "Aláírásra vár", _ => "Ismeretlen" };
+    private string GetStateText(NotificationDto task)
+    {
+        if (task == null) return "Ismeretlen";
+
+        // Debug: Ha még mindig számot látsz, ezzel látni fogod, mi jön be
+        // return task.Title + " | " + task.State;
+
+        var title = task.Title?.Trim() ?? "";
+
+        if (title == "Hiányzás bejelentés")
+        {
+            if (task.State == 0) return "Függőben";
+            if (task.State == 2) return "Elfogadva";
+            return task.State.ToString();
+        }
+        else
+        {
+            if (task.State == 0) return "Beérkezett";
+            if (task.State == 1) return "Folyamatban";
+            if (task.State == 3) return "Aláírásra vár";
+            if (task.State == 2) return "Elkészült";
+            return task.State.ToString();
+        }
+    }
     private Color GetStateColor(int? state) => state switch { 0 => Color.Error, 1 => Color.Warning, 2 => Color.Success, 3 => Color.Secondary, _ => Color.Default };
     private string GetStateColorName(int? state) => state switch { 0 => "error", 1 => "warning", 2 => "success", 3 => "secondary", _ => "action-default" };
 }

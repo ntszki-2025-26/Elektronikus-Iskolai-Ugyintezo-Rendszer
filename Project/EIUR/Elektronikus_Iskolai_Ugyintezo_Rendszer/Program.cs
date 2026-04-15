@@ -25,7 +25,6 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer
             builder.Services.AddSingleton<RequestService>();
 
 
-            builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<AbsenceService>();
             builder.Services.AddScoped<GetRequestService>();
 

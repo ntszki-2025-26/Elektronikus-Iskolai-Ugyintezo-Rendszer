@@ -14,6 +14,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
         Task<bool> HianyzasHandle(DateTime mettol, DateTime meddig, string message);
         Task<bool> LakcimValtoztatas(int iranyitoszam, string telepules, string utca, int hazszam, string? egyeb);
         Task<bool> ErettsegiJelentkezes(string tantargy, string szint);
+        Task<bool> PanaszBejelentes(string message); 
 
     }
 
@@ -207,6 +208,31 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
             };
 
             _context.Taskses.Add(ujJelentkezes);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> PanaszBejelentes(string message)
+        {
+            var authState = await _authStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdStr)) return false;
+
+            var userId = Guid.Parse(userIdStr);
+
+            var ujPanasz = new Taskses
+            {
+                Title = "Panasz bejelentés",
+                TaskTypeId = 9,
+                ReportDate = DateTime.Now,
+                SenderUserId = userId,
+                Message = message,
+                State = 0
+            };
+
+            _context.Taskses.Add(ujPanasz);
             return await _context.SaveChangesAsync() > 0;
         }
 

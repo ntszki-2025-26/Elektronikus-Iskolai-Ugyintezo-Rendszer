@@ -15,5 +15,6 @@
         [Required]
         public required Guid SenderUserId { get; set; }
         public int State { get; set; }
+
     }
 }

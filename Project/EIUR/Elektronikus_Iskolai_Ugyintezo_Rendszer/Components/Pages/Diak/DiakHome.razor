@@ -150,6 +150,7 @@
         new MenuItem { Title = "Lakcím bejelentés", Action = Lakcim, Color = "#9C27B0" },
         new MenuItem { Title = "Törzslap másolat", Action = Torzslap, Color = "#795548" },
         new MenuItem { Title = "Hiányzás bejelentése", Action = Hianyzas, Color = "#751915" },
+        new MenuItem { Title = "Panasz Bejelentése", Action = Panasz, Color = "#157653" },
     };
 
     private Task Iskolalatogatas() => DialogService.ShowAsync<Pages.Dialogok.IskolaLatDialog>("", new DialogOptions { CloseOnEscapeKey = true });
@@ -164,6 +165,7 @@
     private Task Torzslap() => DialogService.ShowAsync<Pages.Dialogok.TorzslapDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Hianyzas() => DialogService.ShowAsync<Pages.Dialogok.HianyzasDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task ProfileDialog() => DialogService.ShowAsync<Pages.Dialogok.ProfileDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task Panasz() => DialogService.ShowAsync<Pages.Dialogok.PanaszDialog>("", new DialogOptions { CloseOnEscapeKey = true });
 
     private string GetStatusText(int? status) => status switch
     {

@@ -14,7 +14,6 @@
     <DialogContent>
         <MudContainer Style="max-height: 520px; overflow-y: auto; min-width: 600px;">
 
-            @* Fejléc információ *@
             <MudAlert Severity="Severity.Info" Class="mb-4">
                 A CSV fájl elvárt fejléce (pontosvesszővel elválasztva):<br />
                 <code>Vezeteknev;Keresztnev;KozepsoNev;Email;Telefonszam;Jelszo;RoleId</code>
@@ -24,7 +23,6 @@
 
             @if (_importState == ImportState.Idle || _importState == ImportState.ParseError)
             {
-                @* Fájl feltöltő - Kijavított Context és ID *@
                 <MudFileUpload T="IBrowserFile" FilesChanged="OnFileSelected" Accept=".csv" id="importFileInput">
                     <ButtonTemplate Context="uploadContext">
                         <MudButton HtmlTag="label"
@@ -153,11 +151,9 @@
 
         try
         {
-            // Max 5MB fájlméret
             using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
             using var reader = new System.IO.StreamReader(stream, System.Text.Encoding.UTF8);
 
-            // Fejléc beolvasása és eldobása (Aszinkron!)
             await reader.ReadLineAsync(); 
             
             int rowIndex = 1;
@@ -203,7 +199,7 @@
         _importState = ImportState.Saving;
         _savedCount = 0;
         StateHasChanged();
-        await Task.Delay(100); // UI frissítés engedélyezése
+        await Task.Delay(100);
 
         try
         {
@@ -211,7 +207,6 @@
             
             foreach (var row in validRows)
             {
-                // KRITIKUS: Átadjuk a vezérlést, hogy a SignalR életben maradjon a BCrypt alatt
                 await Task.Yield(); 
 
                 var user = new User
@@ -222,7 +217,7 @@
                     MiddleName = row.MiddleName,
                     Email = row.Email,
                     PhoneNumber = row.PhoneNumber,
-                    Password = BCrypt.Net.BCrypt.HashPassword(row.Password), // Ez a lassú rész
+                    Password = BCrypt.Net.BCrypt.HashPassword(row.Password),
                     RoleId = row.RoleId,
                     IsEnabled = true
                 };

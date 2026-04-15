@@ -50,7 +50,6 @@ public class AbsenceService
         await context.SaveChangesAsync();
     }
 
-    // Csak hiányzásbejelentések (TaskTypeId = 7)
     public async Task<List<NotificationDto>> GetHianyzasNotifications()
     {
         using var _context = await _contextFactory.CreateDbContextAsync();
@@ -71,7 +70,6 @@ public class AbsenceService
         return notifications;
     }
 
-    // Adminisztratív kérések (minden NEM hiányzás típus)
     public async Task<List<NotificationDto>> GetAdminNotifications()
     {
         using var _context = await _contextFactory.CreateDbContextAsync();
@@ -92,7 +90,6 @@ public class AbsenceService
         return notifications;
     }
 
-    // Megtartva visszafelé kompatibilitás miatt
     public async Task<List<NotificationDto>> GetNotificationsByRole(int userRoleId)
     {
         using var _context = await _contextFactory.CreateDbContextAsync();

@@ -4,14 +4,13 @@
         Felhasználó módosítása
     </TitleContent>
     <DialogContent>
-        Id: <input class="form-control mb-1" type="text" disabled @bind="id"/><br />
+        Id: <input class="form-control mb-1" type="text" disabled @bind="id" /><br />
         Vezetéknév: <input class="form-control mb-1" type="text" @bind="firstName" /><br />
         Második név: <input class="form-control mb-1" type="text" @bind="middleName" /><br />
         Keresztnév: <input class="form-control mb-1" type="text" @bind="lastName" /><br />
         Aktív: <input type="checkbox" @bind="isEnabled" /><br />
         Email: <input class="form-control mb-1" type="email" @bind="email" /><br />
         Telefonszám: <input class="form-control mb-1" type="tel" @bind="phoneNumber" /><br />
-        Jelszó: <input class="form-control mb-1" type="password" @bind="password" /><br />
         Szerepkör: <input class="form-control mb-1" type="number" @bind="roleId" /><br />
     </DialogContent>
     <DialogActions>
@@ -38,15 +37,15 @@
     {
         if (EditedUser is not null)
         {
-            id          = EditedUser.Id;
-            firstName   = EditedUser.FirstName;
-            middleName  = EditedUser.MiddleName;
-            lastName    = EditedUser.LastName;
-            isEnabled   = EditedUser.IsEnabled == true;
-            email       = EditedUser.Email;
+            id = EditedUser.Id;
+            firstName = EditedUser.FirstName;
+            middleName = EditedUser.MiddleName;
+            lastName = EditedUser.LastName;
+            isEnabled = EditedUser.IsEnabled == true;
+            email = EditedUser.Email;
             phoneNumber = EditedUser.PhoneNumber;
-            password    = EditedUser.Password;
-            roleId      = EditedUser.RoleId;
+            password = EditedUser.Password;
+            roleId = EditedUser.RoleId;
         }
     }
 
@@ -71,15 +70,15 @@
 
         var updated = new User
         {
-            Id          = id,
-            FirstName   = firstName,
-            MiddleName  = middleName,
-            LastName    = lastName,
-            IsEnabled   = (bool)(isEnabled ? true : false),
-            Email       = email,
+            Id = id,
+            FirstName = firstName,
+            MiddleName = middleName,
+            LastName = lastName,
+            IsEnabled = (bool)(isEnabled ? true : false),
+            Email = email,
             PhoneNumber = phoneNumber,
-            Password    = finalPassword,
-            RoleId      = roleId
+            Password = finalPassword,
+            RoleId = roleId
         };
         MudDialogInstance.Close(DialogResult.Ok(updated));
     }

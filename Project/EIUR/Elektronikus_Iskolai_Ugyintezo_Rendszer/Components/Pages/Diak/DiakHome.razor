@@ -21,8 +21,9 @@
     <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Responsive">
         <MudDrawerHeader Class="pa-8">
             <MudButton Typo="Typo.h5"
-                       Style="color: black; font-weight: 800;">
-               @StudentName
+                       Style="color: black; font-weight: 800;"
+                       OnClick="ProfileDialog">
+                @StudentName
             </MudButton>
         </MudDrawerHeader>
 
@@ -161,9 +162,9 @@
     private Color GetStatusColor(int status) => status switch
     {
         3 => Color.Secondary,
-        2 => Color.Success,  
-        1 => Color.Warning, 
-        0 => Color.Error,   
+        2 => Color.Success,
+        1 => Color.Warning,
+        0 => Color.Error,
         _ => Color.Default
     };
 

@@ -7,14 +7,15 @@ using System.Security.Claims;
 
 namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
 {
-   
-    
+
+
     public interface IUserManagementService
     {
         Task DisableUser(Guid id);
         Task UpdateUser(Guid id, User user);
         Task<string> GetCurrentUserNameAsync();
         Task StateChange(int taskId, int ujAllapot);
+        Task<(User? user, StudentDatas? studentData)> GetCurrentUserDataAsync();
     }
 
     public class UserManagementService : IUserManagementService
@@ -32,7 +33,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
             if (user != null)
             {
                 user.IsEnabled = false;
-               await context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             else
             {
@@ -90,6 +91,20 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
                 await context.SaveChangesAsync();
             }
         }
+
+        public async Task<(User? user, StudentDatas? studentData)> GetCurrentUserDataAsync()
+        {
+            var authState = await authStateProvider.GetAuthenticationStateAsync();
+            var userIdStr = authState.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdStr) || !Guid.TryParse(userIdStr, out Guid userId))
+                return (null, null);
+
+            var dbUser = await context.Users.FindAsync(userId);
+            var studentData = await context.StudentData.FirstOrDefaultAsync(s => s.UserId == userId);
+
+            return (dbUser, studentData);
+        }
     }
-    
+
 }

@@ -106,5 +106,31 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Admin
             false => "bg-secondary-light text-secondary",
             true => "bg-success-light text-success"
         };
+
+        private string searchTerm = "";
+        private int selectedRoleId = 0;
+
+        private IEnumerable<User> FilteredUsers
+        {
+            get
+            {
+                var res = users.AsEnumerable() ?? Enumerable.Empty<User>();
+
+                if (!string.IsNullOrWhiteSpace(searchTerm))
+                {
+                    res = res.Where(u => (u.LastName + " " + u.FirstName)
+                        .Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (selectedRoleId != 0)
+                {
+                    res = res.Where(u => u.RoleId == selectedRoleId);
+                }
+
+                return res.ToList();
+            }
+        }
     }
-}
+
+    
+    }

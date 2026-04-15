@@ -72,9 +72,13 @@
     private string _ujTantargy;
     private string _szint = "Középszint";
 
-    private async void Submit()
+    private async Task Submit()
     {
-        if (string.IsNullOrEmpty(_ujTantargy)) return;
+        if (string.IsNullOrWhiteSpace(_ujTantargy))
+        {
+            Snackbar.Add("Kérjük, az üres mezőt töltse ki (válasszon tantárgyat)!", Severity.Warning);
+            return;
+        }
 
         var siker = await TaskService.ErettsegiJelentkezes(_ujTantargy, _szint);
 

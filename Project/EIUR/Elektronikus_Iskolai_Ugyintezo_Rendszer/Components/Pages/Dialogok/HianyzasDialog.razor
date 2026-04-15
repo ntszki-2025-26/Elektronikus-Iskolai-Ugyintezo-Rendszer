@@ -43,33 +43,34 @@
     [CascadingParameter]
     private MudBlazor.IMudDialogInstance MudDialog { get; set; } = default!;
 
-
     private DateTime? dateFrom = DateTime.Now;
     private DateTime? dateTo = DateTime.Now;
     private string message = "";
 
-
     private async Task Submit()
     {
-
-        if (dateFrom.HasValue && dateTo.HasValue)
+        if (!dateFrom.HasValue || !dateTo.HasValue)
         {
+            Snackbar.Add("Kérjük, töltse ki mindkét dátumot!", Severity.Warning);
+            return;
+        }
 
-            var siker = await TaskService.HianyzasHandle(dateFrom.Value, dateTo.Value, message);
-            
-            if (siker)
-            {
-                Snackbar.Add("Hiányzás sikeresen rögzítve!", Severity.Success);
-                MudDialog.Close(DialogResult.Ok(true));
-            }
-            else
-            {
-                Snackbar.Add("Hiba történt a rögzítés során!", Severity.Error);
-            }
+        if (dateFrom.Value.Date > dateTo.Value.Date)
+        {
+            Snackbar.Add("A kezdő dátum nem lehet későbbi, mint a befejező dátum!", Severity.Error);
+            return;
+        }
+
+        var siker = await TaskService.HianyzasHandle(dateFrom.Value, dateTo.Value, message);
+        
+        if (siker)
+        {
+            Snackbar.Add("Hiányzás sikeresen rögzítve!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
         }
         else
         {
-            Snackbar.Add("Kérjük, töltse ki a dátumokat!", Severity.Warning);
+            Snackbar.Add("Hiba történt a rögzítés során!", Severity.Error);
         }
     }
 

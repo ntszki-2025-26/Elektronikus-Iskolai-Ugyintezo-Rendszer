@@ -1,6 +1,6 @@
 ﻿
 .erettsegi-select-popover {
-    z-index: 99999 !important;
+    z-index: 500 !important;
     position: fixed !important;
 }
 
@@ -13,6 +13,6 @@
 }
 
 ::deep .mud-popover-provider {
-    z-index: 99999 !important;
+    z-index: 500 !important;
 }
 

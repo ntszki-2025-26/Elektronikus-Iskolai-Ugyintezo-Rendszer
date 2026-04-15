@@ -18,10 +18,15 @@
 
 <MudLayout>
     <MudDrawer Open="true" Elevation="1" Variant="@DrawerVariant.Responsive" Breakpoint="Breakpoint.Md" Class="sidebar-dark d-none d-md-flex">
-        <div class="pa-8 text-center" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <div class="pa-8 d-flex flex-column align-center" style="border-bottom: 1px solid rgba(255,255,255,0.1); width: 100%;">
             <MudIcon Icon="@Icons.Material.Filled.School" Style="font-size: 3.5rem; color: #2196F3 !important;" />
-            <MudText Typo="Typo.h5" Style="color: black !important;">@StudentName</MudText>
+            <div @onclick="ProfileDialog" style="cursor: pointer;" class="mt-4 d-flex align-center justify-center">
+                <MudText Typo="Typo.h6" Style="color: black !important; font-weight: 800; line-height: 1.2;">
+                    @StudentName
+                </MudText>
+            </div>
         </div>
+
         <MudNavMenu Class="nav-menu-custom">
             <div class="pa-4 mt-auto">
                 <div class="logout-btn-box" @onclick="HandleLogout" style="cursor: pointer;">
@@ -35,8 +40,10 @@
     <MudMainContent Class="main-bg-fix">
         <div class="custom-mobile-header d-md-none">
             <div class="header-left-side">
-                <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Primary" Class="mr-2" />
-                <span class="student-name-display">@StudentName</span>
+                <div @onclick="ProfileDialog" style="cursor: pointer;" class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Primary" Class="mr-2" />
+                    <span class="student-name-display">@StudentName</span>
+                </div>
             </div>
             <div class="header-right-side">
                 <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Error" OnClick="HandleLogout" Size="Size.Small" />
@@ -45,6 +52,7 @@
 
         <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-4 pa-md-10 content-wrapper-fix">
             <MudText Typo="Typo.h4" Class="mb-8 d-none d-md-block" Style="font-weight: 800; color: #1a202c;">Feladatok</MudText>
+            
             <MudGrid Spacing="3">
                 @foreach (var item in GetMenuItems())
                 {
@@ -62,6 +70,7 @@
                     </MudItem>
                 }
             </MudGrid>
+
             <div class="mt-10">
                 <div class="d-flex flex-column flex-md-row align-md-center justify-md-space-between mb-6 gap-4">
                     <div class="d-flex align-center">
@@ -146,10 +155,15 @@
     private Task Iskolalatogatas() => DialogService.ShowAsync<Pages.Dialogok.IskolaLatDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task MAKarvasagi() => DialogService.ShowAsync<Pages.Dialogok.MAKDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Jogviszony() => DialogService.ShowAsync<Pages.Dialogok.JogviszonyDialog>("", new DialogOptions { CloseOnEscapeKey = true });
-    private Task Erettsegi() => DialogService.ShowAsync<Pages.Dialogok.ErettsegiDialog>("", new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.Small, FullScreen = true });
+    private Task Erettsegi()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.Small };
+        return DialogService.ShowAsync<Pages.Dialogok.ErettsegiDialog>("", options);
+    }
     private Task Lakcim() => DialogService.ShowAsync<Pages.Dialogok.LakcimDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Torzslap() => DialogService.ShowAsync<Pages.Dialogok.TorzslapDialog>("", new DialogOptions { CloseOnEscapeKey = true });
     private Task Hianyzas() => DialogService.ShowAsync<Pages.Dialogok.HianyzasDialog>("", new DialogOptions { CloseOnEscapeKey = true });
+    private Task ProfileDialog() => DialogService.ShowAsync<Pages.Dialogok.ProfileDialog>("", new DialogOptions { CloseOnEscapeKey = true });
 
     private string GetStatusText(int? status) => status switch
     {

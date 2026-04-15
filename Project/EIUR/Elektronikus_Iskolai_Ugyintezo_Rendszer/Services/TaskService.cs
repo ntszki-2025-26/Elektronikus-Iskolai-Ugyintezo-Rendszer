@@ -52,7 +52,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
 
             _context.Taskses.Add(ujIgenyles);
             return await _context.SaveChangesAsync() > 0;
-        } 
+        }
 
         public async Task<bool> CreateJogViszonyIgazolasRequest()
         {
@@ -126,21 +126,34 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
             var authState = await _authStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
-
             var userIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrEmpty(userIdStr)) return false;
 
+            var userId = Guid.Parse(userIdStr);
 
             var ujHianyzas = new Hianyzasok
             {
-                UserId = Guid.Parse(userIdStr),
+                UserId = userId,
                 DateFrom = mettol,
                 DateTo = meddig,
                 Message = message
             };
 
             _context.Hianyzas.Add(ujHianyzas);
+
+            var ujTask = new Taskses
+            {
+                Title = "Hiányzás bejelentés",
+                TaskTypeId = 7,
+                ReportDate = DateTime.Now,
+                SenderUserId = userId,
+                Message = $"Időszak: {mettol:yyyy.MM.dd} - {meddig:yyyy.MM.dd}. Indok: {message}",
+                State = 0
+            };
+
+            _context.Taskses.Add(ujTask);
+
             return await _context.SaveChangesAsync() > 0;
         }
 

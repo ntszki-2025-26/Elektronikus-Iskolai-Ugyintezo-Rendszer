@@ -38,10 +38,10 @@ public class AbsenceService
 
         var task = new Taskses
         {
-            Id = 0, 
+            Id = 0,
             Title = "Hiányzás bejelentés",
             TaskTypeId = taskTypeId,
-            SenderUserId = currentUserId, 
+            SenderUserId = currentUserId,
             ReportDate = DateTime.Now,
             Message = $"Időszak: {absence.DateFrom:yyyy.MM.dd} - {absence.DateTo:yyyy.MM.dd}. Indok: {absence.Message}"
         };
@@ -50,6 +50,49 @@ public class AbsenceService
         await context.SaveChangesAsync();
     }
 
+    // Csak hiányzásbejelentések (TaskTypeId = 7)
+    public async Task<List<NotificationDto>> GetHianyzasNotifications()
+    {
+        using var _context = await _contextFactory.CreateDbContextAsync();
+
+        var notifications = await (from task in _context.Taskses
+                                   join user in _context.Users on task.SenderUserId equals user.Id
+                                   where task.TaskTypeId == 7
+                                   select new NotificationDto
+                                   {
+                                       TaskId = task.Id,
+                                       SenderName = user.LastName + " " + user.FirstName,
+                                       Title = task.Title,
+                                       ReportDate = task.ReportDate,
+                                       Message = task.Message ?? "",
+                                       State = task.State
+                                   }).ToListAsync();
+
+        return notifications;
+    }
+
+    // Adminisztratív kérések (minden NEM hiányzás típus)
+    public async Task<List<NotificationDto>> GetAdminNotifications()
+    {
+        using var _context = await _contextFactory.CreateDbContextAsync();
+
+        var notifications = await (from task in _context.Taskses
+                                   join user in _context.Users on task.SenderUserId equals user.Id
+                                   where task.TaskTypeId != 7
+                                   select new NotificationDto
+                                   {
+                                       TaskId = task.Id,
+                                       SenderName = user.LastName + " " + user.FirstName,
+                                       Title = task.Title,
+                                       ReportDate = task.ReportDate,
+                                       Message = task.Message ?? "",
+                                       State = task.State
+                                   }).ToListAsync();
+
+        return notifications;
+    }
+
+    // Megtartva visszafelé kompatibilitás miatt
     public async Task<List<NotificationDto>> GetNotificationsByRole(int userRoleId)
     {
         using var _context = await _contextFactory.CreateDbContextAsync();
@@ -63,7 +106,6 @@ public class AbsenceService
                                        Title = task.Title,
                                        ReportDate = task.ReportDate,
                                        Message = task.Message ?? "",
-                                       // EZT ELLENŐRIZD: Az adatbázis 'Status' mezőjét kapja meg a DTO 'State' mezője
                                        State = task.State
                                    }).ToListAsync();
 

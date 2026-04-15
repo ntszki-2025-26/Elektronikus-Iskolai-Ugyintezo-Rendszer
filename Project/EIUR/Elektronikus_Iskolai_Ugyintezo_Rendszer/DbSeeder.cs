@@ -87,6 +87,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
                     new TaskTypes { Id = 4, Type = "érettségi vizsga jelentkezés" },
                     new TaskTypes { Id = 5, Type = "lakcím adatok változtatásának bejelentése" },
                     new TaskTypes { Id = 6, Type = "korábbi érettségi vizsgák törzslap másolata" },
+                    new TaskTypes { Id = 7, Type = "Hiányzás bejelentés" },
                     new TaskTypes { Id = 8, Type = "érettségi jelentkezés" },
                 };
 
@@ -114,14 +115,14 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
             {
                 var adminUser = new User
                 {
-                    Id          = Guid.NewGuid(),
-                    FirstName   = "John",
-                    LastName    = "Doe",
-                    Email       = "admin@gmail.com",
-                    RoleId      = 9,
+                    Id = Guid.NewGuid(),
+                    FirstName = "John",
+                    LastName = "Doe",
+                    Email = "admin@gmail.com",
+                    RoleId = 9,
                     PhoneNumber = "+36301234567",
-                    Password    = "$2a$12$fG6HPDueYrZv9VZwqlC.VuyFPMuoZWIXps6ALzszVSbMFHM1vygy.", //az "admin" szó BCrypt hash-e
-                    IsEnabled   = true,
+                    Password = "$2a$12$fG6HPDueYrZv9VZwqlC.VuyFPMuoZWIXps6ALzszVSbMFHM1vygy.", //az "admin" szó BCrypt hash-e
+                    IsEnabled = true,
                 };
 
                 await context.Users.AddAsync(adminUser);

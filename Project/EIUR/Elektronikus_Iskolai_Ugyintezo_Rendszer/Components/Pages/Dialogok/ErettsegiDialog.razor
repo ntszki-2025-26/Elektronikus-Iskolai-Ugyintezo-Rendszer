@@ -10,12 +10,21 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudContainer Style="max-height: 500px; overflow-y: auto" Class="pa-4">
+        <MudContainer Class="pa-4">
 
-            <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-2"><b>Új jelentkezés leadása</b></MudText>
+            <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-2">
+                <b>Új jelentkezés leadása</b>
+            </MudText>
+
             <MudGrid>
                 <MudItem xs="12" sm="7">
-                    <MudSelect T="string" Label="Tantárgy" @bind-Value="_ujTantargy" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect T="string"
+                               Label="Tantárgy"
+                               @bind-Value="_ujTantargy"
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter"
+                               TransformOrigin="Origin.TopCenter"
+                               PopoverClass="erettsegi-select-popover">
                         <MudSelectItem Value="@("Matematika")" />
                         <MudSelectItem Value="@("Fizika")" />
                         <MudSelectItem Value="@("Biológia")" />
@@ -27,7 +36,13 @@
                     </MudSelect>
                 </MudItem>
                 <MudItem xs="12" sm="5">
-                    <MudSelect T="string" Label="Szint" @bind-Value="_szint" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect T="string"
+                               Label="Szint"
+                               @bind-Value="_szint"
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter"
+                               TransformOrigin="Origin.TopCenter"
+                               PopoverClass="erettsegi-select-popover">
                         <MudSelectItem Value="@("Középszint")" />
                         <MudSelectItem Value="@("Emelt szint")" />
                     </MudSelect>
@@ -43,11 +58,13 @@
                        EndIcon="@Icons.Material.Filled.Send"
                        Color="Color.Primary"
                        OnClick="Submit">
-                Jelentlezés küldése
+                Jelentkezés küldése
             </MudButton>
         </div>
     </DialogActions>
 </MudDialog>
+
+
 
 @code {
     [CascadingParameter] MudBlazor.IMudDialogInstance MudDialog { get; set; }
@@ -55,12 +72,11 @@
     private string _ujTantargy;
     private string _szint = "Középszint";
 
-
     private async void Submit()
     {
-        var siker = await TaskService.ErettsegiJelentkezes(_ujTantargy, _szint);
-
         if (string.IsNullOrEmpty(_ujTantargy)) return;
+
+        var siker = await TaskService.ErettsegiJelentkezes(_ujTantargy, _szint);
 
         if (siker)
         {
@@ -71,7 +87,6 @@
         {
             Snackbar.Add("Hiba történt a mentés során. Kérjük, próbálja újra!", Severity.Error);
         }
-        
     }
 
     private void Cancel() => MudDialog.Cancel();

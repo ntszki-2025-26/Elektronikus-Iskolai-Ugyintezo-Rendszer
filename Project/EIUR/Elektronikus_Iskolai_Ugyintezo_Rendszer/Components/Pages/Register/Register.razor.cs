@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
+using MudBlazor;
+using Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Dialogok;
 
 namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Register
 {
@@ -9,6 +11,7 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Register
     {
         [Inject] private IDbContextFactory<Data.AppDbContext> DbFactory { get; set; } = default!;
         [Inject] private NavigationManager NavManager { get; set; } = default!;
+        [Inject] private IDialogService DialogService { get; set; } = default!;
 
         [SupplyParameterFromForm]
         private User registrationUser { get; set; } = new User
@@ -68,6 +71,16 @@ namespace Elektronikus_Iskolai_Ugyintezo_Rendszer.Components.Pages.Register
             {
                 errorMessage = $"Hiba: {ex.GetBaseException().Message}";
             }
+        }
+        private async Task OpenCsvImport()
+        {
+            var options = new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                MaxWidth = MaxWidth.Large,
+                FullWidth = true
+            };
+            await DialogService.ShowAsync<CsvImportDialog>("CSV importálás", options);
         }
     }
 }

@@ -1,0 +1,319 @@
+﻿@using MudBlazor
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<Elektronikus_Iskolai_Ugyintezo_Rendszer.Data.AppDbContext> DbFactory
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.UploadFile" Class="mr-3" />
+            Diákok importálás (CSV)
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudContainer Style="max-height: 520px; overflow-y: auto; min-width: 600px;">
+
+
+            <MudAlert Severity="Severity.Info" Class="mb-4">
+                A CSV fájl elvárt fejléce (pontosvesszővel elválasztva):<br />
+                <code>Vezeteknev;Keresztnev;KozepsoNev;Email;Telefonszam;Jelszo;RoleId</code><br />
+                <small>A <b>KozepsoNev</b> mező elhagyható.</small>
+            </MudAlert>
+
+
+            @if (_importState == ImportState.Idle || _importState == ImportState.ParseError)
+            {
+                <MudFileUpload T="IBrowserFile" FilesChanged="OnFileSelected" Accept=".csv">
+                    <ActivatorContent>
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.AttachFile"
+                                   FullWidth="true"
+                                   Size="Size.Large">
+                            CSV fájl kiválasztása
+                        </MudButton>
+                    </ActivatorContent>
+                </MudFileUpload>
+
+                @if (_importState == ImportState.ParseError)
+                {
+                    <MudAlert Severity="Severity.Error" Class="mt-3">@_errorMessage</MudAlert>
+                }
+            }
+
+
+            @if (_importState == ImportState.Preview && _parsedRows.Count > 0)
+            {
+                <MudText Typo="Typo.subtitle2" Class="mb-2 mt-2">
+                    <b>@_parsedRows.Count</b> sor beolvasva – ellenőrizd az adatokat, majd kattints a Mentés gombra.
+                </MudText>
+
+                <MudTable Items="_parsedRows" Dense="true" Hover="true" Elevation="0"
+                          Class="rounded-xl border border-solid mud-border-default">
+                    <HeaderContent>
+                        <MudTh>#</MudTh>
+                        <MudTh>Vezetéknév</MudTh>
+                        <MudTh>Keresztnév</MudTh>
+                        <MudTh>Középső név</MudTh>
+                        <MudTh>Email</MudTh>
+                        <MudTh>Telefon</MudTh>
+                        <MudTh>Szerepkör</MudTh>
+                        <MudTh>Hiba</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.RowIndex</MudTd>
+                        <MudTd>@context.FirstName</MudTd>
+                        <MudTd>@context.LastName</MudTd>
+                        <MudTd>@context.MiddleName</MudTd>
+                        <MudTd>@context.Email</MudTd>
+                        <MudTd>@context.PhoneNumber</MudTd>
+                        <MudTd>@GetRoleName(context.RoleId)</MudTd>
+                        <MudTd>
+                            @if (!string.IsNullOrEmpty(context.ValidationError))
+                            {
+                                <MudChip T="string" Color="Color.Error" Size="Size.Small" Variant="Variant.Text">
+                                    @context.ValidationError
+                                </MudChip>
+                            }
+                            else
+                            {
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Size="Size.Small" />
+                            }
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+
+                @if (_parsedRows.Any(r => !string.IsNullOrEmpty(r.ValidationError)))
+                {
+                    <MudAlert Severity="Severity.Warning" Class="mt-3">
+                        A hibás sorok <b>nem kerülnek mentésre</b>. A többi sor rendben importálásra kerül.
+                    </MudAlert>
+                }
+            }
+
+
+            @if (_importState == ImportState.Saving)
+            {
+                <div class="d-flex flex-column align-items-center py-6">
+                    <MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" />
+                    <MudText Class="mt-4">Mentés folyamatban... (@_savedCount / @_validCount)</MudText>
+                </div>
+            }
+
+
+            @if (_importState == ImportState.Done)
+            {
+                <MudAlert Severity="Severity.Success" Class="mt-2">
+                    Sikeresen importálva: <b>@_savedCount</b> diák.<br />
+                    @if (_skippedCount > 0)
+                    {
+                        <span>Kihagyva (már létező email vagy hiba): <b>@_skippedCount</b> sor.</span>
+                    }
+                </MudAlert>
+            }
+
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        @if (_importState == ImportState.Preview)
+        {
+            <MudButton Variant="Variant.Text" OnClick="Reset">Vissza</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Success"
+                       StartIcon="@Icons.Material.Filled.Save"
+                       OnClick="SaveAll"
+                       Disabled="_parsedRows.All(r => !string.IsNullOrEmpty(r.ValidationError))">
+                Mentés (@_parsedRows.Count(r => string.IsNullOrEmpty(r.ValidationError)) érvényes sor)
+            </MudButton>
+        }
+        <MudButton Color="Color.Primary" OnClick="Close">
+            @(_importState == ImportState.Done ? "Bezárás" : "Mégse")
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudBlazor.IMudDialogInstance MudDialog { get; set; } = default!;
+
+
+    private enum ImportState { Idle, ParseError, Preview, Saving, Done }
+    private ImportState _importState = ImportState.Idle;
+
+    private string _errorMessage = "";
+    private int _savedCount = 0;
+    private int _skippedCount = 0;
+    private int _validCount = 0;
+
+
+    private List<CsvRow> _parsedRows = new();
+
+    private class CsvRow
+    {
+        public int RowIndex { get; set; }
+        public string FirstName { get; set; } = "";
+        public string? MiddleName { get; set; }
+        public string LastName { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string PhoneNumber { get; set; } = "";
+        public string Password { get; set; } = "";
+        public int RoleId { get; set; }
+        public string ValidationError { get; set; } = "";
+    }
+
+
+    private async Task OnFileSelected(IBrowserFile file)
+    {
+        _parsedRows.Clear();
+        _importState = ImportState.Idle;
+
+        try
+        {
+            using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+            using var reader = new System.IO.StreamReader(stream, System.Text.Encoding.UTF8);
+
+            string? headerLine = await reader.ReadLineAsync();
+            if (headerLine == null)
+            {
+                _importState = ImportState.ParseError;
+                _errorMessage = "A fájl üres.";
+                return;
+            }
+
+            int rowIndex = 1;
+            while (!reader.EndOfStream)
+            {
+                string? line = await reader.ReadLineAsync();
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                var cols = line.Split(';');
+
+                if (cols.Length < 7)
+                {
+                    _parsedRows.Add(new CsvRow
+                    {
+                        RowIndex = rowIndex,
+                        ValidationError = $"Csak {cols.Length} oszlop van (7 kell)"
+                    });
+                    rowIndex++;
+                    continue;
+                }
+
+                var row = new CsvRow
+                {
+                    RowIndex = rowIndex,
+                    FirstName = cols[0].Trim(),
+                    LastName = cols[1].Trim(),
+                    MiddleName = string.IsNullOrWhiteSpace(cols[2]) ? null : cols[2].Trim(),
+                    Email = cols[3].Trim(),
+                    PhoneNumber = cols[4].Trim(),
+                    Password = cols[5].Trim(),
+                };
+
+                if (!int.TryParse(cols[6].Trim(), out int roleId))
+                    row.ValidationError = "RoleId nem szám";
+                else
+                    row.RoleId = roleId;
+
+                if (string.IsNullOrEmpty(row.ValidationError))
+                {
+                    if (string.IsNullOrWhiteSpace(row.FirstName))
+                        row.ValidationError = "Hiányzó vezetéknév";
+                    else if (string.IsNullOrWhiteSpace(row.LastName))
+                        row.ValidationError = "Hiányzó keresztnév";
+                    else if (string.IsNullOrWhiteSpace(row.Email) || !row.Email.Contains('@'))
+                        row.ValidationError = "Érvénytelen email";
+                    else if (string.IsNullOrWhiteSpace(row.Password) || row.Password.Length < 6)
+                        row.ValidationError = "Jelszó min. 6 karakter";
+                    else if (row.RoleId < 1)
+                        row.ValidationError = "Érvénytelen RoleId";
+                }
+
+                _parsedRows.Add(row);
+                rowIndex++;
+            }
+
+            if (_parsedRows.Count == 0)
+            {
+                _importState = ImportState.ParseError;
+                _errorMessage = "Nincsenek adatsorok a fejléc után.";
+                return;
+            }
+
+            _importState = ImportState.Preview;
+        }
+        catch (Exception ex)
+        {
+            _importState = ImportState.ParseError;
+            _errorMessage = $"Hiba a fájl olvasásakor: {ex.Message}";
+        }
+    }
+
+
+    private async Task SaveAll()
+    {
+        var validRows = _parsedRows.Where(r => string.IsNullOrEmpty(r.ValidationError)).ToList();
+        _validCount = validRows.Count;
+        _savedCount = 0;
+        _skippedCount = _parsedRows.Count - _validCount;
+        _importState = ImportState.Saving;
+        StateHasChanged();
+
+        using var context = await DbFactory.CreateDbContextAsync();
+
+        foreach (var row in validRows)
+        {
+
+            bool exists = await context.Users.AnyAsync(u => u.Email == row.Email);
+            if (exists)
+            {
+                _skippedCount++;
+                continue;
+            }
+
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                FirstName = row.FirstName,
+                MiddleName = row.MiddleName,
+                LastName = row.LastName,
+                Email = row.Email,
+                PhoneNumber = row.PhoneNumber,
+                Password = BCrypt.Net.BCrypt.HashPassword(row.Password),
+                RoleId = row.RoleId,
+                IsEnabled = true
+            };
+
+            context.Users.Add(user);
+            _savedCount++;
+            StateHasChanged();
+        }
+
+        await context.SaveChangesAsync();
+        _importState = ImportState.Done;
+        Snackbar.Add($"{_savedCount} diák sikeresen importálva!", MudBlazor.Severity.Success);
+        StateHasChanged();
+    }
+
+    private void Reset()
+    {
+        _parsedRows.Clear();
+        _importState = ImportState.Idle;
+        _errorMessage = "";
+    }
+
+    private void Close() => MudDialog.Close(MudBlazor.DialogResult.Ok(_savedCount));
+
+    private string GetRoleName(int roleId) => roleId switch
+    {
+        1 => "Diák",
+        2 => "Osztályfőnök",
+        3 => "Igazgatóhelyettes",
+        4 => "Szakképzés Vezető",
+        5 => "Igazgató",
+        6 => "Gazd. Titkár",
+        7 => "Titkár",
+        8 => "Könyvtáros",
+        9 => "Admin",
+        _ => $"#{roleId}"
+    };
+}

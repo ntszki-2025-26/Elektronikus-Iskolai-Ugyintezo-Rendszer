@@ -1,55 +1,76 @@
 ﻿@using MudBlazor
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
+@inject UserManagementService UserManagementService
 
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@Icons.Material.Filled.Person" Class="mr-3" />
-           Diak neve
+            Profil adatok
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudContainer Style="max-height: 400px; overflow-y: auto">
-            <MudGrid>
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="_nev" Label="Név" Variant="Variant.Outlined" ReadOnly="_readOnly" />
-                </MudItem>
-                <MudItem xs="12">
-                    <MudTextField @bind-Value="_email" Label="Email" Variant="Variant.Outlined" ReadOnly="_readOnly" />
-                </MudItem>
-            </MudGrid>
-        </MudContainer>
-    </DialogContent>
-    <DialogActions>
-        @if (_readOnly)
+        @if (_loading)
         {
-            <MudButton Variant="Variant.Filled" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Edit" OnClick="EnableEditing">Módosítás</MudButton>
+            <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
         }
         else
         {
-            <MudButton Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.Save" OnClick="SaveData">Mentés</MudButton>
+            <MudContainer Style="max-height: 400px; overflow-y: auto">
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="_vezeteknev" Label="Vezetéknév" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudTextField Value="_keresztnev" Label="Keresztnév" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+                    @if (!string.IsNullOrWhiteSpace(_kozepsonev))
+                    {
+                        <MudItem xs="12">
+                            <MudTextField Value="_kozepsonev" Label="Középső név" Variant="Variant.Outlined" ReadOnly="true" />
+                        </MudItem>
+                    }
+                    <MudItem xs="12">
+                        <MudTextField Value="_email" Label="Email" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudTextField Value="_telefonszam" Label="Telefonszám" Variant="Variant.Outlined" ReadOnly="true" />
+                    </MudItem>
+                </MudGrid>
+            </MudContainer>
         }
+    </DialogContent>
+    <DialogActions>
         <MudButton Color="Color.Primary" OnClick="Submit">Bezárás</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudBlazor.IMudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudBlazor.IMudDialogInstance MudDialog { get; set; } = default!;
 
-    private bool _readOnly = true;
-    private string _nev = "Profil neve";
-    private string _email = "profil.eamil@iskola.hu";
+    private bool _loading = true;
 
+    private string _vezeteknev = "";
+    private string _keresztnev = "";
+    private string _kozepsonev = "";
+    private string _email = "";
+    private string _telefonszam = "";
 
-    private void EnableEditing()
+    protected override async Task OnInitializedAsync()
     {
-        _readOnly = false;
-    }
+        var (user, _) = await UserManagementService.GetCurrentUserDataAsync();
 
+        if (user != null)
+        {
+            _vezeteknev = user.LastName;
+            _keresztnev = user.FirstName;
+            _kozepsonev = user.MiddleName ?? "";
+            _email = user.Email;
+            _telefonszam = user.PhoneNumber;
+        }
 
-    private void SaveData()
-    {
-        _readOnly = true;
-
+        _loading = false;
     }
 
     void Submit() => MudDialog.Close(MudBlazor.DialogResult.Ok(true));

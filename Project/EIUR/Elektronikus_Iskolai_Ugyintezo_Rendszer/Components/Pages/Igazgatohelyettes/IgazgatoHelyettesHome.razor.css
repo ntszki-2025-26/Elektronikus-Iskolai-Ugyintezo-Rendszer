@@ -1,0 +1,119 @@
+﻿
+@media (max-width: 959px) {
+    .mud-main-content,
+    ::deep .mud-main-content {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+        width: 100vw !important;
+    }
+
+    .content-wrapper-fix,
+    ::deep .mud-container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    ::deep .mud-drawer-responsive {
+        display: none !important;
+        width: 0 !important;
+    }
+}
+
+.main-bg-fix {
+    background-color: #f1f5f9;
+    min-height: 100vh;
+}
+
+.mobile-top-nav {
+    background-color: white !important;
+    border-bottom: 1px solid #f1f5f9;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.mobile-nav-buttons {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+    .mobile-nav-buttons::-webkit-scrollbar {
+        display: none;
+    }
+
+.m-nav-link {
+    flex: 1; 
+    padding: 10px 5px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    margin: 0 4px;
+}
+.m-nav-link.active {
+    background: #594ae2; 
+    color: white;
+    border-color: #594ae2;
+    box-shadow: 0 4px 10px rgba(89, 74, 226, 0.25);
+}
+
+::deep .mud-drawer {
+    background-color: #1a1c23 !important;
+}
+
+::deep .nav-menu-custom .mud-nav-link {
+    margin: 8px 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 10px !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+    ::deep .nav-menu-custom .mud-nav-link.active {
+        background-color: #594ae2 !important;
+        color: white !important;
+    }
+
+.section-card {
+    background-color: white;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    width: 100%;
+}
+
+::deep .task-item-box {
+    background-color: #f8fafc !important;
+    border: 1px solid #edf2f7 !important;
+    border-radius: 12px !important;
+    margin-bottom: 8px !important;
+}
+
+.nav-divider {
+    height: 1px;
+    display: block;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+    width: 80%; 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.drawer-header-wrapper {
+    width: 100%;
+}
+::deep .nav-menu-custom {
+    padding-top: 10px;
+}
+
+@media (max-width: 959px) {
+    .side-drawer-custom {
+        display: none !important;
+    }
+}

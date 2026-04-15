@@ -1,0 +1,164 @@
+﻿@page "/OfoHome"
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Osztályfőnök")]
+@inject ISnackbar Snackbar
+@inject AbsenceService AbsenceService
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+@inject UserManagementService UserManagementService
+
+<MudThemeProvider IsDarkMode="false" />
+
+<MudLayout>
+    <MudDrawer Open="true"
+               Elevation="1"
+               Variant="@DrawerVariant.Responsive"
+               Breakpoint="Breakpoint.Md"
+               Class="sidebar-dark d-none d-md-flex">
+        
+        <div class="pa-8 text-center" style="border-bottom: 1px solid rgba(255,255,255,0.1); background-color: white;">
+            <MudIcon Icon="@Icons.Material.Filled.School" Style="font-size: 3.5rem; color: #2196F3 !important;" />
+            <MudText Typo="Typo.h5" Style="color: black !important; font-weight: 800; margin-top: 8px;">@OfoName</MudText>
+        </div>
+
+        <MudNavMenu Class="nav-menu-custom">
+            <MudNavLink OnClick="@(() => SetNavFilter("osszes"))"
+                        Icon="@Icons.Material.Filled.Dashboard"
+                        Class="@(currentNavFilter == "osszes" ? "active" : "")">
+                Összes kérelem
+            </MudNavLink>
+            
+            <MudNavLink OnClick="@(() => SetNavFilter("hianyzasok"))"
+                        Icon="@Icons.Material.Filled.EventBusy"
+                        Class="@(currentNavFilter == "hianyzasok" ? "active" : "")">
+                Hiányzások
+            </MudNavLink>
+            
+            <MudNavLink OnClick="@(() => SetNavFilter("feladatok"))"
+                        Icon="@Icons.Material.Filled.Assignment"
+                        Class="@(currentNavFilter == "feladatok" ? "active" : "")">
+                Adminisztratív
+            </MudNavLink>
+
+            <div class="pa-4 mt-auto">
+                <div class="logout-btn-box" @onclick="HandleLogout">
+                    <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
+                    <span>Kijelentkezés</span>
+                </div>
+            </div>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent Class="main-bg-fix">
+        <div class="mobile-top-nav d-md-none" style="background-color: white;">
+            <div class="d-flex align-center justify-space-between pa-4" style="border-bottom: 1px solid #eee;">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Primary" Class="mr-2" />
+                    <MudText Typo="Typo.subtitle1" Style="font-weight: 800; color: black;">@OfoName</MudText>
+                </div>
+                <MudIconButton Icon="@Icons.Material.Filled.Logout"
+                               Color="Color.Error"
+                               OnClick="HandleLogout"
+                               Variant="Variant.Outlined"
+                               Size="Size.Small"
+                               Style="border-radius: 8px;" />
+            </div>
+
+            <div class="mobile-nav-buttons pa-3 d-flex" style="gap: 8px; overflow-x: auto;">
+                <button class="m-nav-button @(currentNavFilter == "osszes" ? "active" : "")" @onclick="@(() => SetNavFilter("osszes"))">
+                    Összes
+                </button>
+                <button class="m-nav-button @(currentNavFilter == "hianyzasok" ? "active" : "")" @onclick="@(() => SetNavFilter("hianyzasok"))">
+                    Hiányzások
+                </button>
+                <button class="m-nav-button @(currentNavFilter == "feladatok" ? "active" : "")" @onclick="@(() => SetNavFilter("feladatok"))">
+                    Admin
+                </button>
+            </div>
+        </div>
+
+        <MudContainer MaxWidth="MaxWidth.False" Class="pa-4 pa-md-10 content-wrapper-fix">
+            @if (currentNavFilter == "osszes" || currentNavFilter == "hianyzasok")
+            {
+                <div class="section-card mb-6">
+                    <div class="d-flex align-center mb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.HistoryEdu" Color="Color.Warning" Class="mr-3" />
+                        <MudText Typo="Typo.h6" Style="font-weight: 700;">Bejelentett hiányzások</MudText>
+                    </div>
+                    <MudExpansionPanels MultiExpansion="true" Elevation="0">
+                        @if (absences != null)
+                        {
+                            @foreach (var a in absences)
+                            {
+                                <MudExpansionPanel Class="task-item-box"> <TitleContent> <div class="d-flex align-center w-100"> <div class="mr-4" style="width: 6px; height: 30px; background-color: #FF9800; border-radius: 3px;"></div> <div class="flex-grow-1"> <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">@a.SenderName</MudText> <MudText Typo="Typo.caption">@a.ReportDate</MudText> </div> </div> </TitleContent> <ChildContent> <div class="pa-4">@a.Message</div> </ChildContent> </MudExpansionPanel>
+                            }
+                        }
+                    </MudExpansionPanels>
+                </div>
+            }
+
+            @if (currentNavFilter == "osszes" || currentNavFilter == "feladatok")
+            {
+                <div class="section-card">
+                    <div class="d-flex align-center mb-4">
+                        <MudIcon Icon="@Icons.Material.Filled.Assignment" Color="Color.Info" Class="mr-3" />
+                        <MudText Typo="Typo.h6" Style="font-weight: 700;">Adminisztratív kérések</MudText>
+                    </div>
+                    <MudExpansionPanels MultiExpansion="true" Elevation="0">
+                        @if (adminTasks != null)
+                        {
+                            @foreach (var task in adminTasks)
+                            {
+                                <MudExpansionPanel Class="task-item-box">
+                                    <TitleContent>
+                                        <div class="d-flex align-center w-100">
+                                            <div class="mr-4" style="width: 6px; height: 30px; background-color: #2196F3; border-radius: 3px;"></div>
+                                            <div class="flex-grow-1">
+                                                <MudText Typo="Typo.subtitle1" Style="font-weight: 700;">@task.SenderName</MudText>
+                                                <MudText Typo="Typo.caption">@task.Title &bull; @task.ReportDate.ToString("yyyy.MM.dd")</MudText>
+                                            </div>
+                                        </div>
+                                    </TitleContent>
+                                    <ChildContent>
+                                        <div class="pa-4">@task.Message</div>
+                                    </ChildContent>
+                                </MudExpansionPanel>
+                            }
+                        }
+                    </MudExpansionPanels>
+                </div>
+            }
+
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private string currentNavFilter = "osszes";
+    private string OfoName { get; set; } = "Betöltés...";
+    private List<NotificationDto>? absences;
+    private List<NotificationDto>? adminTasks;
+
+    private void SetNavFilter(string filter)
+    {
+        currentNavFilter = filter;
+        StateHasChanged();
+    }
+
+    private void HandleLogout() => Nav.NavigateTo("/", forceLoad: true);
+
+    protected override async Task OnInitializedAsync()
+    {
+        OfoName = await UserManagementService.GetCurrentUserNameAsync() ?? "Osztályfőnök";
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        try { absences = await AbsenceService.GetHianyzasNotifications(); } catch { }
+        try { adminTasks = await AbsenceService.GetAdminNotifications(); } catch { }
+    }
+
+}

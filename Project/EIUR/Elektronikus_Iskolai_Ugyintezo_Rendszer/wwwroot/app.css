@@ -1,6 +1,136 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
+    margin: 0;
 }
+
+.login-page{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background: linear-gradient(135deg,#f39c8c,#f26a5a);
+    overflow:hidden;
+}
+
+.login-page::before{
+    content:"";
+    position:absolute;
+    width:900px;
+    height:500px;
+    background:#a8d8ff;
+    opacity:0.35;
+    border-radius:120px;
+
+    top:-150px;
+    left:-200px;
+
+    transform:rotate(-15deg);
+    z-index:1;
+}
+
+.login-page::after{
+    content:"";
+    position:absolute;
+    width:900px;
+    height:500px;
+    background:#a8d8ff;
+    opacity:0.35;
+    border-radius:120px;
+
+    bottom:-200px;
+    right:-250px;
+
+    transform:rotate(-15deg);
+    z-index:1;
+}
+
+.login-card{
+    width:340px;
+    max-width:90%;
+    padding:40px;
+    background:white;
+    border-radius:6px;
+    position:relative;
+    z-index:2;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+body {
+<<<<<<< Updated upstream
+    background-color: #f3e7e4 !important;
+=======
+    background-color: #f8f9fa;
+>>>>>>> Stashed changes
+}
+.mud-expansion-panel:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+}
+.mud-expansion-panel {
+    border-radius: 18px;
+    margin-bottom: 25px;
+    transition: 0.3s ease;
+}
+.faq-container {
+    background: white;
+    padding: 50px;
+    border-radius: 24px;
+    margin-top: 70px;
+    margin-bottom: 70px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+}
+
+.top-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+}
+
+.top-buttons .mud-button-root {
+    min-width: 300px;
+    height: 130px;
+    font-size: 30px;
+}
+
+.menu-container .mud-button-root {
+    transition: all 0.3s ease;
+}
+body {
+    background-color: #d8cfca;
+}
+
+.btn-students:hover {
+    background-color: #2196f3;
+    color: white;
+    transform: translateY(-3px) scale(1.05);
+}
+
+.btn-tasks:hover {
+    background-color: #9c27b0;
+    color: white;
+    transform: rotate(-2deg) scale(1.05);
+}
+
+.btn-reports:hover {
+    background-color: #4caf50;
+    color: white;
+    transform: scale(1.1);
+}
+
+.btn-exit:hover {
+    background-color: #e53935;
+    color: white;
+    transform: scale(1.08);
+}
+
+
 
 a, .btn-link {
     color: #006bb7;
@@ -57,4 +187,9 @@ h1:focus {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
+<<<<<<< Updated upstream
 }
+=======
+}
+
+>>>>>>> Stashed changes

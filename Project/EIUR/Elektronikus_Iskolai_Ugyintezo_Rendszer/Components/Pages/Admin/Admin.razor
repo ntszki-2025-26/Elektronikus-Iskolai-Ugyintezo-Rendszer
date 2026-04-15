@@ -1,0 +1,102 @@
+﻿@page "/admin"
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Data
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Models
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
+@rendermode InteractiveServer
+
+<div class="d-flex" style="min-height: 100vh; background-color: #f8f9fa;">
+    <div class="bg-dark text-white p-3 shadow" style="width: 280px;">
+        <div class="text-center mb-4">
+            <i class="bi bi-mortarboard-fill fs-1 text-primary"></i>
+            <h4 class="mt-2 fw-bold">Admin Panel</h4>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white active-link" href="/admin">
+                    <i class="bi bi-speedometer2 me-2"></i> Műszerfal
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white opacity-75" href="/Register">
+                    <i class="bi bi-person-plus me-2"></i> Regisztráció
+                </a>
+            </li>
+        </ul>
+        <hr class="opacity-25" />
+        <div class="logout-wrapper">
+            <div class="logout-btn-box" @onclick="HandleLogout" style="cursor: pointer;">
+                <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
+                <span>Kijelentkezés</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-grow-1 p-4">
+        <header class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded-3 shadow-sm">
+            <h2 class="h4 mb-0 fw-bold">Rendszer áttekintés</h2>
+            <div class="badge bg-primary-light text-primary px-3 py-2 rounded-pill">
+                Összesen: @users.Count felvett tag
+            </div>
+        </header>
+
+        <div class="card border-0 shadow-sm rounded-3 p-3 mb-4 bg-white">
+            <div class="row g-3">
+                <div class="col-md-7">
+                    <label class="form-label small fw-bold text-muted">Keresés névre</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control bg-light border-0" placeholder="Kezdje el gépelni a nevet..."
+                               @bind="searchTerm" @bind:event="oninput" />
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label small fw-bold text-muted">Szerepkör szűrés</label>
+                    <select class="form-select bg-light border-0" @bind="selectedRoleId">
+                        <option value="0">Összes szerepkör</option>
+                        <option value="1">Diák</option>
+                        <option value="2">Osztályfőnök</option>
+                        <option value="3">Igazgatóhelyettes</option>
+                        <option value="4">Szakképzésvezető</option>
+                        <option value="5">Igazgató</option>
+                        <option value="6">Gazdasági Titkár</option>
+                        <option value="7">Titkár</option>
+                        <option value="8">Könyvtáros</option>
+                        <option value="9">Admin</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="border-0 ps-4">Név</th>
+                            <th class="border-0">Email</th>
+                            <th class="border-0">Szerepkör</th>
+                            <th class="border-0">Státusz</th>
+                            <th class="border-0 text-end pe-4">Műveletek</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in FilteredUsers)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold">@user.LastName @user.FirstName</td>
+                                <td class="text-muted">@user.Email</td>
+                                <td><span class="badge @GetBadgeClass(user.RoleId)">@GetRoleName(user.RoleId)</span></td>
+                                <td><span class="badge @GetStatusColor(user.IsEnabled)">@GetStatus(user.IsEnabled)</span></td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-sm btn-light text-primary me-1" @onclick="() => OpenDialog(user)"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-sm btn-light text-danger" @onclick="() => HandleDisable(user)"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

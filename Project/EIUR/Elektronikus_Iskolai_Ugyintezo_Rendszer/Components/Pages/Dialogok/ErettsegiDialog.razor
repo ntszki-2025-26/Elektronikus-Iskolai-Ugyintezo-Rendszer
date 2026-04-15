@@ -1,0 +1,97 @@
+﻿@using MudBlazor
+@inject ITaskService TaskService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5">
+            <MudIcon Icon="@Icons.Material.Filled.School" Class="mr-3 mb-n1" />
+            Érettségi Jelentkezés
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudContainer Class="pa-4">
+
+            <MudText Typo="Typo.subtitle1" Color="Color.Primary" Class="mb-2">
+                <b>Új jelentkezés leadása</b>
+            </MudText>
+
+            <MudGrid>
+                <MudItem xs="12" sm="7">
+                    <MudSelect T="string"
+                               Label="Tantárgy"
+                               @bind-Value="_ujTantargy"
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter"
+                               TransformOrigin="Origin.TopCenter"
+                               PopoverClass="erettsegi-select-popover">
+                        <MudSelectItem Value="@("Matematika")" />
+                        <MudSelectItem Value="@("Fizika")" />
+                        <MudSelectItem Value="@("Biológia")" />
+                        <MudSelectItem Value="@("Kémia")" />
+                        <MudSelectItem Value="@("Földrajz")" />
+                        <MudSelectItem Value="@("Digitális kultúra")" />
+                        <MudSelectItem Value="@("Angol nyelv")" />
+                        <MudSelectItem Value="@("Német nyelv")" />
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" sm="5">
+                    <MudSelect T="string"
+                               Label="Szint"
+                               @bind-Value="_szint"
+                               Variant="Variant.Outlined"
+                               AnchorOrigin="Origin.BottomCenter"
+                               TransformOrigin="Origin.TopCenter"
+                               PopoverClass="erettsegi-select-popover">
+                        <MudSelectItem Value="@("Középszint")" />
+                        <MudSelectItem Value="@("Emelt szint")" />
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+
+        </MudContainer>
+    </DialogContent>
+    <DialogActions>
+        <div class="pa-4 d-flex justify-center" style="width: 100%;">
+            <MudButton OnClick="Cancel" Class="mr-2">Mégse</MudButton>
+            <MudButton Variant="Variant.Filled"
+                       EndIcon="@Icons.Material.Filled.Send"
+                       Color="Color.Primary"
+                       OnClick="Submit">
+                Jelentkezés küldése
+            </MudButton>
+        </div>
+    </DialogActions>
+</MudDialog>
+
+
+
+@code {
+    [CascadingParameter] MudBlazor.IMudDialogInstance MudDialog { get; set; }
+
+    private string _ujTantargy;
+    private string _szint = "Középszint";
+
+    private async Task Submit()
+    {
+        if (string.IsNullOrWhiteSpace(_ujTantargy))
+        {
+            Snackbar.Add("Kérjük, az üres mezőt töltse ki (válasszon tantárgyat)!", Severity.Warning);
+            return;
+        }
+
+        var siker = await TaskService.ErettsegiJelentkezes(_ujTantargy, _szint);
+
+        if (siker)
+        {
+            Snackbar.Add("A jelentkezést sikeresen rögzítettük!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(new { Targy = _ujTantargy, Szint = _szint }));
+        }
+        else
+        {
+            Snackbar.Add("Hiba történt a mentés során. Kérjük, próbálja újra!", Severity.Error);
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

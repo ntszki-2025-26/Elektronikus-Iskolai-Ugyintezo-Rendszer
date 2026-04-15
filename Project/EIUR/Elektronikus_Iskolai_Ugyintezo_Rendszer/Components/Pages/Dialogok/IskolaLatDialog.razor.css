@@ -1,0 +1,27 @@
+﻿.custom-dialog-container {
+    border-radius: 12px !important;
+    overflow: hidden;
+}
+
+.dialog-header {
+    background-color: #1a1c23;
+    color: white;
+    padding: 16px 24px;
+}
+
+.dialog-body {
+    min-width: 400px;
+    padding: 30px !important;
+}
+
+.dialog-footer {
+    padding: 16px 24px !important;
+    background-color: #f8f9fc;
+}
+
+.action-btn {
+    border-radius: 8px !important;
+    text-transform: none !important;
+    font-weight: 600;
+    padding: 8px 20px;
+}

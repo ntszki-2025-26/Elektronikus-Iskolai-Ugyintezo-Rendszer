@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components
+@using Elektronikus_Iskolai_Ugyintezo_Rendszer.Services
+
+@inject ITaskService TaskService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.ReportProblem" Class="mr-3 mb-n1" />
+            Panasz bejelentés
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText Class="mb-4">Kérjük, adja meg a panaszát.</MudText>
+        <MudItem xs="12">
+            <MudTextField Label="Panasz leírása"
+                          @bind-Value="message"
+                          Variant="Variant.Outlined"
+                          Lines="5"
+                          FullWidth="true"
+                          Required="true"
+                          RequiredError="A leírás kitöltése kötelező!" />
+        </MudItem>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">MÉGSE</MudButton>
+        <MudButton Variant="Variant.Filled"
+                   EndIcon="@Icons.Material.Filled.Send"
+                   Color="Color.Primary"
+                   OnClick="Submit"
+                   Disabled="@(string.IsNullOrWhiteSpace(message))">
+            Beküldés
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudBlazor.IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private string message { get; set; } = "";
+
+    private async Task Submit()
+    {
+        if (string.IsNullOrWhiteSpace(message)) return;
+
+        var siker = await TaskService.PanaszBejelentes(message);
+        
+        if (siker)
+        {
+            Snackbar.Add("Panasz sikeresen rögzítve!", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        else
+        {
+            Snackbar.Add("Hiba történt a rögzítés során!", Severity.Error);
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

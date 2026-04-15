@@ -1,0 +1,118 @@
+﻿@page "/Register"
+@using Microsoft.AspNetCore.Authorization
+@using MudBlazor
+@attribute [Authorize(Roles = "Admin")]
+@rendermode InteractiveServer
+
+
+<div class="login-container">
+    <div class="card login-card shadow-lg">
+        <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <i class="bi bi-person-plus-fill school-icon"></i>
+                <h2 class="fw-bold mt-2">Regisztráció</h2>
+                <p class="text-muted small">Hozzon létre új fiókot az ügyintézéshez!</p>
+            </div>
+
+            <EditForm Model="@registrationUser" OnValidSubmit="HandleRegistration" FormName="registerForm">
+                <DataAnnotationsValidator />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-secondary small fw-bold">Vezetéknév</label>
+                        <div class="input-group custom-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <InputText @bind-Value="registrationUser.FirstName" class="form-control no-focus" />
+                        </div>
+                        <ValidationMessage For="@(() => registrationUser.FirstName)" class="text-danger small" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-secondary small fw-bold">Keresztnév</label>
+                        <div class="input-group custom-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <InputText @bind-Value="registrationUser.LastName" class="form-control no-focus" />
+                        </div>
+                        <ValidationMessage For="@(() => registrationUser.LastName)" class="text-danger small" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-secondary small fw-bold">Email cím</label>
+                    <div class="input-group custom-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <InputText @bind-Value="registrationUser.Email" class="form-control no-focus" />
+                    </div>
+                    <ValidationMessage For="@(() => registrationUser.Email)" class="text-danger small" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-secondary small fw-bold">Fiók típusa</label>
+                    <div class="input-group custom-group">
+                        <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+                        <InputSelect @bind-Value="registrationUser.RoleId" class="form-select no-focus">
+                            <option value="0">Válassz típust...</option>
+                            <option value="1">Diák</option>
+                            <option value="2">Osztályfőnök</option>
+                            <option value="3">Igazgatóhelyettes</option>
+                            <option value="4">Szakképzés Vezető</option>
+                            <option value="5">Igazgató</option>
+                            <option value="6">Gazdasági Titkár</option>
+                            <option value="7">Titkár</option>
+                            <option value="8">Könyvtáros</option>
+                            <option value="9">Admin</option>
+                        </InputSelect>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-secondary small fw-bold">Telefonszám</label>
+                    <div class="input-group custom-group">
+                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                        <InputText @bind-Value="registrationUser.PhoneNumber" class="form-control no-focus" />
+                    </div>
+                    <ValidationMessage For="@(() => registrationUser.PhoneNumber)" class="text-danger small" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label text-secondary small fw-bold">Jelszó</label>
+                    <div class="input-group custom-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <InputText type="@PasswordInputType" @bind-Value="registrationUser.Password" class="form-control no-focus" />
+                        <button type="button" class="password-toggle" @onclick="TogglePasswordVisibility">
+                            <i class="bi @PasswordIcon"></i>
+                        </button>
+                    </div>
+                    <ValidationMessage For="@(() => registrationUser.Password)" class="text-danger small" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                    Regisztráció
+                </button>
+
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger mt-3 text-center p-2 small">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> @errorMessage
+                    </div>
+                }
+            </EditForm>
+        </div>
+
+    </div>
+</div>
+
+
+@*<div class="login-container" style="margin-top: 1.5rem;">
+    <div class="card login-card shadow-lg">
+        <div class="card-body p-4">
+            <div class="text-center mb-3">
+                <i class="bi bi-filetype-csv fs-1 text-success"></i>
+                <h5 class="fw-bold mt-2">Diákok importálás</h5>
+                <p class="text-muted small">Több diák egyszerre hozzáadható CSV fájlból.</p>
+            </div>
+            <button class="btn btn-outline-success w-100 py-2 fw-bold" @onclick="OpenCsvImport">
+                <i class="bi bi-upload me-2"></i> CSV fájl importálása
+            </button>
+        </div>
+    </div>
+</div>*@

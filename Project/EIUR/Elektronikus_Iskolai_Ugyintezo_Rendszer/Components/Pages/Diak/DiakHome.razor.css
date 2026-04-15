@@ -1,0 +1,109 @@
+﻿@media (max-width: 959px) {
+    .mud-main-content,
+    ::deep .mud-main-content {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+        width: 100vw !important;
+    }
+
+    .content-wrapper-fix,
+    ::deep .mud-container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    ::deep .mud-drawer-responsive {
+        display: none !important;
+        width: 0 !important;
+    }
+}
+
+.main-bg-fix {
+    background-color: #f8f9fc !important;
+    min-height: 100vh;
+}
+
+.custom-mobile-header {
+    background-color: white !important;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 16px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.student-name-display {
+    font-weight: 800;
+    font-size: 1rem;
+    color: #1a202c;
+}
+
+.custom-card {
+    background: white;
+    border-radius: 16px;
+    display: flex;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    min-height: 85px;
+    cursor: pointer;
+    border: 1px solid #edf2f7;
+    transition: transform 0.1s;
+}
+
+    .custom-card:active {
+        transform: scale(0.98);
+    }
+
+.card-accent {
+    width: 6px;
+    flex-shrink: 0;
+}
+
+.card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+::deep .custom-table .mud-table-root {
+    background-color: white !important;
+}
+
+::deep .sidebar-dark {
+    background-color: #1a1c23 !important;
+}
+
+    ::deep .sidebar-dark .mud-drawer-paper {
+        background-color: #1a1c23 !important;
+    }
+
+.logout-btn-box {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(244, 67, 54, 0.08);
+    border: 1px solid rgba(244, 67, 54, 0.2);
+    border-radius: 12px;
+    color: #ff8a80;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+::deep .nav-menu-custom .mud-nav-link {
+    margin: 4px 16px !important;
+    border-radius: 10px !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+}

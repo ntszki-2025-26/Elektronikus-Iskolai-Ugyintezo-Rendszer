@@ -1,0 +1,191 @@
+﻿@page "/TitkarHome"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize(Roles = "Titkár")]
+@rendermode InteractiveServer
+@inject UserManagementService UserManagementService
+@inject AbsenceService AbsenceService
+@inject NavigationManager Nav
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthStateProvider
+
+<MudThemeProvider IsDarkMode="false" />
+
+<MudLayout>
+    <MudDrawer Open="true"
+               Elevation="0"
+               Variant="@DrawerVariant.Responsive"
+               Breakpoint="Breakpoint.Md"
+               Class="d-none d-md-flex side-drawer-custom">
+        
+        <div class="drawer-header-wrapper pa-8 d-flex flex-column align-center">
+            <MudIcon Icon="@Icons.Material.Filled.School"
+                     Style="font-size: 4rem; color: #594ae2; margin-bottom: 16px;" />
+            <MudText Typo="Typo.h5"
+                     Style="color: black !important; font-weight: 800; text-align: center;">
+                @TitkarName
+            </MudText>
+        </div>
+
+        <div class="nav-divider mx-6 mb-4"></div>
+
+        <MudNavMenu Class="nav-menu-custom">
+            
+            <div class="pa-4 mt-auto">
+                <div class="logout-wrapper">
+                    <div class="logout-btn-box" @onclick="HandleLogout" style="cursor: pointer;">
+                        <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" Class="mr-3" />
+                        <span>Kijelentkezés</span>
+                    </div>
+                </div>
+            </div>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent Class="main-bg-fix">
+        <div class="mobile-top-nav d-md-none">
+            <div class="d-flex align-center justify-space-between pa-4">
+                <div class="d-flex align-center">
+                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Primary" Class="mr-2" Style="font-size: 2rem;" />
+                    <MudText Typo="Typo.subtitle1" Style="font-weight: 800; color: #1a1c23;">@TitkarName</MudText>
+                </div>
+                <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Error" OnClick="HandleLogout" Variant="Variant.Outlined" Size="Size.Small" />
+            </div>
+        </div>
+
+        <MudContainer MaxWidth="MaxWidth.False" Class="pa-4 pa-md-10 content-wrapper-fix">
+            <MudText Typo="Typo.h4" Class="mb-8 d-none d-md-block" Style="font-weight: 800; color: #1a202c;">Titkár Felület</MudText>
+
+            <div class="section-card">
+                <div class="d-flex flex-column flex-md-row align-start align-md-center justify-md-space-between mb-6 gap-4">
+                    <div class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Assignment" Color="Color.Info" Class="mr-3" />
+                        <MudText Typo="Typo.h6" Style="font-weight: 700;">Adminisztratív kérések</MudText>
+                    </div>
+
+                    <div class="d-flex flex-column flex-sm-row gap-4 w-100 w-md-auto">
+                        <MudSelect T="string" Label="Típus" Value="@selectedTaskType" ValueChanged="OnTaskTypeFilterChanged"
+                                   Variant="Variant.Outlined" Margin="Margin.Dense" Class="bg-white">
+                            <MudSelectItem T="string" Value="@(null)">Összes típus</MudSelectItem>
+                            @if (allNotifications != null)
+                            {
+                                @foreach (var type in allNotifications.Select(x => x.Title).Distinct())
+                                {
+                                    <MudSelectItem T="string" Value="@type">@type</MudSelectItem>
+                                }
+                            }
+                        </MudSelect>
+
+                        <MudSelect T="int?" Label="Állapot" Value="@selectedStatus" ValueChanged="OnStatusFilterChanged"
+                                   Variant="Variant.Outlined" Margin="Margin.Dense" Class="bg-white">
+                            <MudSelectItem T="int?" Value="@((int?)null)">Összes állapot</MudSelectItem>
+                            <MudSelectItem T="int?" Value="@(0)">Beérkezett</MudSelectItem>
+                            <MudSelectItem T="int?" Value="@(1)">Folyamatban</MudSelectItem>
+                            <MudSelectItem T="int?" Value="@(3)">Aláírásra vár</MudSelectItem>
+                            <MudSelectItem T="int?" Value="@(2)">Elkészült</MudSelectItem>
+                        </MudSelect>
+                    </div>
+                </div>
+
+                <MudExpansionPanels MultiExpansion="true" Elevation="0">
+                    @foreach (var task in FilteredNotifications)
+                    {
+                        <MudExpansionPanel Class="task-item-box">
+                            <TitleContent>
+                                <div class="d-flex align-center w-100">
+                                    <div class="mr-3" style="width: 5px; height: 35px; background-color: var(--mud-palette-@GetStateColorName(task.State)); border-radius: 3px;"></div>
+                                    <div class="flex-grow-1">
+                                        <MudText Typo="Typo.subtitle1" Style="@($"font-weight: 700; color: {(task.State == 2 ? "#4CAF50" : "#2d3748")};")">
+                                            @task.SenderName - @task.Title
+                                        </MudText>
+                                        <div class="d-flex align-center flex-wrap">
+                                            <MudText Typo="Typo.caption" Class="mr-2">Beküldve: @task.ReportDate.ToShortDateString()</MudText>
+                                            <MudChip T="string" Size="Size.Small" Color="@GetStateColor(task.State)" Variant="Variant.Text">@GetStateText(task.State)</MudChip>
+                                        </div>
+                                    </div>
+                                </div>
+                            </TitleContent>
+                            <ChildContent>
+                                <div class="pa-2">
+                                    <MudText Typo="Typo.body2" Class="mb-4">@task.Message</MudText>
+                                    <div class="d-flex flex-wrap justify-end gap-2">
+                                        @if (task.State != 2)
+                                        {
+                                            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="@(() => FrissitAllapot(task, 3))" Size="Size.Small">Aláírás szükséges</MudButton>
+                                            <MudButton Variant="Variant.Filled" Color="Color.Info" OnClick="@(() => FrissitAllapot(task, 2))" Size="Size.Small">Elkészült</MudButton>
+                                        }
+                                    </div>
+                                </div>
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    }
+                </MudExpansionPanels>
+            </div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private string currentNavFilter = "osszes";
+    private int? selectedStatus = null;
+    private string? selectedTaskType = null;
+    private string TitkarName { get; set; } = "Betöltés...";
+    private List<NotificationDto>? allNotifications;
+
+    private List<NotificationDto> FilteredNotifications
+    {
+        get
+        {
+            var query = allNotifications?.AsEnumerable() ?? Enumerable.Empty<NotificationDto>();
+            if (currentNavFilter == "admin") query = query.Where(x => x.Title != "Hiányzás bejelentés");
+            
+            if (selectedStatus.HasValue) query = query.Where(x => x.State == selectedStatus.Value);
+            if (!string.IsNullOrEmpty(selectedTaskType)) query = query.Where(x => x.Title == selectedTaskType);
+            
+            return query.ToList();
+        }
+    }
+
+    private void SetNavFilter(string filter)
+    {
+        currentNavFilter = filter;
+        selectedStatus = null;
+        selectedTaskType = null;
+        StateHasChanged();
+    }
+
+    private void OnStatusFilterChanged(int? status) { selectedStatus = status; StateHasChanged(); }
+    private void OnTaskTypeFilterChanged(string type) { selectedTaskType = type; StateHasChanged(); }
+    private void HandleLogout() => Nav.NavigateTo("/", forceLoad: true);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await InitialLoad();
+        await LoadData();
+    }
+
+    private async Task InitialLoad()
+    {
+        try
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            if (authState.User.Identity?.IsAuthenticated == true)
+                TitkarName = await UserManagementService.GetCurrentUserNameAsync() ?? "Titkár";
+        }
+        catch { TitkarName = "Hiba"; }
+    }
+
+    private async Task LoadData() => allNotifications = await AbsenceService.GetNotificationsByRole(5);
+
+    private async Task FrissitAllapot(NotificationDto task, int ujAllapot)
+    {
+        await UserManagementService.StateChange(task.TaskId, ujAllapot);
+        task.State = ujAllapot;
+        Snackbar.Add($"Állapot: {GetStateText(ujAllapot)}", Severity.Info);
+        StateHasChanged();
+    }
+
+    private string GetStateText(int? state) => state switch { 0 => "Beérkezett", 1 => "Folyamatban", 2 => "Elkészült", 3 => "Aláírásra vár", _ => "Ismeretlen" };
+    private Color GetStateColor(int? state) => state switch { 0 => Color.Error, 1 => Color.Warning, 2 => Color.Success, 3 => Color.Secondary, _ => Color.Default };
+    private string GetStateColorName(int? state) => state switch { 0 => "error", 1 => "warning", 2 => "success", 3 => "secondary", _ => "action-default" };
+}
